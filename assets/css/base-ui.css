@@ -1,0 +1,12 @@
+.sm2-bar-ui {
+    font-size: 12px;
+}
+
+.sm2-bar-ui .sm2-main-controls,
+.sm2-bar-ui .sm2-playlist-drawer {
+    background-color: #18901e;
+}
+
+.sm2-bar-ui .sm2-inline-texture {
+    background: transparent;
+}

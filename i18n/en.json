@@ -1,0 +1,8 @@
+{
+  "@metadata": {
+    "authors": [
+      "The Little Moe New LLC"
+    ]
+  },
+  "sm2shim-desc":"Extension that provides compatibility support for FlashMP3 using SoundManager2"
+}

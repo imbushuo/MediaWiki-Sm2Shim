@@ -1,0 +1,39 @@
+{
+    "@doc": "Please refer to README.md for configuration and usage",
+    "name": "Sm2Shim",
+    "version": "1701.113.351.1000",
+    "author": [
+        "[https://lmn.cat The Little Moe New LLC]",
+        "Scott Schiller"
+    ],
+    "url": "https://github.com/imbushuo/MediaWiki-Sm2Shim",
+    "descriptionmsg": "sm2shim-desc",
+    "license-name": "BSD",
+    "type": "parserhook",
+    "AutoloadClasses": {
+        "Sm2ShimHooks": "Sm2Shim.Class.php"
+    },
+    "Hooks": {
+        "ParserFirstCallInit": [
+            "Sm2ShimHooks::onParserSetup"
+        ]
+    },
+    "ResourceModules": {
+        "ext.sm2shim": {
+            "scripts": [
+                "js/soundmanager2-nodebug-jsmin.js",
+                "js/bar-ui.js"
+            ],
+            "styles": [
+                "css/bar-ui.css",
+                "css/base-ui.css"
+            ]
+        }
+    },
+    "MessaegDirs": {
+        "Sm2Shim": [
+            "i18n"
+        ]
+    },
+    "manifest_version": 1
+}
