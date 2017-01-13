@@ -53,8 +53,8 @@ class Sm2ShimHooks {
             }
 
             // Because input validation is completed, required CSS and JS will be injected.
-            $parser->getOutput()->addModules("ext.sm2shim");
-            $parser->getOutput()->addModuleStyles("ext.sm2shim");
+            $parser->getOutput()->addModules("ext.sm2Shim");
+            $parser->getOutput()->addModuleStyles("ext.sm2Shim");
 
             // Additional settings expect those stated below is deprecated and will be ignored.
             // Parse additional settings: AutoStart, Loop, Bg (Background color), Text (Text color)
@@ -66,12 +66,12 @@ class Sm2ShimHooks {
 
             if ($paramsParsed["autostart"] === "yes") { 
                 $autoPlay = true;
-                $baseClassName += " auto-play";
+                $baseClassName .= " auto-play";
             }
 
             if ($paramsParsed["loop"] === "yes") {
                 $loop = true;
-                $baseClassName += " repeat-playback";
+                $baseClassName .= " repeat-playback";
             }
 
             $playlistContent = '';
@@ -98,7 +98,7 @@ class Sm2ShimHooks {
                 }
 
                 $playlistContent += <<<HTML
-<li><a href="{$file}">Track {$trackCount}</li>
+<li><a href="{$file}">Track {$trackCount}</a></li>
 HTML;
 
                 $trackCount++;
