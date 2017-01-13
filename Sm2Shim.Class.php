@@ -178,7 +178,7 @@ HTML;
             </div><!-- END PLAYER -->
 HTML;
 
-            return $output;
+            return array($output, "markerType" => 'nowiki');
         }
     }
 }
