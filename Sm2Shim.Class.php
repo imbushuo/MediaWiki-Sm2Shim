@@ -57,7 +57,7 @@ class Sm2ShimHooks {
             $parser->getOutput()->addModuleStyles("ext.sm2Shim");
 
             // Additional settings expect those stated below is deprecated and will be ignored.
-            // Parse additional settings: AutoStart, Loop, Bg (Background color), Text (Text color)
+            // Parse additional settings: AutoStart, Loop, Bg (Background color)
             // Going to generate HTML code.
 
             $autoPlay = false;
@@ -80,25 +80,27 @@ class Sm2ShimHooks {
             foreach ($filesParsed as $file) {
                 // Get address for internal files
                 $addr = '';
+                $title = '';
+                
                 if (strpos($file, "http://") !== 0 && strpos($file, "https://") !== 0) {
                     $title = Title::newFromText($file,NS_IMAGE);
                     if ($title == null) {
                         continue;
                     }
-                    // That doesn't make sense (retrieve media via image)?
-                    // For compatibility, keep it
-                    $img = function_exists( 'wfFindFile' ) ? 
-                        wfFindFile( $title ) : new Image( $title );
 
-                    if ($img) {
-                        $addr = $img->getURL();
+                    $file = wfFindFile( $title );
+                    if ($file) {
+                        $addr = $file->getFullUrl();
+                        $title = $file->getTitle();
                     }
                 } else {
                     $addr = $file;
+                    $title = "Track {$trackCount}";
                 }
-
+                
+                $title = htmlentities($title);
                 $playlistContent .= <<<HTML
-<li><a href="{$file}">Track {$trackCount}</a></li>
+<li><a href="{$file}">{$title}</a></li>
 HTML;
 
                 $trackCount++;
