@@ -108,14 +108,18 @@ HTML;
 
             $inlineBackgroundStyle = "";
 
-            // Set CSS for additional settings
+            // Validate and set CSS for additional settings
             if (isset($paramsParsed["bg"]) && $paramsParsed["bg"] != '') {
-                // Perform sanity check for input values
+                // To Lowercase and trim the magic "0x"
                 $colorRaw = strtolower($paramsParsed["bg"]);
-                $colorRaw = substr($colorRaw, 2);
-                $validationResult = preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $colorRaw);
-                if (!empty($validationResult)) {
-                    $inlineBackgroundStyle = "background-color: #$colorRaw";
+                // Make sure it starts with "0x"
+                if (strpos($colorRaw, "0x") === 0) {
+                    // So trim the magic header
+                    $colorRaw = substr($colorRaw, 2);
+                    // Perform sanity check for input values
+                    if (Sm2Shim::validateHexColor($colorRaw)) {
+                        $inlineBackgroundStyle = "background-color: #$colorRaw";
+                    }
                 }
             }
 
@@ -193,5 +197,10 @@ HTML;
 
             return array($output, "markerType" => 'nowiki');
         }
+    }
+
+    private static function validateHexColor($colorInput) {
+        $validationResult = preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $colorInput);
+        return !empty($validationResult);
     }
 }
