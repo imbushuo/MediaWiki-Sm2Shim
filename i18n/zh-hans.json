@@ -4,5 +4,11 @@
       "The Little Moe New LLC"
     ]
   },
-  "sm2shim-desc":"利用 SoundManager2 提供 FlashMP3 兼容支持的扩展"
+  "sm2shim-desc":"利用 SoundManager2 提供 FlashMP3 兼容支持的扩展",
+  "sm2shim-jsrequired": "若要启用媒体播放，阁下需要启用 JavaScript。",
+  "sm2shim-playpause": "播放/暂停",
+  "sm2shim-previous": "< 上一曲",
+  "sm2shim-next": "下一曲 >",
+  "sm2shim-repeat": "循环播放",
+  "sm2shim-menu": "菜单（播放列表）"
 }

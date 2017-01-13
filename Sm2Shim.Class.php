@@ -131,16 +131,14 @@ HTML;
                     <div class="sm2-inline-texture"></div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#play" class="sm2-inline-button sm2-icon-play-pause">Play / pause</a>
+                            <a href="#play" class="sm2-inline-button sm2-icon-play-pause">{wfMessage('sm2shim-playpause')->escaped()}</a>
                         </div>
                     </div><!-- EMD PLAY/PAUSE BUTTON -->
                     <div class="sm2-inline-element sm2-inline-status">
                         <div class="sm2-playlist">
                             <div class="sm2-playlist-target">
-                                <!-- playlist <ul> + <li> markup will be injected here -->
-                                <!-- if you want default / non-JS content, you can put that here. -->
                                 <noscript>
-                                    <p>JavaScript is required.</p>
+                                    <p>{wfMessage('sm2shim-jsrequired')->escaped()}</p>
                                 </noscript>
                             </div>
                         </div>
@@ -162,22 +160,22 @@ HTML;
                     </div><!-- END PLAY INDICATOR AND PLAYLIST -->
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#prev" title="Previous" class="sm2-inline-button sm2-icon-previous">&lt; previous</a>
+                            <a href="#prev" title="Previous" class="sm2-inline-button sm2-icon-previous">{wfMessage('sm2shim-previous')->escaped()}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#next" title="Next" class="sm2-inline-button sm2-icon-next">&gt; next</a>
+                            <a href="#next" title="Next" class="sm2-inline-button sm2-icon-next">{wfMessage('sm2shim-next')->escaped()}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                        <a title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat" href="#repeat">&infin; repeat</a>
+                        <a title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{wfMessage('sm2shim-repeat')->escaped()}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element sm2-menu">
                         <div class="sm2-button-bd">
-                            <a href="#menu" class="sm2-inline-button sm2-icon-menu">menu</a>
+                            <a href="#menu" class="sm2-inline-button sm2-icon-menu">{wfMessage('sm2shim-menu')->escaped()}</a>
                         </div>
                     </div><!-- END BUTTONS -->
                 </div><!-- END MAIN CONTROLS -->
