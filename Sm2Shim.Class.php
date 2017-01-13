@@ -81,16 +81,16 @@ class Sm2ShimHooks {
                 // Get address for internal files
                 $addr = '';
                 $title = '';
-                
+
                 if (strpos($file, "http://") !== 0 && strpos($file, "https://") !== 0) {
-                    $title = Title::newFromText($file,NS_IMAGE);
+                    $title = Title::newFromText($file, NS_IMAGE);
                     if ($title == null) {
                         continue;
                     }
 
                     $file = wfFindFile( $title );
                     if ($file) {
-                        $addr = $file->getFullUrl();
+                        $addr = $file->getUrl();
                         $title = $file->getTitle();
                     }
                 } else {
@@ -100,7 +100,7 @@ class Sm2ShimHooks {
                 
                 $title = htmlentities($title);
                 $playlistContent .= <<<HTML
-<li><a href="{$file}">{$title}</a></li>
+<li><a href="{$addr}">{$title}</a></li>
 HTML;
 
                 $trackCount++;
