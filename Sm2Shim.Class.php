@@ -112,7 +112,7 @@ HTML;
             if (isset($paramsParsed["bg"]) && $paramsParsed["bg"] != '') {
                 // Perform sanity check for input values
                 $colorRaw = strtolower($paramsParsed["bg"]);
-                $colorRaw = substring($colorRaw, 2);
+                $colorRaw = substr($colorRaw, 2);
                 $validationResult = preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $colorRaw);
                 if (!empty($validationResult)) {
                     $inlineBackgroundStyle = "background-color: #$validationResult";
