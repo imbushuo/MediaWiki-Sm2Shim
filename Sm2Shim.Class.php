@@ -117,7 +117,7 @@ HTML;
                     // So trim the magic header
                     $colorRaw = substr($colorRaw, 2);
                     // Perform sanity check for input values
-                    if (Sm2Shim::validateHexColor($colorRaw)) {
+                    if (Sm2ShimHooks::validateHexColor($colorRaw)) {
                         $inlineBackgroundStyle = "background-color: #$colorRaw";
                     }
                 }
