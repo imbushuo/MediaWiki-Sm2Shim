@@ -98,7 +98,8 @@ class Sm2ShimHooks {
                     $title = "Track {$trackCount}";
                 }
                 
-                $title = htmlentities($title);
+                $title = htmlspecialchars($title);
+                $addr = htmlspecialchars($addr);
                 $playlistContent .= <<<HTML
 <li><a href="{$addr}">{$title}</a></li>
 HTML;
