@@ -125,20 +125,27 @@ HTML;
                 }
             }
 
+            $locResPlayback = wfMessage('sm2shim-playpause')->escaped();
+            $locResJsRequired = wfMessage('sm2shim-jsrequired')->escaped();
+            $locResPervious = wfMessage('sm2shim-previous')->escaped();
+            $locResNext = wfMessage('sm2shim-next')->escaped();
+            $locResRepeat = wfMessage('sm2shim-repeat')->escaped();
+            $locResMenu = wfMessage('sm2shim-menu')->escaped();
+
             $output = <<<HTML
             <div class="{$baseClassName}">
                 <div class="bd sm2-main-controls" style="{$inlineBackgroundStyle}">
                     <div class="sm2-inline-texture"></div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#play" class="sm2-inline-button sm2-icon-play-pause">{wfMessage('sm2shim-playpause')->escaped()}</a>
+                            <a href="#play" class="sm2-inline-button sm2-icon-play-pause">{$locResPlayback}</a>
                         </div>
                     </div><!-- EMD PLAY/PAUSE BUTTON -->
                     <div class="sm2-inline-element sm2-inline-status">
                         <div class="sm2-playlist">
                             <div class="sm2-playlist-target">
                                 <noscript>
-                                    <p>{wfMessage('sm2shim-jsrequired')->escaped()}</p>
+                                    <p>{$locResJsRequired}</p>
                                 </noscript>
                             </div>
                         </div>
@@ -160,22 +167,22 @@ HTML;
                     </div><!-- END PLAY INDICATOR AND PLAYLIST -->
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#prev" title="Previous" class="sm2-inline-button sm2-icon-previous">{wfMessage('sm2shim-previous')->escaped()}</a>
+                            <a href="#prev" title="Previous" class="sm2-inline-button sm2-icon-previous">{$locResPervious}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#next" title="Next" class="sm2-inline-button sm2-icon-next">{wfMessage('sm2shim-next')->escaped()}</a>
+                            <a href="#next" title="Next" class="sm2-inline-button sm2-icon-next">{$locResNext}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                        <a title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{wfMessage('sm2shim-repeat')->escaped()}</a>
+                        <a title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{$locResRepeat}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element sm2-menu">
                         <div class="sm2-button-bd">
-                            <a href="#menu" class="sm2-inline-button sm2-icon-menu">{wfMessage('sm2shim-menu')->escaped()}</a>
+                            <a href="#menu" class="sm2-inline-button sm2-icon-menu">{$locResMenu}</a>
                         </div>
                     </div><!-- END BUTTONS -->
                 </div><!-- END MAIN CONTROLS -->
