@@ -31,7 +31,7 @@ class Sm2ShimHooks {
             unset($params[0]);
 
             $paramsParsed["files"] = $files;
-            $filesParsed = explode("," $files);
+            $filesParsed = explode(",", $files);
             if(empty($filesParsed)) return Sm2ShimHooks::EmptyString;
 
             // Sanity check: Did we retrieved more than one parameter?

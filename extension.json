@@ -30,7 +30,7 @@
             ]
         }
     },
-    "MessaegDirs": {
+    "MessageDirs": {
         "Sm2Shim": [
             "i18n"
         ]
