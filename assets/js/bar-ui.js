@@ -82,7 +82,7 @@
 
     Player = function(playerNode) {
 
-        var css, dom, extras, playlistController, soundObject, actions, actionData, defaultItem, defaultVolume, firstOpen, exports;
+        var css, dom, extras, playlistController, soundObject, actions, actionData, defaultItem, defaultVolume, firstOpen, exports, failureCount, failureThreshold;
 
         css = {
             disabled: 'disabled',
@@ -111,6 +111,10 @@
         extras = {
             loadFailedCharacter: '<span title="Failed to load/play." class="load-error">✖</span>'
         };
+
+        // Clear failure count.
+        failureCount = 0;
+        failureThreshold = 5;
 
         function stopOtherSounds() {
 
@@ -237,6 +241,9 @@
 
                         dom.duration.innerHTML = getTime(this.duration, true);
 
+                        // Clear failure count.
+                        failureCount = 0;
+
                     } else if (this._iO && this._iO.onerror) {
 
                         this._iO.onerror();
@@ -246,6 +253,19 @@
                 },
 
                 onerror: function() {
+
+                    // Increment failure count.
+                    failureCount++;
+
+                    // Stop auto playback if we failed more than 5 times.
+                    if (failureCount >= failureThreshold && 
+                        playlistController.data.loopMode) {
+                        playlistController.data.loopMode = false;
+                        // Toggle button
+                        utils.css.toggle(
+                            utils.dom.get(dom.o, '.sm2-icon-repeat').parentNode, 
+                            css.active);
+                    }
 
                     // sound failed to load.
                     var item, element, html;
