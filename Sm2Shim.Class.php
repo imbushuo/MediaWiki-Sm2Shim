@@ -106,9 +106,22 @@ HTML;
 
             if ($playlistContent == '') return Sm2ShimHooks::EmptyString;
 
+            $inlineBackgroundStyle = "";
+
+            // Set CSS for additional settings
+            if (isset($paramsParsed["bg"]) && $paramsParsed["bg"] != '') {
+                // Perform sanity check for input values
+                $colorRaw = strtolower($paramsParsed["bg"]);
+                $colorRaw = substring($colorRaw, 2);
+                $validationResult = preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $colorRaw);
+                if (!empty($validationResult)) {
+                    $inlineBackgroundStyle = "background-color: #$validationResult";
+                }
+            }
+
             $output = <<<HTML
             <div class="{$baseClassName}">
-                <div class="bd sm2-main-controls">
+                <div class="bd sm2-main-controls" style="{$inlineBackgroundStyle}">
                     <div class="sm2-inline-texture"></div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
@@ -163,7 +176,7 @@ HTML;
                     </div><!-- END BUTTONS -->
                 </div><!-- END MAIN CONTROLS -->
                 <!-- BEGIN PLAYLIST -->
-                <div class="bd sm2-playlist-drawer sm2-element">
+                <div class="bd sm2-playlist-drawer sm2-element" style="{$inlineBackgroundStyle}">
                     <div class="sm2-inline-texture">
                         <div class="sm2-box-shadow"></div>
                     </div>
