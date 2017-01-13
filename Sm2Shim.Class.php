@@ -97,7 +97,7 @@ class Sm2ShimHooks {
                     $addr = $file;
                 }
 
-                $playlistContent += <<<HTML
+                $playlistContent .= <<<HTML
 <li><a href="{$file}">Track {$trackCount}</a></li>
 HTML;
 

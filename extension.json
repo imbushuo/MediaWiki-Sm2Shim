@@ -21,12 +21,12 @@
     "ResourceModules": {
         "ext.sm2Shim": {
             "scripts": [
-                "extensions/Sm2Shim/js/soundmanager2-nodebug-jsmin.js",
-                "extensions/Sm2Shim/js/bar-ui.js"
+                "assets/js/soundmanager2-nodebug-jsmin.js",
+                "assets/js/bar-ui.js"
             ],
             "styles": [
-                "extensions/Sm2Shim/css/bar-ui.css",
-                "extensions/Sm2Shim/css/base-ui.css"
+                "assets/css/bar-ui.css",
+                "assets/css/base-ui.css"
             ]
         }
     },
