@@ -54,7 +54,7 @@ class Sm2ShimHooks {
 
             // Because input validation is completed, required CSS and JS will be injected.
             $parser->getOutput()->addModules("ext.sm2shim");
-            $parset->getOutput()->addModuleStyles("ext.sm2shim");
+            $parser->getOutput()->addModuleStyles("ext.sm2shim");
 
             // Additional settings expect those stated below is deprecated and will be ignored.
             // Parse additional settings: AutoStart, Loop, Bg (Background color), Text (Text color)
