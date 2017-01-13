@@ -52,10 +52,6 @@ class Sm2ShimHooks {
                 return Sm2ShimHooks::EmptyString;
             }
 
-            // Because input validation is completed, required CSS and JS will be injected.
-            $parser->getOutput()->addModules("ext.sm2Shim");
-            $parser->getOutput()->addModuleStyles("ext.sm2Shim");
-
             // Additional settings expect those stated below is deprecated and will be ignored.
             // Parse additional settings: AutoStart, Loop, Bg (Background color)
             // Going to generate HTML code.
@@ -125,6 +121,25 @@ HTML;
                     }
                 }
             }
+
+            // Because input validation is completed, required CSS and JS will be injected.
+            // ResourceLoader is so slow - we can't wait for that.
+            global $wgSm2Shim_UseResourceManager, 
+                $wgSm2Shim_ExternalCDNEndpoint, 
+                $wgSm2Shim_ExternalCDNVersionControlId;
+
+            if ($wgSm2Shim_UseResourceManager) {
+                $parser->getOutput()->addModules("ext.sm2Shim");
+                $parser->getOutput()->addModuleStyles("ext.sm2Shim");
+            } else {
+                $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
+                $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
+
+                $parser->getOutput()->addHeadItem("<link rel=\"stylesheet\" href=\"$cssEndpoint\" />", true);
+                $parser->getOutput()->addHeadItem("<script type=\"text/javascript\" src=\"$jsEndpoint\"></script>", true);
+            }
+
+            // Load resources
 
             $locResPlayback = wfMessage('sm2shim-playpause')->escaped();
             $locResJsRequired = wfMessage('sm2shim-jsrequired')->escaped();
