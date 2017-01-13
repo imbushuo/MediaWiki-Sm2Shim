@@ -115,7 +115,7 @@ HTML;
                 $colorRaw = substr($colorRaw, 2);
                 $validationResult = preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $colorRaw);
                 if (!empty($validationResult)) {
-                    $inlineBackgroundStyle = "background-color: #$validationResult";
+                    $inlineBackgroundStyle = "background-color: #$colorRaw";
                 }
             }
 
