@@ -10,6 +10,13 @@
      * http://schillmania.com/projects/soundmanager2/license.txt
      */
 
+    /**
+     * Sm2Shim: A shim layer for FlashMP3 replacement
+     * Copyright (c) 2016 - 2017 The Little Moe New LLC. All rights reserved.
+     * https://github.com/imbushuo/MediaWiki-Sm2Shim
+     * Code provoded under BSD license.
+     */
+
     "use strict";
 
     var Player,
@@ -950,15 +957,15 @@
 
             });
 
-            // Start playing if class is set
-            if (utils.css.has(dom.o, 'auto-play')) {
-
-               window.setTimeout(function() {
-                  playlistController.playItemByOffset(0);
-               }, 2);
-                
+            // Start playing if class is set on desktop devices
+            if (!window.navigator.userAgent.match(/mobile/i)) {
+                if (utils.css.has(dom.o, 'auto-play')) {
+                    window.setTimeout(function() {
+                        playlistController.playItemByOffset(0);
+                    }, 2);
+                }
             }
-
+           
             // Set repeat attribute if class is set
             if (utils.css.has(dom.o, 'repeat-playback')) {
 
