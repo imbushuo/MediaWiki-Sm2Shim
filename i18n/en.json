@@ -10,5 +10,6 @@
   "sm2shim-previous": "< Previous",
   "sm2shim-next": "Next >",
   "sm2shim-repeat": "Repeat Playback",
-  "sm2shim-menu": "Menu (Playlist)"
+  "sm2shim-menu": "Menu (Playlist)",
+  "sm2shim-track": "Track"
 }

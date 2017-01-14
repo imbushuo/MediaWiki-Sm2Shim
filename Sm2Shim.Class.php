@@ -79,6 +79,7 @@ class Sm2ShimHooks {
 
             $playlistContent = '';
             $trackCount = 1;
+            $locTrack = wfMessage('sm2shim-track')->plain();
 
             foreach ($filesParsed as $file) {
                 // Get address for internal files
@@ -98,7 +99,7 @@ class Sm2ShimHooks {
                     }
                 } else {
                     $addr = $file;
-                    $title = "Track {$trackCount}";
+                    $title = "{$locTrack} {$trackCount}";
                 }
                 
                 $title = htmlspecialchars($title);
@@ -113,6 +114,7 @@ HTML;
             if ($playlistContent == '') return Sm2ShimHooks::EmptyString;
 
             $inlineBackgroundStyle = "";
+            $inlineTextColorStyle = "";
 
             // Validate and set CSS for additional settings
             if (isset($paramsParsed["bg"]) && $paramsParsed["bg"] != '') {
