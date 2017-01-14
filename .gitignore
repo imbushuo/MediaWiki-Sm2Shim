@@ -1,0 +1,4 @@
+*.lock.json
+SelfHost.html
+.vscode
+debug.log

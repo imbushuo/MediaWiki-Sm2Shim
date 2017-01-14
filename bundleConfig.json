@@ -1,0 +1,21 @@
+[
+  {
+    "outputFileName": "assets/css/player-ui.css",
+    "inputFiles": [
+      "assets/css/bar-ui.css",
+      "assets/css/base-ui.css"
+    ]
+  },
+  {
+    "outputFileName": "assets/js/player-bundled.min.js",
+    "inputFiles": [
+      "assets/js/soundmanager2-nodebug-jsmin.js",
+      "assets/js/bar-ui.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]
