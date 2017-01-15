@@ -9,7 +9,7 @@
   {
     "outputFileName": "assets/js/player-bundled.min.js",
     "inputFiles": [
-      "assets/js/soundmanager2-nodebug-jsmin.js",
+      "assets/js/soundmanager2-nodebug.js",
       "assets/js/bar-ui.js"
     ],
     "minify": {
