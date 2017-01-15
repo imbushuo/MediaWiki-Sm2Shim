@@ -1,7 +1,7 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1701.114.2124.4000",
+    "version": "1701.114.2135.4000",
     "author": [
         "[https://lmn.cat The Little Moe New LLC]",
         "Scott Schiller"
@@ -36,7 +36,7 @@
     "config": {
         "Sm2Shim_UseResourceManager": true,
         "Sm2Shim_ExternalCDNEndpoint": "//mmixstaticassets.azureedge.net/Sm2Shim",
-        "Sm2Shim_ExternalCDNVersionControlId": "170114-2124"
+        "Sm2Shim_ExternalCDNVersionControlId": "170114-2135"
     },
     "manifest_version": 1
 }
