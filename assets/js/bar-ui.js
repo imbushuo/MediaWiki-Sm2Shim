@@ -335,7 +335,7 @@
                     item = playlistController.getNext();
 
                     // don't play the same item over and over again, if at end of playlist etc.
-                    // Force play again if loop mode is on
+                    // Or if there is only one item and loop mode is on - play again
                     if (item && playlistController.data.selectedIndex !== lastIndex ||
                         item && playlistController.data.loopMode) {
 
@@ -520,7 +520,12 @@
 
                 } else {
 
-                    data.selectedIndex = null;
+                    if (data.loopMode) {
+                        // Play again
+                        data.selectedIndex = 0;
+                    } else {
+                        data.selectedIndex = null;
+                    }
 
                 }
 
