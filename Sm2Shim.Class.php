@@ -67,12 +67,12 @@ class Sm2ShimHooks {
             $loop = false;
             $baseClassName = "sm2-bar-ui";
 
-            if ($paramsParsed["autostart"] === "yes") { 
+            if (isset($paramsParsed["autostart"]) && $paramsParsed["autostart"] === "yes") { 
                 $autoPlay = true;
                 $baseClassName .= " auto-play";
             }
 
-            if ($paramsParsed["loop"] === "yes") {
+            if (isset($paramsParsed["loop"]) && $paramsParsed["loop"] === "yes") {
                 $loop = true;
                 $baseClassName .= " repeat-playback";
             }
