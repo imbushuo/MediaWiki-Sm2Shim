@@ -1,14 +1,14 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1701.114.2153.4100",
+    "version": "1701.114.2153.4101",
     "author": [
         "[https://lmn.cat The Little Moe New LLC]",
         "Scott Schiller"
     ],
     "url": "https://github.com/imbushuo/MediaWiki-Sm2Shim",
     "descriptionmsg": "sm2shim-desc",
-    "license-name": "BSD",
+    "license-name": "BSD-2-Clause",
     "type": "parserhook",
     "AutoloadClasses": {
         "Sm2ShimHooks": "Sm2Shim.Class.php"
