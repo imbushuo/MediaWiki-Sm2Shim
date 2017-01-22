@@ -96,6 +96,8 @@ class Sm2ShimHooks {
                     if ($file) {
                         $addr = $file->getUrl();
                         $title = $file->getTitle();
+                        // Add internal file dependency
+                        $parser->getOutput()->addImage($title->getDBkey());
                     }
                 } else {
                     $addr = $file;
