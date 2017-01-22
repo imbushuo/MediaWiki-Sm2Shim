@@ -81,7 +81,7 @@ class Sm2ShimHooks {
             $trackCount = 1;
             $locTrack = wfMessage('sm2shim-track')->plain();
 
-            $parserOutput = $parset->getOutput();
+            $parserOutput = $parser->getOutput();
 
             // Iterate all files to retrieve link
             foreach ($filesParsed as $file) {
