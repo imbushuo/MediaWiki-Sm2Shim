@@ -81,6 +81,9 @@ class Sm2ShimHooks {
             $trackCount = 1;
             $locTrack = wfMessage('sm2shim-track')->plain();
 
+            $parserOutput = $parset->getOutput();
+
+            // Iterate all files to retrieve link
             foreach ($filesParsed as $file) {
                 // Get address for internal files
                 $addr = '';
@@ -97,11 +100,14 @@ class Sm2ShimHooks {
                         $addr = $file->getUrl();
                         $title = $file->getTitle();
                         // Add internal file dependency
-                        $parser->getOutput()->addImage($title->getDBkey());
+                        $parserOutput->addImage($title->getDBkey());
+                        $parserOutput->addLink($title);
                     }
                 } else {
                     $addr = $file;
                     $title = "{$locTrack} {$trackCount}";
+                    // Add external link reference
+                    $parserOutput->addExternalLink($file);
                 }
                 
                 $title = htmlspecialchars($title);
@@ -140,13 +146,13 @@ HTML;
                 $wgSm2Shim_ExternalCDNVersionControlId;
 
             if ($wgSm2Shim_UseResourceManager) {
-                $parser->getOutput()->addModules("ext.sm2Shim");
-                $parser->getOutput()->addModuleStyles("ext.sm2Shim");
+                $parserOutput->addModules("ext.sm2Shim");
+                $parserOutput->addModuleStyles("ext.sm2Shim");
             } else {
                 $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
                 $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
 
-                $parser->getOutput()->addHeadItem("<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>", true);
+                $parserOutput->addHeadItem("<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>", true);
             }
 
             // Load resources
