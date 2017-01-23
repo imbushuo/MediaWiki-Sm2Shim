@@ -152,7 +152,7 @@ HTML;
                 $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
                 $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
 
-                $parserOutput->addHeadItem("<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>", true);
+                $parserOutput->addHeadItem("<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>", 'sm2shim.Modules');
             }
 
             // Load resources
