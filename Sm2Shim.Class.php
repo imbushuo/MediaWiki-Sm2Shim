@@ -152,7 +152,8 @@ HTML;
                 $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
                 $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
 
-                $parserOutput->addHeadItem("<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>", 'sm2shim.Modules');
+                $sm2ModuleHeader = "<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>";
+                $parserOutput->addHeadItem($sm2ModuleHeader, $sm2ModuleHeader);
             }
 
             // Load resources
@@ -237,6 +238,8 @@ HTML;
             return array($output, "markerType" => 'nowiki');
         }
     }
+
+    
 
     private static function validateHexColor($colorInput) {
         $validationResult = preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $colorInput);
