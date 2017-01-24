@@ -1014,3 +1014,8 @@
 .sm2-bar-ui .sm2-inline-texture {
     background: transparent;
 }
+
+.sm2-bar-ui-lite {
+    min-width: 120px;
+    max-width: 160px;
+}

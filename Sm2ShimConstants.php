@@ -22,6 +22,7 @@ class Sm2ShimConstants {
     const Sm2ShimPlayerBaseClass = 'sm2-bar-ui';
     const Sm2ShimAutoPlayClass = 'auto-play';
     const Sm2ShimLoopPlayClass = 'repeat-playback';
+    const Sm2ShimPlayerLiteClass = 'sm2-bar-ui-lite';
 
     const FlashMp3ParamTypeId = 'type';
     const FlashMp3ParamBackgroundId = 'bg';
@@ -35,5 +36,15 @@ class Sm2ShimConstants {
 
     const HttpUrlHeader = 'http://';
     const HttpsUrlHeader = 'https://';
+
+    const HtmlElementA = 'a';
+    const HtmlElementAAttributeHref = 'href';
+    const HtmlElementLi = 'li';
+    const HtmlElementLink = 'link';
+    const HtmlElementScript = 'script';
+    const HtmlElementLinkAttributeRel = 'rel';
+    const HtmlElementLinkAttributeHref = 'href';
+    const HtmlElementScriptAttributeType = 'type';
+    const HtmlElementScriptAttributeSrc = 'src';
 
 }

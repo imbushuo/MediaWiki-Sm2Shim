@@ -45,6 +45,52 @@ class Sm2ShimHooks {
      */
     public static function renderLegacyFlashMp3(
         $input, array $args, Parser $parser, PPFrame $frame) {
+        // Render player using full-feature mode
+        return self::renderPlayer($input, $args, $parser, false);
+    }
+
+    /**
+     * Method that handles legacy <sm2> tags.
+     *
+     * @param $input Mixed between tags, or null if the tag is "closed", i.e. <sample />
+     *
+     * @param array $args Tag arguments, which are entered like HTML tag attributes;
+     * this is an associative array indexed by attribute name.
+     *
+     * @param Parser $parser The parent parser (a Parser object);
+     * more advanced extensions use this to obtain the contextual Title, parse wiki text,
+     * expand braces, register link relationships and dependencies, etc.
+     *
+     * @param PPFrame $frame The parent frame (a PPFrame object).
+     * This is used together with $parser to provide the parser with more complete
+     * information on the context in which the extension was called.
+     *
+     * @return mixed Parsed HTML content.
+     */
+    public static function renderLegacySoundManager2Button(
+        $input, array $args, Parser $parser, PPFrame $frame) {
+        // Render player using light mode
+        return self::renderPlayer($input, $args, $parser, true);
+    }
+
+    /**
+     * Method that handles player output.
+     *
+     * @param $input mixed between tags, or null if the tag is "closed", i.e. <sample />
+     *
+     * @param array $args Tag arguments, which are entered like HTML tag attributes;
+     * this is an associative array indexed by attribute name.
+     *
+     * @param Parser $parser The parent parser (a Parser object);
+     * more advanced extensions use this to obtain the contextual Title, parse wiki text,
+     * expand braces, register link relationships and dependencies, etc.
+     *
+     * @param bool $isLiteMode Value indicates whether use lite mode.
+     *
+     * @return mixed Parsed HTML content.
+     */
+    private static function renderPlayer(
+        $input, array $args, Parser $parser, bool $isLiteMode) {
 
         // Sanity check: Did we receive non self-closed tags?
         if ($input != null) {
@@ -90,19 +136,23 @@ class Sm2ShimHooks {
 
             $playerClasses = array(Sm2ShimConstants::Sm2ShimPlayerBaseClass);
 
-            if (isset($paramsParsed[Sm2ShimConstants::FlashMp3ParamAutoPlayId]) &&
-                $paramsParsed[Sm2ShimConstants::FlashMp3ParamAutoPlayId] === "yes") {
-                array_push($playerClasses, Sm2ShimConstants::Sm2ShimAutoPlayClass);
-            }
+            if (!$isLiteMode) {
+                if (isset($paramsParsed[Sm2ShimConstants::FlashMp3ParamAutoPlayId]) &&
+                    $paramsParsed[Sm2ShimConstants::FlashMp3ParamAutoPlayId] === "yes") {
+                    array_push($playerClasses, Sm2ShimConstants::Sm2ShimAutoPlayClass);
+                }
 
-            if (isset($paramsParsed[Sm2ShimConstants::FlashMp3ParamLoopId]) &&
-                $paramsParsed[Sm2ShimConstants::FlashMp3ParamLoopId] === "yes") {
-                array_push($playerClasses, Sm2ShimConstants::Sm2ShimLoopPlayClass);
+                if (isset($paramsParsed[Sm2ShimConstants::FlashMp3ParamLoopId]) &&
+                    $paramsParsed[Sm2ShimConstants::FlashMp3ParamLoopId] === "yes") {
+                    array_push($playerClasses, Sm2ShimConstants::Sm2ShimLoopPlayClass);
+                }
+            } else {
+                array_push($playerClasses, Sm2ShimConstants::Sm2ShimPlayerLiteClass);
             }
 
             $baseClassName = implode(Sm2ShimConstants::Space, $playerClasses);
 
-            $playlistContent = Sm2ShimConstants::EmptyString;
+            $playlistElementContent = array();
             $trackCount = 1;
             $locTrack = wfMessage('sm2shim-track')->plain();
 
@@ -134,41 +184,51 @@ class Sm2ShimHooks {
                     $parserOutput->addExternalLink($entityAddress);
 
                 }
-                
+
                 $entityTitle = htmlspecialchars($entityTitle);
                 $entityAddress = htmlspecialchars($entityAddress);
-                $playlistContent .= <<<HTML
-<li><a href="{$entityAddress}">{$entityTitle}</a></li>
-HTML;
+                $entityAttributes[Sm2ShimConstants::HtmlElementAAttributeHref] = $entityAddress;
+
+                $entityHtmlContent = Html::rawElement(Sm2ShimConstants::HtmlElementLi, [],
+                    Html::element(Sm2ShimConstants::HtmlElementA, $entityAttributes, $entityTitle));
+
+                array_push($playlistElementContent, $entityHtmlContent);
+
+                // Lite mode will have only one file
+                if ($isLiteMode) break;
 
                 $trackCount++;
             }
+
+            $playlistContent = implode(Sm2ShimConstants::EmptyString, $playlistElementContent);
 
             if ($playlistContent == Sm2ShimConstants::EmptyString) return Sm2ShimHooks::EmptyString;
 
             $inlineBackgroundStyle = Sm2ShimConstants::EmptyString;
 
-            // Validate and set CSS for additional settings
-            if (isset($paramsParsed[Sm2ShimConstants::FlashMp3ParamBackgroundId]) &&
-                $paramsParsed[Sm2ShimConstants::FlashMp3ParamBackgroundId] != Sm2ShimConstants::EmptyString) {
-                // To Lowercase and trim the magic "0x"
-                $colorRaw = strtolower($paramsParsed[Sm2ShimConstants::FlashMp3ParamBackgroundId]);
-                // Make sure it starts with "0x"
-                if (strpos($colorRaw, Sm2ShimConstants::FlashMp3ParamValueBackgroundMagicHeader) === 0) {
-                    // So trim the magic header
-                    $colorRaw = substr($colorRaw, 2);
-                    // Perform sanity check for input values
-                    if (Sm2ShimHooks::validateHexColor($colorRaw)) {
-                        $inlineBackgroundStyle = "background-color: #$colorRaw";
+            if (!$isLiteMode) {
+                // Validate and set CSS for additional settings
+                if (isset($paramsParsed[Sm2ShimConstants::FlashMp3ParamBackgroundId]) &&
+                    $paramsParsed[Sm2ShimConstants::FlashMp3ParamBackgroundId] != Sm2ShimConstants::EmptyString) {
+                    // To Lowercase and trim the magic "0x"
+                    $colorRaw = strtolower($paramsParsed[Sm2ShimConstants::FlashMp3ParamBackgroundId]);
+                    // Make sure it starts with "0x"
+                    if (strpos($colorRaw, Sm2ShimConstants::FlashMp3ParamValueBackgroundMagicHeader) === 0) {
+                        // So trim the magic header
+                        $colorRaw = substr($colorRaw, 2);
+                        // Perform sanity check for input values
+                        if (Sm2ShimHooks::validateHexColor($colorRaw)) {
+                            $inlineBackgroundStyle = "background-color: #$colorRaw";
+                        }
                     }
                 }
             }
 
             // Because input validation is completed, required CSS and JS will be injected.
             // ResourceLoader is so slow - we can't wait for that.
-            global $wgSm2Shim_UseResourceManager, 
-                $wgSm2Shim_ExternalCDNEndpoint, 
-                $wgSm2Shim_ExternalCDNVersionControlId;
+            global $wgSm2Shim_UseResourceManager,
+                   $wgSm2Shim_ExternalCDNEndpoint,
+                   $wgSm2Shim_ExternalCDNVersionControlId;
 
             if ($wgSm2Shim_UseResourceManager) {
                 $parserOutput->addModules(Sm2ShimConstants::Sm2ShimBundleId);
@@ -177,7 +237,11 @@ HTML;
                 $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
                 $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
 
-                $sm2ModuleHeader = "<link rel=\"stylesheet\" href=\"$cssEndpoint\"><script type=\"text/javascript\" src=\"$jsEndpoint\"></script>";
+                $sm2ModuleHeader = <<<HTML
+<link rel="stylesheet" href="{$cssEndpoint}">
+<script type="text/javascript" src="{$jsEndpoint}"></script>
+HTML;
+
                 $parserOutput->addHeadItem($sm2ModuleHeader, $sm2ModuleHeader);
             }
 
@@ -188,6 +252,33 @@ HTML;
             $locResRepeat = wfMessage('sm2shim-repeat')->escaped();
             $locResMenu = wfMessage('sm2shim-menu')->escaped();
 
+            $fullFeaturedControl = Sm2ShimConstants::EmptyString;
+
+            if (!$isLiteMode) {
+                $fullFeaturedControl = <<<HTML
+            <div class="sm2-inline-element sm2-button-element">
+                        <div class="sm2-button-bd">
+                            <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous">{$locResPrevious}</a>
+                        </div>
+                    </div>
+                    <div class="sm2-inline-element sm2-button-element">
+                        <div class="sm2-button-bd">
+                            <a href="#next" title="{$locResNext}" class="sm2-inline-button sm2-icon-next">{$locResNext}</a>
+                        </div>
+                    </div>
+                    <div class="sm2-inline-element sm2-button-element">
+                        <div class="sm2-button-bd">
+                        <a title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{$locResRepeat}</a>
+                        </div>
+                    </div>
+                    <div class="sm2-inline-element sm2-button-element sm2-menu">
+                        <div class="sm2-button-bd">
+                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu">{$locResMenu}</a>
+                        </div>
+                    </div>
+HTML;
+            }
+
             $output = <<<HTML
             <div class="{$baseClassName}">
                 <div class="bd sm2-main-controls" style="{$inlineBackgroundStyle}">
@@ -196,7 +287,7 @@ HTML;
                         <div class="sm2-button-bd">
                             <a href="#play" title="{$locResPlayback}" class="sm2-inline-button sm2-icon-play-pause">{$locResPlayback}</a>
                         </div>
-                    </div><!-- EMD PLAY/PAUSE BUTTON -->
+                    </div>
                     <div class="sm2-inline-element sm2-inline-status">
                         <div class="sm2-playlist">
                             <div class="sm2-playlist-target">
@@ -220,29 +311,9 @@ HTML;
                                 <div class="sm2-inline-duration">0:00</div>
                             </div>
                         </div>
-                    </div><!-- END PLAY INDICATOR AND PLAYLIST -->
-                    <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
-                            <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous">{$locResPrevious}</a>
-                        </div>
                     </div>
-                    <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
-                            <a href="#next" title="{$locResNext}" class="sm2-inline-button sm2-icon-next">{$locResNext}</a>
-                        </div>
-                    </div>
-                    <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
-                        <a title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{$locResRepeat}</a>
-                        </div>
-                    </div>
-                    <div class="sm2-inline-element sm2-button-element sm2-menu">
-                        <div class="sm2-button-bd">
-                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu">{$locResMenu}</a>
-                        </div>
-                    </div><!-- END BUTTONS -->
-                </div><!-- END MAIN CONTROLS -->
-                <!-- BEGIN PLAYLIST -->
+                    {$fullFeaturedControl}
+                </div>
                 <div class="bd sm2-playlist-drawer sm2-element" style="{$inlineBackgroundStyle}">
                     <div class="sm2-inline-texture">
                         <div class="sm2-box-shadow"></div>
@@ -254,38 +325,14 @@ HTML;
                         </ul>
                     </div>
                 </div>
-                <!-- END PLAYLIST -->
-            </div><!-- END PLAYER -->
+            </div>
 HTML;
 
             return array($output, "markerType" => 'nowiki');
         }
 
         return Sm2ShimConstants::EmptyString;
-    }
 
-    /**
-     * Method that handles legacy <sm2> tags.
-     *
-     * @param $input Mixed between tags, or null if the tag is "closed", i.e. <sample />
-     *
-     * @param array $args Tag arguments, which are entered like HTML tag attributes;
-     * this is an associative array indexed by attribute name.
-     *
-     * @param Parser $parser The parent parser (a Parser object);
-     * more advanced extensions use this to obtain the contextual Title, parse wiki text,
-     * expand braces, register link relationships and dependencies, etc.
-     *
-     * @param PPFrame $frame The parent frame (a PPFrame object).
-     * This is used together with $parser to provide the parser with more complete
-     * information on the context in which the extension was called.
-     *
-     * @return mixed Parsed HTML content.
-     */
-    public static function renderLegacySoundManager2Button(
-        $input, array $args, Parser $parser, PPFrame $frame) {
-        // Currently redirects to FlashMP3 rendering.
-        return self::renderLegacyFlashMp3($input, $args, $parser, $frame);
     }
 
     /**
