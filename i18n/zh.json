@@ -10,6 +10,6 @@
   "sm2shim-previous": "< 上一曲",
   "sm2shim-next": "下一曲 >",
   "sm2shim-repeat": "循环播放",
-  "sm2shim-menu": "播放列表",
-  "sm2shim-track": "曲目"
+  "sm2shim-menu": "菜单（播放列表）",
+  "sm2shim-track": "音轨"
 }

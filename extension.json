@@ -1,8 +1,9 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1800.124.527.4600",
+    "version": "1800.124.527.4601",
     "author": [
+        "[https://imbushuo.net Bingxing Wang(The Little Moe New LLC)]",
         "[https://lmn.cat The Little Moe New LLC]",
         "Scott Schiller"
     ],

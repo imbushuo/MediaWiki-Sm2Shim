@@ -1,15 +1,15 @@
 {
   "@metadata": {
     "authors": [
-      "The Little Moe New LLC"
+      "Bingxing Wang(The Little Moe New LLC)"
     ]
   },
-  "sm2shim-desc": "Extension that provides compatibility support for FlashMP3 using SoundManager2",
-  "sm2shim-jsrequired": "To enable media playback, JavaScript is required.",
+  "sm2shim-desc": "Extension that provides compatibility support for FlashMP3 and SoundManager2Button using SoundManager2",
+  "sm2shim-jsrequired": "JavaScript is required to enable media playback.",
   "sm2shim-playpause": "Play / Pause",
   "sm2shim-previous": "< Previous",
   "sm2shim-next": "Next >",
-  "sm2shim-repeat": "Repeat Playback",
-  "sm2shim-menu": "Menu (Playlist)",
+  "sm2shim-repeat": "Loop",
+  "sm2shim-menu": "Playlist",
   "sm2shim-track": "Track"
 }

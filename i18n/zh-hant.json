@@ -1,0 +1,15 @@
+{
+  "@metadata": {
+    "authors": [
+      "Bingxing Wang(The Little Moe New LLC)"
+    ]
+  },
+  "sm2shim-desc":"利用 SoundManager2 提供 FlashMP3, SoundManager2Button 兼容支持的擴展",
+  "sm2shim-jsrequired": "若要啟用媒體播放，閣下需要啟用 JavaScript。",
+  "sm2shim-playpause": "播放/暫停",
+  "sm2shim-previous": "< 上一曲",
+  "sm2shim-next": "下一曲 >",
+  "sm2shim-repeat": "循環播放",
+  "sm2shim-menu": "播放列表",
+  "sm2shim-track": "音軌"
+}
