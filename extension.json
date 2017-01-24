@@ -1,7 +1,7 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1791.122.927.4200",
+    "version": "1800.124.438.4400",
     "author": [
         "[https://lmn.cat The Little Moe New LLC]",
         "Scott Schiller"
@@ -11,7 +11,8 @@
     "license-name": "BSD-2-Clause",
     "type": "parserhook",
     "AutoloadClasses": {
-        "Sm2ShimHooks": "Sm2Shim.Class.php"
+        "Sm2ShimHooks": "Sm2Shim.Class.php",
+        "Sm2ShimConstants": "Sm2ShimConstants.php"
     },
     "Hooks": {
         "ParserFirstCallInit": [
