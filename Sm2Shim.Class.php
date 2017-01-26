@@ -274,7 +274,6 @@ HTML;
                     <div class="sm2-inline-element sm2-button-element sm2-menu">
                         <div class="sm2-button-bd">
                             <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu">{$locResMenu}</a>
-                        </div>
                     </div>
             </div>
 HTML;
@@ -335,7 +334,7 @@ HTML;
         return Sm2ShimConstants::EmptyString;
 
     }
-    
+
     /**
      * Method that validates color inputs.
      *
