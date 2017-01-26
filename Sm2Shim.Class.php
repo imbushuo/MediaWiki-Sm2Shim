@@ -257,7 +257,7 @@ HTML;
             if (!$isLiteMode) {
                 $fullFeaturedControl = <<<HTML
             <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
+                    <div class="sm2-button-bd">
                             <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous">{$locResPrevious}</a>
                         </div>
                     </div>
@@ -268,7 +268,7 @@ HTML;
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                        <a title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{$locResRepeat}</a>
+                            <a title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{$locResRepeat}</a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element sm2-menu">
@@ -276,6 +276,7 @@ HTML;
                             <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu">{$locResMenu}</a>
                         </div>
                     </div>
+            </div>
 HTML;
             }
 
@@ -334,7 +335,7 @@ HTML;
         return Sm2ShimConstants::EmptyString;
 
     }
-
+    
     /**
      * Method that validates color inputs.
      *

@@ -47,4 +47,13 @@ class Sm2ShimConstants {
     const HtmlElementScriptAttributeType = 'type';
     const HtmlElementScriptAttributeSrc = 'src';
 
+    const Sm2ShimInlineElementClassId = 'sm2-inline-element';
+    const Sm2ShimButtonElementClassId = 'sm2-button-element';
+    const Sm2ShimButtonContainerClassId = 'sm2-button-bd';
+    const Sm2ShimInlineButtonClassId = 'sm2-inline-button';
+    const Sm2ShimPreviousButtonClassId = 'sm2-icon-previous';
+    const Sm2ShimNextButtonClassId = 'sm2-icon-next';
+    const Sm2ShimRepeatButtonClassId = 'sm2-icon-repeat';
+    const Sm2ShimPlaylistButtonClassId = 'sm2-icon-menu';
+
 }
