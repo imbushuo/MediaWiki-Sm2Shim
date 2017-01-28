@@ -89,6 +89,7 @@ namespace Sm2Shim.Player
         private failureThreshold = 5;
         private soundObject: soundManager.ISmSound;
         private defaultVolume: number;
+        private isGrabbing: boolean;
 
         playlistController: Sm2PlaylistController;
         on: ISm2PlayerEventCallbacks;
@@ -149,6 +150,7 @@ namespace Sm2Shim.Player
 
             const defaultItem = this.playlistController.getItem(0);
             this.playlistController.select(defaultItem);
+            this.isGrabbing = false;
 
             if (defaultItem)
             {
@@ -156,24 +158,19 @@ namespace Sm2Shim.Player
             }
 
             // Register events
-            eventUtils.add(this.dom.o, 'mousedown', (e: any) =>
+            eventUtils.add(this.dom.o, 'mousedown', (e: any) => this.handleMouseDown(e));
+            eventUtils.add(this.dom.o, 'click', (e: any) => this.handleClick(e));
+            eventUtils.add(document, 'mousemove', this.handleMouse.bind(this));
+            eventUtils.add(document, 'mouseup', this.releaseMouse.bind(this));
+            eventUtils.add(this.dom.progressTrack, 'mousedown', (e: any) =>
             {
-                this.handleMouseDown(e);
-            });
-            eventUtils.add(this.dom.o, 'click', (e: any) =>
-            {
-                this.handleClick(e);
-            });
-            eventUtils.add(this.dom.progressTrack, 'mousedown', function(e)
-            {
-                if (this.isRightClick(e))
+                if (Sm2Player.isRightClick(e))
                 {
                     return true;
                 }
 
+                this.isGrabbing = true;
                 cssUtils.addClass(this.dom.o, 'grabbing');
-                eventUtils.add(document, 'mousemove', this.handleMouse);
-                eventUtils.add(document, 'mouseup', this.releaseMouse);
 
                 return this.handleMouse(e);
             });
@@ -799,35 +796,41 @@ namespace Sm2Shim.Player
             }
         }
 
-        private handleMouse(e: any) : any
+        private handleMouse (e: any) : any
         {
-            let target, barX, barWidth, x, newPosition, sound;
-
-            target = this.dom.progressTrack;
-
-            barX = positionUtils.getOffX(target);
-            barWidth = target.offsetWidth;
-
-            x = (e.clientX - barX);
-
-            newPosition = (x / barWidth);
-
-            sound = this.soundObject;
-
-            if (sound && sound.duration)
+            if (this.isGrabbing)
             {
-                sound.setPosition(sound.duration * newPosition);
-                // a little hackish: ensure UI updates immediately with current position,
-                // even if audio is buffering and hasn't moved there yet.
-                if (sound._iO && sound._iO.whileplaying)
+                let target, barX, barWidth, x, newPosition, sound;
+
+                target = this.dom.progressTrack;
+
+                barX = positionUtils.getOffX(target);
+                barWidth = target.offsetWidth;
+
+                x = (e.clientX - barX);
+
+                newPosition = (x / barWidth);
+
+                // Sanity check: Overflow prevention
+                if (newPosition >= 1) newPosition = 1;
+
+                sound = this.soundObject;
+
+                if (sound && sound.duration)
                 {
-                    sound._iO.whileplaying.apply(sound);
+                    sound.setPosition(sound.duration * newPosition);
+                    // A little hackish: ensure UI updates immediately with current position,
+                    // even if audio is buffering and hasn't moved there yet.
+                    if (sound._iO && sound._iO.whileplaying)
+                    {
+                        sound._iO.whileplaying.apply(sound);
+                    }
                 }
-            }
 
-            if (e.preventDefault)
-            {
-                e.preventDefault();
+                if (e.preventDefault)
+                {
+                    e.preventDefault();
+                }
             }
 
             return false;
@@ -862,8 +865,8 @@ namespace Sm2Shim.Player
                 // drag case for volume
                 this.getActionData(target);
 
-                eventUtils.add(document, 'mousemove', this.actions.adjustVolume);
-                eventUtils.add(document, 'mouseup', this.actions.releaseVolume);
+                eventUtils.add(document, 'mousemove', this.actions.adjustVolume.bind(this));
+                eventUtils.add(document, 'mouseup', this.actions.releaseVolume.bind(this));
 
                 // and apply right away
                 return this.actions.adjustVolume(e);
@@ -872,9 +875,8 @@ namespace Sm2Shim.Player
 
         private releaseMouse(e: any) : boolean
         {
-            eventUtils.remove(document, 'mousemove', this.handleMouse);
+            this.isGrabbing = false;
             cssUtils.removeClass(this.dom.o, 'grabbing');
-            eventUtils.remove(document, 'mouseup', this.releaseMouse);
             eventUtils.preventDefault(e);
             return false;
         }

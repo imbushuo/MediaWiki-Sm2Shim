@@ -207,11 +207,14 @@ namespace Sm2ShimUtils
 
         static remove(o: EventTarget, evtName: string, evtHandler: (e?: any) => void): any
         {
-            return (o, evtName, evtHandler) => {
-                return (window.removeEventListener !== undefined) ?
-                    o.removeEventListener(evtName, evtHandler, false) :
-                    (<any>o).detachEvent('on' + evtName, evtHandler);
-            };
+            if (window.removeEventListener !== undefined)
+            {
+                o.removeEventListener(evtName, evtHandler, false);
+            }
+            else
+            {
+                (<any>o).detachEvent('on' + evtName, evtHandler);
+            }
         }
 
         static preventDefault(e: any): boolean

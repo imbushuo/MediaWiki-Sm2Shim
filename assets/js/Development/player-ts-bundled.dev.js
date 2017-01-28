@@ -6335,9 +6335,9 @@ var System;
     var __HResults = (function () {
         function __HResults() {
         }
-        __HResults.E_NOTIMPL = 0x80004001;
         return __HResults;
     }());
+    __HResults.E_NOTIMPL = 0x80004001;
     System.__HResults = __HResults;
 })(System || (System = {}));
 //# sourceMappingURL=HResults.js.map
@@ -6364,8 +6364,9 @@ var System;
          * @param message The message that describes the error.
          */
         function Exception(message) {
-            _super.call(this, message);
-            this.helpLink = '';
+            var _this = _super.call(this, message) || this;
+            _this.helpLink = '';
+            return _this;
         }
         Object.defineProperty(Exception.prototype, "helpLink", {
             /**
@@ -6426,14 +6427,15 @@ var System;
     var NotImplementedException = (function (_super) {
         __extends(NotImplementedException, _super);
         function NotImplementedException(message) {
-            _super.call(this, message ? message : NotImplementedException.Arg_NotImplementedException);
-            this.name = "NotImplementedException";
-            this.stack = (new Error()).stack;
-            this.setErrorCode(System.__HResults.E_NOTIMPL);
+            var _this = _super.call(this, message ? message : NotImplementedException.Arg_NotImplementedException) || this;
+            _this.name = "NotImplementedException";
+            _this.stack = new Error().stack;
+            _this.setErrorCode(System.__HResults.E_NOTIMPL);
+            return _this;
         }
-        NotImplementedException.Arg_NotImplementedException = "The method or operation is not implemented.";
         return NotImplementedException;
     }(System.Exception));
+    NotImplementedException.Arg_NotImplementedException = "The method or operation is not implemented.";
     System.NotImplementedException = NotImplementedException;
 })(System || (System = {}));
 //# sourceMappingURL=NotImplementedException.js.map
@@ -6603,11 +6605,12 @@ var Sm2ShimUtils;
             return eventObject;
         };
         EventUtils.remove = function (o, evtName, evtHandler) {
-            return function (o, evtName, evtHandler) {
-                return (window.removeEventListener !== undefined) ?
-                    o.removeEventListener(evtName, evtHandler, false) :
-                    o.detachEvent('on' + evtName, evtHandler);
-            };
+            if (window.removeEventListener !== undefined) {
+                o.removeEventListener(evtName, evtHandler, false);
+            }
+            else {
+                o.detachEvent('on' + evtName, evtHandler);
+            }
         };
         EventUtils.preventDefault = function (e) {
             if (e.preventDefault) {
@@ -7092,24 +7095,22 @@ var Sm2Shim;
                 this.playlistController = new Player.Sm2PlaylistController(this, this.dom, this.css);
                 var defaultItem = this.playlistController.getItem(0);
                 this.playlistController.select(defaultItem);
+                this.isGrabbing = false;
                 if (defaultItem) {
                     this.setTitle(defaultItem);
                 }
                 // Register events
-                eventUtils.add(this.dom.o, 'mousedown', function (e) {
-                    _this.handleMouseDown(e);
-                });
-                eventUtils.add(this.dom.o, 'click', function (e) {
-                    _this.handleClick(e);
-                });
+                eventUtils.add(this.dom.o, 'mousedown', function (e) { return _this.handleMouseDown(e); });
+                eventUtils.add(this.dom.o, 'click', function (e) { return _this.handleClick(e); });
+                eventUtils.add(document, 'mousemove', this.handleMouse.bind(this));
+                eventUtils.add(document, 'mouseup', this.releaseMouse.bind(this));
                 eventUtils.add(this.dom.progressTrack, 'mousedown', function (e) {
-                    if (this.isRightClick(e)) {
+                    if (Sm2Player.isRightClick(e)) {
                         return true;
                     }
-                    cssUtils.addClass(this.dom.o, 'grabbing');
-                    eventUtils.add(document, 'mousemove', this.handleMouse);
-                    eventUtils.add(document, 'mouseup', this.releaseMouse);
-                    return this.handleMouse(e);
+                    _this.isGrabbing = true;
+                    cssUtils.addClass(_this.dom.o, 'grabbing');
+                    return _this.handleMouse(e);
                 });
                 // Platform specific operations
                 // Start playing if class is set on desktop devices
@@ -7349,23 +7350,28 @@ var Sm2Shim;
                 }
             };
             Sm2Player.prototype.handleMouse = function (e) {
-                var target, barX, barWidth, x, newPosition, sound;
-                target = this.dom.progressTrack;
-                barX = positionUtils.getOffX(target);
-                barWidth = target.offsetWidth;
-                x = (e.clientX - barX);
-                newPosition = (x / barWidth);
-                sound = this.soundObject;
-                if (sound && sound.duration) {
-                    sound.setPosition(sound.duration * newPosition);
-                    // a little hackish: ensure UI updates immediately with current position,
-                    // even if audio is buffering and hasn't moved there yet.
-                    if (sound._iO && sound._iO.whileplaying) {
-                        sound._iO.whileplaying.apply(sound);
+                if (this.isGrabbing) {
+                    var target = void 0, barX = void 0, barWidth = void 0, x = void 0, newPosition = void 0, sound = void 0;
+                    target = this.dom.progressTrack;
+                    barX = positionUtils.getOffX(target);
+                    barWidth = target.offsetWidth;
+                    x = (e.clientX - barX);
+                    newPosition = (x / barWidth);
+                    // Sanity check: Overflow prevention
+                    if (newPosition >= 1)
+                        newPosition = 1;
+                    sound = this.soundObject;
+                    if (sound && sound.duration) {
+                        sound.setPosition(sound.duration * newPosition);
+                        // A little hackish: ensure UI updates immediately with current position,
+                        // even if audio is buffering and hasn't moved there yet.
+                        if (sound._iO && sound._iO.whileplaying) {
+                            sound._iO.whileplaying.apply(sound);
+                        }
                     }
-                }
-                if (e.preventDefault) {
-                    e.preventDefault();
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    }
                 }
                 return false;
             };
@@ -7386,16 +7392,15 @@ var Sm2Shim;
                 if (cssUtils.hasClass(target, 'sm2-volume-control')) {
                     // drag case for volume
                     this.getActionData(target);
-                    eventUtils.add(document, 'mousemove', this.actions.adjustVolume);
-                    eventUtils.add(document, 'mouseup', this.actions.releaseVolume);
+                    eventUtils.add(document, 'mousemove', this.actions.adjustVolume.bind(this));
+                    eventUtils.add(document, 'mouseup', this.actions.releaseVolume.bind(this));
                     // and apply right away
                     return this.actions.adjustVolume(e);
                 }
             };
             Sm2Player.prototype.releaseMouse = function (e) {
-                eventUtils.remove(document, 'mousemove', this.handleMouse);
+                this.isGrabbing = false;
                 cssUtils.removeClass(this.dom.o, 'grabbing');
-                eventUtils.remove(document, 'mouseup', this.releaseMouse);
                 eventUtils.preventDefault(e);
                 return false;
             };
