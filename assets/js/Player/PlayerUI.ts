@@ -11,6 +11,7 @@
 
 /// <reference path="../Library/SoundManager2.d.ts" />
 /// <reference path="../Utils/Utils.ts" />
+/// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="Sm2Player.ts" />
 
 import Sm2Player = Sm2Shim.Player.Sm2Player;
@@ -49,4 +50,17 @@ soundManager.onready(() => {
 (<any>window).sm2BarPlayers = players;
 (<any>window).SM2BarPlayer = Sm2Player;
 
-
+// Unreferenced variables
+UNREFERENCED_PARAMETER(soundManager.PlayState.PlayingOrBuffering);
+UNREFERENCED_PARAMETER(soundManager.PlayState.StoppedOrUnInitialized);
+UNREFERENCED_PARAMETER(soundManager.ReadyState.Failed);
+UNREFERENCED_PARAMETER(soundManager.ReadyState.Loaded);
+UNREFERENCED_PARAMETER(soundManager.ReadyState.Loading);
+UNREFERENCED_PARAMETER(soundManager.ReadyState.UnInitialized);
+UNREFERENCED_PARAMETER(soundManager.canPlayLink);
+UNREFERENCED_PARAMETER(soundManager.getMemoryUse);
+UNREFERENCED_PARAMETER(soundManager.getSoundById);
+UNREFERENCED_PARAMETER(soundManager.onPosition);
+UNREFERENCED_PARAMETER(soundManager.pauseAll);
+UNREFERENCED_PARAMETER(soundManager.resumeAll);
+UNREFERENCED_PARAMETER(soundManager.supported);

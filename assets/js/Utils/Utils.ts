@@ -1,3 +1,13 @@
+/**
+ * Utils.ts: Sm2Shim utilities
+ *
+ * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
+ *
+ * This file is part of the project 'Sm2Shim'.
+ * Code licensed under BSD license.
+ *
+ */
+
 namespace Sm2ShimUtils
 {
 
@@ -10,7 +20,7 @@ namespace Sm2ShimUtils
 
         static compare<T>(property: any)
         {
-            var result;
+            let result;
 
             return (a: T[], b: T[]) => {
 
@@ -30,7 +40,7 @@ namespace Sm2ShimUtils
         {
             // Fisher-Yates shuffle algorithm
 
-            var i, j, temp;
+            let i, j, temp;
 
             for (i = f.length - 1; i > 0; i--) {
                 j = Math.floor(Math.random() * (i + 1));
@@ -79,7 +89,7 @@ namespace Sm2ShimUtils
 
         static swapClass(o: HTMLElement, cStr1: string, cStr2: string)
         {
-            var tmpClass = {
+            const tmpClass = {
                 className: o.className
             };
 
@@ -103,7 +113,7 @@ namespace Sm2ShimUtils
 
         static toggleClass(o: HTMLElement, cStr: string)
         {
-            var found, method;
+            let found, method;
 
             found = Sm2ShimUtils.CssUtils.hasClass(o, cStr);
 
@@ -192,7 +202,7 @@ namespace Sm2ShimUtils
     {
         static add(o: EventTarget, evtName: string, evtHandler: (e?: any) => void) : EventAddResult
         {
-            var eventObject = new EventAddResult();
+            const eventObject = new EventAddResult();
             eventObject.detach = this.remove(o, evtName, evtHandler);
 
             if (window.addEventListener) {
@@ -336,7 +346,7 @@ namespace Sm2ShimUtils
         private has(prop: string): string {
 
             // test for feature support
-            var result = this.testDiv.style[prop];
+            let result = this.testDiv.style[prop];
 
             return (result !== undefined ? prop : null);
 
@@ -374,7 +384,7 @@ namespace Sm2ShimUtils
         {
 
             // http://www.xs4all.nl/~ppk/js/findpos.html
-            var curleft = 0;
+            let curleft = 0;
 
             if (o.offsetParent)
             {
@@ -425,7 +435,7 @@ namespace Sm2ShimUtils
         {
 
             // http://www.quirksmode.org/dom/getstyles.html
-            var value;
+            let value;
 
             if (node.currentStyle)
             {

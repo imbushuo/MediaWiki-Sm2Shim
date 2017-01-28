@@ -16,28 +16,98 @@ declare module soundManager
         /**
          * For scripting the SWF (object/embed property), 'always' or 'sameDomain'
          */
-        allowScriptAccess: string;
-        bgColor: string;
-        consoleOnly: boolean;
+        allowScriptAccess?: string;
+        /**
+         * SWF background color. N/A when wmode = 'transparent'
+         */
+        bgColor?: string;
+        /**
+         * If console is being used, do not create/write to #soundmanager-debug
+         */
+        consoleOnly?: boolean;
+        /**
+         * The directory where SM2 can find the flash movies (soundmanager2.swf, soundmanager2_flash9.swf
+         * and debug versions etc.) Note that SM2 will append the correct SWF file name, depending
+         * on flashVersion and debugMode settings.
+         */
         url: string;
-        debugFlash: boolean;
-        debugMode: boolean;
-        flashVersion: number;
-        flashPollingInterval: number;
-        forceUseGlobalHTML5Audio: boolean;
-        html5PollingInterval: number;
-        html5Test: any;
-        flashLoadTimeout: number;
-        idPrefix: string;
-        ignoreMobileRestrictions: boolean;
-        noSWFCache: boolean;
-        preferFlash: boolean;
-        useConsole: boolean;
-        useFlashBlock: boolean;
-        useHighPerformance: boolean;
-        useHTML5Audio: boolean;
-        waitForWindowLoad: boolean;
-        wmode: string;
+        /**
+         * Enable debugging output (console.log() with HTML fallback)
+         */
+        debugFlash?: boolean;
+        /**
+         * Enable debugging output inside SWF, troubleshoot Flash/browser issues
+         */
+        debugMode?: boolean;
+        /**
+         * Flash build to use (8 or 9.) Some API features require 9.
+         */
+        flashVersion?: number;
+        /**
+         * Millisecond affecting whileplaying/loading callback frequency. If null, default of 50 msec is used.
+         */
+        flashPollingInterval?: number;
+        /**
+         * If true, a single Audio() object is used for all sounds - and only one can play at a time.
+         */
+        forceUseGlobalHTML5Audio?: boolean;
+        /**
+         * Millisecond affecting whileplaying/loading callback frequency. If null,
+         * native HTML5 update events are used.
+         */
+        html5PollingInterval?: number;
+        /**
+         * HTML5 Audio() format support test. Use /^probably$/i; if you want to be more conservative.
+         */
+        html5Test?: RegExp;
+        /**
+         * Millisecond to wait for flash movie to load before failing (0 = infinity)
+         */
+        flashLoadTimeout?: number;
+        /**
+         * If an id is not provided to createSound(), this prefix is used for generated IDs - 'sound0', 'sound1' etc.
+         */
+        idPrefix?: string;
+        /**
+         * If true, SM2 will not apply global HTML5 audio rules to mobile UAs.
+         * Apple iOS > 7 and WebViews may allow multiple Audio() instances.
+         */
+        ignoreMobileRestrictions?: boolean;
+        /**
+         * If true, appends ?ts={date} to break aggressive SWF caching.
+         */
+        noSWFCache?: boolean;
+        /**
+         * Overrides useHTML5audio. if true and flash support present, will try to use flash for
+         * MP3/MP4 as needed. Useful if HTML5 audio support is quirky.
+         */
+        preferFlash?: boolean;
+        /**
+         * Use console.log() if available (otherwise, writes to #soundmanager-debug element)
+         */
+        useConsole?: boolean;
+        /**
+         * Requires flashblock.css, see demos - allow recovery from flash blockers.
+         * Wait indefinitely and apply timeout CSS to SWF, if applicable.
+         */
+        useFlashBlock?: boolean;
+        /**
+         * Position:fixed flash movie can help increase js/flash speed, minimize lag
+         */
+        useHighPerformance?: boolean;
+        /**
+         * Use HTML5 Audio() where supported. Some browsers may not support "non-free"
+         * MP3/MP4/AAC codecs. Ideally, transparent vs. Flash API where possible.
+         */
+        useHTML5Audio?: boolean;
+        /**
+         * Force SM2 to wait for window.onload() before trying to call soundManager.onready()
+         */
+        waitForWindowLoad?: boolean;
+        /**
+         * Flash rendering mode - null, 'transparent', or 'opaque' (last two allow z-index)
+         */
+        wmode?: string;
     }
 
     interface ISm2AudioType
@@ -60,7 +130,7 @@ declare module soundManager
         /**
          * Position to start playback within a sound (msec); see demo
          */
-        from: null;
+        from?: number;
         /**
          * Number of times to play the sound. Related: looping (API demo)
          */
@@ -70,34 +140,73 @@ declare module soundManager
          */
         multiShot: boolean;
         /**
-         * Alow events (onfinish()) to fire for each shot; if supported.
+         * Allow events (onfinish()) to fire for each shot; if supported.
          */
         multiShotEvents: boolean;
         /**
          * Callback function for "ID3 data is added/available"
          */
-        onid3: () => void;
+        onid3?: () => void;
         /**
          * Callback function for "load finished"
          */
-        onload: () => void;   
+        onload?: () => void;
         /**
          * Callback for "user stop"
          */
-        onstop: () => void;
-        onfinish: () => void;             // callback function for "sound finished playing"
-        onpause: () => void;              // callback for "pause"
-        onplay: () => void;               // callback for "play" start
-        onresume: () => void;             // callback for "resume" (pause toggle)
-        position: number;           // offset (milliseconds) to seek to within downloaded sound.
-        pan: number;                // "pan" settings; left-to-right; -100 to 100
-        stream: boolean;            // allows playing before entire file has loaded (recommended)
-        to: number;                 // position to end playback within a sound (msec); see demo
-        type: string;               // MIME-like hint for canPlay() tests; eg. 'audio/mp3'
-        usePolicyFile: boolean;     // enable crossdomain.xml request for remote domains (for ID3/waveform access)
-        volume: number;             // self-explanatory. 0-100; the latter being the max.
-        whileloading: () => void;         // callback function for updating progress (X of Y bytes received)
-        whileplaying: () => void;         // callback during play (position update)
+        onstop?: () => void;
+        /**
+         * Callback function for "sound finished playing"
+         */
+        onfinish?: () => void;
+        /**
+         * Callback for "pause"
+         */
+        onpause?: () => void;
+        /**
+         * Callback for "play" start
+         */
+        onplay?: () => void;
+        /**
+         * Callback for "resume" (pause toggle)
+         */
+        onresume?: () => void;
+        /**
+         * Offset (milliseconds) to seek to within downloaded sound.
+         */
+        position?: number;
+        /**
+         * "Pan" settings; left-to-right; -100 to 100
+         */
+        pan: number;
+        /**
+         * Allows playing before entire file has loaded (recommended)
+         */
+        stream: boolean;
+        /**
+         * Position to end playback within a sound (msec); see demo
+         */
+        to: number;
+        /**
+         * MIME-like hint for canPlay() tests; eg. 'audio/mp3'
+         */
+        type?: string;
+        /**
+         * Enable crossdomain.xml request for remote domains (for ID3/waveform access)
+         */
+        usePolicyFile: boolean;
+        /**
+         * Self-explanatory. 0-100; the latter being the max.
+         */
+        volume: number;
+        /**
+         * Callback function for updating progress (X of Y bytes received)
+         */
+        whileloading?: () => void;
+        /**
+         * Callback during play (position update)
+         */
+        whileplaying?: () => void;
         // see optional flash 9-specific options; too
     }
 
@@ -314,30 +423,143 @@ declare module soundManager
      * playback support is not found via either HTML5 or Flash. By default, MP3 is a required format.
      */
     export let audioFormats: { [format: string]: ISm2AudioType };
+
+    /**
+     * SWF background color. N/A when wmode = 'transparent'
+     */
     export let bgColor: string;
+
+    /**
+     * If console is being used, do not create/write to #soundmanager-debug
+     */
     export let consoleOnly: boolean;
+
+    /**
+     * Enable debugging output (console.log() with HTML fallback)
+     */
     export let debugFlash: boolean;
+
+    /**
+     * Enable debugging output inside SWF, troubleshoot Flash/browser issues
+     */
     export let debugMode: boolean;
+
+    /**
+     * Default options that controls player behavior.
+     */
     export let defaultOptions: ISm2DefaultOptions;
+
+    /**
+     * Default Flash options that controls player behavior.
+     */
     export let flash9Options: ISm2Flash9Options;
+
+    /**
+     * Object that reports player features available in runtime.
+     */
     export let features: ISm2Features;
+
+    /**
+     * Millisecond to wait for flash movie to load before failing (0 = infinity)
+     */
     export let flashLoadTimeout: number;
+
+    /**
+     * Millisecond affecting whileplaying/loading callback frequency. If null, default of 50 msec is used.
+     */
     export let flashPollingInterval: number;
+
+    /**
+     * Flash build to use (8 or 9.) Some API features require 9.
+     */
     export let flashVersion: number;
+
+    /**
+     * If true, a single Audio() object is used for all sounds - and only one can play at a time.
+     */
     export let forceUseGlobalHTML5Audio: boolean;
+
+    /**
+     * This property is set during initialization and reflects whether SM2 is running in "100% HTML5 mode",
+     * based on support for required formats defined by soundManager.audioFormats.
+     */
     export let html5Only: boolean;
+
+    /**
+     * Millisecond affecting whileplaying/loading callback frequency.
+     * If null, native HTML5 update events are used.
+     */
     export let html5PollingInterval: number;
+
+    /**
+     * If true, SM2 will not apply global HTML5 audio rules to mobile UAs.
+     * Apple iOS > 7 and WebViews may allow multiple Audio() instances.
+     */
     export let ignoreMobileRestrictions: boolean;
+
+    /**
+     * Object that controls movie star options in Flash mode.
+     */
     export let movieStarOptions: ISm2MovieStarOptions;
+
+    /**
+     * Overrides useHTML5audio. if true and flash support present, will try to use flash for
+     * MP3/MP4 as needed. Useful if HTML5 audio support is quirky.
+     */
     export let preferFlash: boolean;
+
+    /**
+     * The directory where SM2 can find the flash movies (soundmanager2.swf, soundmanager2_flash9.swf
+     * and debug versions etc.) Note that SM2 will append the correct SWF file name, depending
+     * on flashVersion and debugMode settings.
+     */
     export let url: string;
+
+    /**
+     * Alternative Flash file URL that for the convenience of development.
+     */
     export let useAltURL: any;
+
+    /**
+     * Use console.log() if available (otherwise, writes to #soundmanager-debug element)
+     */
     export let useConsole: boolean;
+
+    /**
+     * By default useFastPolling = false, and thus SoundManager uses a 50-millisecond timer inside Flash
+     * when polling for updated sound properties such as bytesLoaded and data and event callbacks
+     * eg. whileloading(), whileplaying() and so on. With useFastPolling = true,
+     * a 10-msec timer is used and callback frequency may noticeably increase.
+     *
+     * This is best combined with useHighPerformance for optimal results.
+     */
     export let useFastPolling: boolean;
+
+    /**
+     * Requires flashblock.css, see demos - allow recovery from flash blockers.
+     * Wait indefinitely and apply timeout CSS to SWF, if applicable.
+     */
     export let useFlashBlock: boolean;
+
+    /**
+     * Position:fixed flash movie can help increase js/flash speed, minimize lag
+     */
     export let useHighPerformance: boolean;
+
+    /**
+     * Use HTML5 Audio() where supported. Some browsers may not support "non-free"
+     * MP3/MP4/AAC codecs. Ideally, transparent vs. Flash API where possible.
+     */
     export let useHTML5Audio: boolean;
+
+    /**
+     * Flash rendering mode - null, 'transparent', or 'opaque' (last two allow z-index)
+     */
     export let wmode: string;
+
+    /**
+     * Force SM2 to wait for window.onload() before trying to call soundManager.onready()
+     */
     export let waitForWindowLoad: boolean;
 
     /**
@@ -416,6 +638,7 @@ declare module soundManager
      * Returns the related sound object.
      * 
      * @param id Sound ID.
+     * @param options SoundManager sound setup options.
      * @returns ISmSound
      */
     function load(id: string, options?: ISmSoundOptions) : ISmSound;
@@ -449,7 +672,7 @@ declare module soundManager
      * therefore, subsequent "shots" will not have onPosition() events being fired.
      * @param id Sound ID.
      * @param msecOffset Position in millisecond.
-     * @param callback Evnet callback.
+     * @param callback Event callback.
      */
     function onPosition(id: string, msecOffset: number, callback: () => void) : ISmSound;
 
@@ -511,7 +734,7 @@ declare module soundManager
     function setPan(id: string, volume: number) : ISmSound;
 
     /**
-     * Seeeks to a given position within a sound, specified by milliseconds (1000 msec = 1 second)
+     * Seeks to a given position within a sound, specified by milliseconds (1000 msec = 1 second)
      * and returns the related sound object. Affects position property.
      * @param id Sound ID.
      * @param msecOffset Position in millisecond.
