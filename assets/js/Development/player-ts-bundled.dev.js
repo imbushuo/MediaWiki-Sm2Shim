@@ -6335,9 +6335,9 @@ var System;
     var __HResults = (function () {
         function __HResults() {
         }
+        __HResults.E_NOTIMPL = 0x80004001;
         return __HResults;
     }());
-    __HResults.E_NOTIMPL = 0x80004001;
     System.__HResults = __HResults;
 })(System || (System = {}));
 //# sourceMappingURL=HResults.js.map
@@ -6364,9 +6364,8 @@ var System;
          * @param message The message that describes the error.
          */
         function Exception(message) {
-            var _this = _super.call(this, message) || this;
-            _this.helpLink = '';
-            return _this;
+            _super.call(this, message);
+            this.helpLink = '';
         }
         Object.defineProperty(Exception.prototype, "helpLink", {
             /**
@@ -6427,15 +6426,14 @@ var System;
     var NotImplementedException = (function (_super) {
         __extends(NotImplementedException, _super);
         function NotImplementedException(message) {
-            var _this = _super.call(this, message ? message : NotImplementedException.Arg_NotImplementedException) || this;
-            _this.name = "NotImplementedException";
-            _this.stack = new Error().stack;
-            _this.setErrorCode(System.__HResults.E_NOTIMPL);
-            return _this;
+            _super.call(this, message ? message : NotImplementedException.Arg_NotImplementedException);
+            this.name = "NotImplementedException";
+            this.stack = (new Error()).stack;
+            this.setErrorCode(System.__HResults.E_NOTIMPL);
         }
+        NotImplementedException.Arg_NotImplementedException = "The method or operation is not implemented.";
         return NotImplementedException;
     }(System.Exception));
-    NotImplementedException.Arg_NotImplementedException = "The method or operation is not implemented.";
     System.NotImplementedException = NotImplementedException;
 })(System || (System = {}));
 //# sourceMappingURL=NotImplementedException.js.map
@@ -6818,6 +6816,7 @@ var Sm2Shim;
             return SoundManagerSetupOption;
         }());
         Options.SoundManagerSetupOption = SoundManagerSetupOption;
+        Options.FileSrcAttribute = "data-filesrc";
     })(Options = Sm2Shim.Options || (Sm2Shim.Options = {}));
 })(Sm2Shim || (Sm2Shim = {}));
 //# sourceMappingURL=PlayerOptions.js.map
@@ -6897,7 +6896,7 @@ var Sm2Shim;
                      * target of an <a> inside the playlist - e.g. { target: someMP3Link }
                      */
                     play: function (offsetOrEvent) {
-                        var target, href, e;
+                        var target, mediaFileSrc, e;
                         if (offsetOrEvent !== undefined && !isNaN(offsetOrEvent)) {
                             // Smells like a number.
                             return this.self.playlistController.playItemByOffset(offsetOrEvent);
@@ -6906,14 +6905,14 @@ var Sm2Shim;
                         e = offsetOrEvent;
                         if (e && e.target) {
                             target = e.target || e.srcElement;
-                            href = target.href;
+                            mediaFileSrc = target.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                         }
                         // Hack - if null due to no event, OR '#' due to play/pause link, get first link from playlist
-                        if (!href || href.indexOf('#') !== -1) {
-                            href = this.self.dom.playlist.getElementsByTagName('a')[0].href;
+                        if (!mediaFileSrc || mediaFileSrc.indexOf('#') !== -1) {
+                            mediaFileSrc = this.self.dom.playlist.getElementsByTagName('a')[0].getAttribute(Sm2Shim.Options.FileSrcAttribute);
                         }
                         if (!this.self.soundObject) {
-                            this.self.soundObject = this.self.makeSound(href);
+                            this.self.soundObject = this.self.makeSound(mediaFileSrc);
                         }
                         // Edge case: if the current sound is not playing, stop all others.
                         if (!this.self.soundObject.playState) {
@@ -7135,8 +7134,9 @@ var Sm2Shim;
                     soundManager.stopAll();
             };
             Sm2Player.prototype.playLink = function (link) {
+                var mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 // If a link is OK, play it.
-                if (soundManager.canPlayURL(link.href)) {
+                if (soundManager.canPlayURL(mediaFileSrc)) {
                     // If there's a timer due to failure to play one track, cancel it.
                     // catches case when user may use previous/next after an error.
                     if (this.playlistController.data.timer) {
@@ -7144,7 +7144,7 @@ var Sm2Shim;
                         this.playlistController.data.timer = null;
                     }
                     if (!this.soundObject) {
-                        this.soundObject = this.makeSound(link.href);
+                        this.soundObject = this.makeSound(mediaFileSrc);
                     }
                     // Required to reset pause/play state on iOS so whileplaying() works? odd.
                     this.soundObject.stop();
@@ -7156,7 +7156,7 @@ var Sm2Shim;
                     this.dom.progressBar.style.width = '0px';
                     this.stopOtherSounds();
                     this.soundObject.play({
-                        url: link.href,
+                        url: mediaFileSrc,
                         position: 0
                     });
                 }
@@ -7405,7 +7405,7 @@ var Sm2Shim;
                 return false;
             };
             Sm2Player.prototype.handleClick = function (e) {
-                var evt, target, offset, targetNodeName, methodName, href, handled;
+                var evt, target, offset, targetNodeName, methodName, mediaFileSrc, handled;
                 evt = (e || window.event);
                 target = evt.target || evt.srcElement;
                 if (target && target.nodeName) {
@@ -7425,8 +7425,8 @@ var Sm2Shim;
                     }
                     if (targetNodeName === 'a') {
                         // yep, it's a link.
-                        href = target.href;
-                        if (soundManager.canPlayURL(href)) {
+                        mediaFileSrc = target.getAttribute(Sm2Shim.Options.FileSrcAttribute);
+                        if (soundManager.canPlayURL(mediaFileSrc)) {
                             // not excluded
                             if (!cssUtils.hasClass(target, this.playerOptions.excludeClass)) {
                                 // find this in the playlist
@@ -7573,7 +7573,7 @@ var Sm2Shim;
                 var item, url;
                 item = this.getItem();
                 if (item) {
-                    url = item.getElementsByTagName('a')[0].href;
+                    url = item.getElementsByTagName('a')[0].getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 }
                 return url;
             };
@@ -7629,8 +7629,8 @@ var Sm2Shim;
             };
             Sm2PlaylistController.prototype.resetLastSelected = function () {
                 // remove UI highlight(s) on selected items.
-                var items, i, j;
-                items = domUtils.getAll(this.dom.playlist, '.' + this.css.selected);
+                var i, j;
+                var items = domUtils.getAll(this.dom.playlist, '.' + this.css.selected);
                 for (i = 0, j = items.length; i < j; i++) {
                     cssUtils.removeClass(items[i], this.css.selected);
                 }

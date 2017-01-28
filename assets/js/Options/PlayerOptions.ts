@@ -31,4 +31,6 @@ namespace Sm2Shim.Options
         preferFlash: boolean;
         url: string;
     }
+
+    export const FileSrcAttribute: string = "data-filesrc";
 }

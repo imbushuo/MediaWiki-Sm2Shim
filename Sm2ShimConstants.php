@@ -48,6 +48,7 @@ class Sm2ShimConstants {
     const HtmlElementLinkAttributeHref = 'href';
     const HtmlElementScriptAttributeType = 'type';
     const HtmlElementScriptAttributeSrc = 'src';
+    const HtmlElementADatasetSrcHref = 'data-filesrc';
 
     const Sm2ShimInlineElementClassId = 'sm2-inline-element';
     const Sm2ShimButtonElementClassId = 'sm2-button-element';

@@ -162,7 +162,7 @@ namespace Sm2Shim.Player
             item = this.getItem();
 
             if (item) {
-                url = item.getElementsByTagName('a')[0].href;
+                url = item.getElementsByTagName('a')[0].getAttribute(Sm2Shim.Options.FileSrcAttribute);
             }
 
             return url;
@@ -256,10 +256,9 @@ namespace Sm2Shim.Player
         private resetLastSelected() : void
         {
             // remove UI highlight(s) on selected items.
-            var items,
-                i, j;
+            let i, j;
 
-            items = domUtils.getAll(this.dom.playlist, '.' + this.css.selected);
+            const items = domUtils.getAll(this.dom.playlist, '.' + this.css.selected);
 
             for (i = 0, j = items.length; i < j; i++) {
                 cssUtils.removeClass(items[i], this.css.selected);

@@ -209,8 +209,9 @@ namespace Sm2Shim.Player
 
         playLink(link: HTMLLinkElement) : void
         {
+            const mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
             // If a link is OK, play it.
-            if (soundManager.canPlayURL(link.href))
+            if (soundManager.canPlayURL(mediaFileSrc))
             {
                 // If there's a timer due to failure to play one track, cancel it.
                 // catches case when user may use previous/next after an error.
@@ -222,7 +223,7 @@ namespace Sm2Shim.Player
 
                 if (!this.soundObject)
                 {
-                    this.soundObject = this.makeSound(link.href);
+                    this.soundObject = this.makeSound(mediaFileSrc);
                 }
 
                 // Required to reset pause/play state on iOS so whileplaying() works? odd.
@@ -240,7 +241,7 @@ namespace Sm2Shim.Player
 
                 this.soundObject.play(<ISmSoundOptions>
                 {
-                    url: link.href,
+                    url: mediaFileSrc,
                     position: 0
                 });
             }
@@ -507,7 +508,7 @@ namespace Sm2Shim.Player
             play: function (offsetOrEvent: any) : any
             {
                 let target,
-                    href,
+                    mediaFileSrc,
                     e;
 
                 if (offsetOrEvent !== undefined && !isNaN(offsetOrEvent))
@@ -522,17 +523,18 @@ namespace Sm2Shim.Player
                 if (e && e.target)
                 {
                     target = e.target || e.srcElement;
-                    href = target.href;
+                    mediaFileSrc = target.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 }
 
                 // Hack - if null due to no event, OR '#' due to play/pause link, get first link from playlist
-                if (!href || href.indexOf('#') !== -1) {
-                    href = this.self.dom.playlist.getElementsByTagName('a')[0].href;
+                if (!mediaFileSrc || mediaFileSrc.indexOf('#') !== -1) {
+                    mediaFileSrc = this.self.dom.playlist.getElementsByTagName('a')[0].getAttribute(
+                        Sm2Shim.Options.FileSrcAttribute);
                 }
 
                 if (!this.self.soundObject)
                 {
-                    this.self.soundObject = this.self.makeSound(href);
+                    this.self.soundObject = this.self.makeSound(mediaFileSrc);
                 }
 
                 // Edge case: if the current sound is not playing, stop all others.
@@ -888,7 +890,7 @@ namespace Sm2Shim.Player
                 offset,
                 targetNodeName,
                 methodName,
-                href,
+                mediaFileSrc,
                 handled;
 
             evt = (e || window.event);
@@ -920,8 +922,8 @@ namespace Sm2Shim.Player
                 if (targetNodeName === 'a')
                 {
                     // yep, it's a link.
-                    href = target.href;
-                    if (soundManager.canPlayURL(href))
+                    mediaFileSrc = target.getAttribute(Sm2Shim.Options.FileSrcAttribute);
+                    if (soundManager.canPlayURL(mediaFileSrc))
                     {
                         // not excluded
                         if (!cssUtils.hasClass(target, this.playerOptions.excludeClass))

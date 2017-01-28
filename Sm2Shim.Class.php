@@ -174,25 +174,29 @@ class Sm2ShimHooks {
                     if ($entityTitle == null) continue;
 
                     $fileLocation = wfFindFile( $entityTitle );
-                    if ($fileLocation) {
+                    if ($fileLocation)
+                    {
                         $entityAddress = $fileLocation->getUrl();
                         $entityTitle = $fileLocation->getTitle();
+                        // Add HTML link to file page instead of raw file
+                        $entityAttributes[Sm2ShimConstants::HtmlElementAAttributeHref] = $entityTitle->getLocalURL();
+
                         // Add internal file dependency
                         $parserOutput->addImage($entityTitle->getDBkey());
                         $parserOutput->addLink($entityTitle);
                     }
 
                 } else {
-
                     // Generate title and add external link reference
                     $entityTitle = "{$locTrack} {$trackCount}";
                     $parserOutput->addExternalLink($entityAddress);
-
+                    // Link to external site
+                    $entityAttributes[Sm2ShimConstants::HtmlElementAAttributeHref] = $entityAddress;
                 }
 
                 $entityTitle = htmlspecialchars($entityTitle);
                 $entityAddress = htmlspecialchars($entityAddress);
-                $entityAttributes[Sm2ShimConstants::HtmlElementAAttributeHref] = $entityAddress;
+                $entityAttributes[Sm2ShimConstants::HtmlElementADatasetSrcHref] = $entityAddress;
 
                 $entityHtmlContent = Html::rawElement(Sm2ShimConstants::HtmlElementLi, [],
                     Html::element(Sm2ShimConstants::HtmlElementA, $entityAttributes, $entityTitle));
