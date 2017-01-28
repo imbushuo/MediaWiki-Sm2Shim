@@ -23,6 +23,7 @@ class Sm2ShimConstants {
     const Sm2ShimAutoPlayClass = 'auto-play';
     const Sm2ShimLoopPlayClass = 'repeat-playback';
     const Sm2ShimPlayerLiteClass = 'sm2-bar-ui-lite';
+    const Sm2ShimPlaylistOpenClass = 'playlist-open';
 
     const FlashMp3ParamTypeId = 'type';
     const FlashMp3ParamBackgroundId = 'bg';
@@ -30,6 +31,7 @@ class Sm2ShimConstants {
     const FlashMp3ParamValueBackgroundMagicHeader = '0x';
     const FlashMp3ParamAutoPlayId = 'autostart';
     const FlashMp3ParamLoopId = 'loop';
+    const Sm2ShimOpenPlaylist = 'openplaylist';
 
     const Sm2ShimParamTypeFiles = 'files';
     const Sm2ShimBundleId = 'ext.sm2Shim';

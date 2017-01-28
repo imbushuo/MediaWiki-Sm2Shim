@@ -146,6 +146,11 @@ class Sm2ShimHooks {
                     $paramsParsed[Sm2ShimConstants::FlashMp3ParamLoopId] === "yes") {
                     array_push($playerClasses, Sm2ShimConstants::Sm2ShimLoopPlayClass);
                 }
+
+                if (isset($paramsParsed[Sm2ShimConstants::Sm2ShimOpenPlaylist]) &&
+                    $paramsParsed[Sm2ShimConstants::Sm2ShimOpenPlaylist] === "yes") {
+                    array_push($playerClasses, Sm2ShimConstants::Sm2ShimPlaylistOpenClass);
+                }
             } else {
                 array_push($playerClasses, Sm2ShimConstants::Sm2ShimPlayerLiteClass);
             }
