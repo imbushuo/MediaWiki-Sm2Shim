@@ -3,22 +3,12 @@ namespace Sm2ShimUtils
 
     /**
      * Array base utilities.
-     * @interface Sm2ShimUtils.IArrayUtils
-     */
-    export interface IArrayUtils
-    {
-        compare<T>(property: any) : (a: T[], b: T[]) => number;
-        shuffle<T>(f: T[]) : T[];
-    }
-
-    /**
-     * Array base utilities.
      * @class Sm2ShimUtils.ArrayUtils
      */
-    export class ArrayUtils implements IArrayUtils
+    export class ArrayUtils
     {
 
-        compare<T>(property: any)
+        static compare<T>(property: any)
         {
             var result;
 
@@ -36,7 +26,7 @@ namespace Sm2ShimUtils
             };
         }
 
-        shuffle<T>(f: T[]) 
+        static shuffle<T>(f: T[])
         {
             // Fisher-Yates shuffle algorithm
 
@@ -56,24 +46,11 @@ namespace Sm2ShimUtils
 
     /**
      * CSS base utilities.
-     * @interface Sm2ShimUtils.ICssUtils
-     */
-    export interface ICssUtils
-    {
-        addClass(o: HTMLElement, cStr: string) : void;
-        removeClass(o: HTMLElement, cStr: string) : void;
-        swapClass(o: HTMLElement, cStr1: string, cStr2: string) : void;
-        toggleClass(o: HTMLElement, cStr: string) : void;
-        hasClass(o: HTMLElement, cStr: string) : boolean;
-    }
-
-    /**
-     * CSS base utilities.
      * @class Sm2ShimUtils.CssUtils
      */
-    export class CssUtils implements ICssUtils
+    export class CssUtils
     {
-        addClass(o: HTMLElement, cStr: string)
+        static addClass(o: HTMLElement, cStr: string)
         {
             return CssUtils.addClassInternal(o, cStr);
         }
@@ -87,7 +64,7 @@ namespace Sm2ShimUtils
             o.className = (o.className ? o.className + ' ' : '') + cStr;
         }
 
-        removeClass(o: HTMLElement, cStr: string)
+        static removeClass(o: HTMLElement, cStr: string)
         {
             return CssUtils.removeClassInternal(o, cStr);
         }
@@ -100,7 +77,7 @@ namespace Sm2ShimUtils
             o.className = o.className.replace(new RegExp('( ' + cStr + ')|(' + cStr + ')', 'g'), '');
         }
 
-        swapClass(o: HTMLElement, cStr1: string, cStr2: string)
+        static swapClass(o: HTMLElement, cStr1: string, cStr2: string)
         {
             var tmpClass = {
                 className: o.className
@@ -112,7 +89,7 @@ namespace Sm2ShimUtils
             o.className = tmpClass.className;
         }
 
-        hasClass(o: HTMLElement, cStr: string)
+        static hasClass(o: HTMLElement, cStr: string)
         {
             return CssUtils.hasClassInternal(o, cStr);
         }
@@ -124,13 +101,13 @@ namespace Sm2ShimUtils
                 false);
         }
 
-        toggleClass(o: HTMLElement, cStr: string)
+        static toggleClass(o: HTMLElement, cStr: string)
         {
             var found, method;
 
-            found = this.hasClass(o, cStr);
+            found = Sm2ShimUtils.CssUtils.hasClass(o, cStr);
 
-            method = (found ? this.removeClass : this.addClass);
+            method = (found ? Sm2ShimUtils.CssUtils.removeClass : Sm2ShimUtils.CssUtils.addClass);
 
             method(o, cStr);
 
@@ -141,23 +118,11 @@ namespace Sm2ShimUtils
 
     /**
      * DOM base utilities.
-     * @interface Sm2ShimUtils.IDomUtils
-     */
-    export interface IDomUtils
-    {
-        ancestor(nodeName: string, element: Node, checkCurrent: boolean) : Node;
-        get(parentNode: Node, selector: string) : Node;
-        getAll(selector: string) : Node[];
-        getAll(node: Node, selector: string) : Node[];
-    }
-
-    /**
-     * DOM base utilities.
      * @class Sm2ShimUtils.DomUtils
      */
-    export class DomUtils implements IDomUtils
+    export class DomUtils
     {
-        ancestor(nodeName: string, element: Node, checkCurrent: boolean): Node {
+        static ancestor(nodeName: string, element: HTMLElement, checkCurrent?: boolean): HTMLElement {
 
             if (!element || !nodeName) {
                 return element;
@@ -171,14 +136,14 @@ namespace Sm2ShimUtils
             }
 
             while (element && element.nodeName !== nodeName && element.parentNode) {
-                element = element.parentNode;
+                element = <HTMLElement>element.parentNode;
             }
 
             return (element && element.nodeName === nodeName ? element : null);
         }
 
-        get(parentNode: Node, selector: string): Node {
-            var results = this.getAll.apply(this, arguments);
+        static get(parentNode: HTMLElement, selector: string): HTMLElement {
+            let results = this.getAll.apply(this, arguments);
 
             if (results && results.length) {
                 return results[results.length - 1];
@@ -187,11 +152,11 @@ namespace Sm2ShimUtils
             return results && results.length === 0 ? null : results;
         }
 
-        getAll(selector: string): Node[];
-        getAll(node: Node, selector: string): Node[];
-        getAll(param1, param2?: string): Node[] {
+        static getAll(selector: string): HTMLElement[];
+        static getAll(node: HTMLElement, selector: string): HTMLElement[];
+        static getAll(param1, param2?: string): HTMLElement[] {
 
-            var _node,_selector,_results;
+            let _node,_selector,_results;
 
             if (arguments.length === 1) {
                 _node = document.documentElement;
@@ -211,18 +176,6 @@ namespace Sm2ShimUtils
     }
 
     /**
-     * Event base utilities.
-     * @interface Sm2ShimUtils.IEventUtils
-     */
-    export interface IEventUtils
-    {
-        add(o: HTMLElement, evtName: string, evtHandler: () => void) : EventAddResult;
-        remove(o: HTMLElement, evtName: string, evtHandler: () => void) : any;
-        // TODO: What's that
-        preventDefault(e: any) : boolean;
-    }
-
-    /**
      * Data object of event add operations.
      * @class Sm2ShimUtils.EventAddResult
      */
@@ -235,9 +188,10 @@ namespace Sm2ShimUtils
      * Event base utilities.
      * @class Sm2ShimUtils.EventUtils
      */
-    export class EventUtils implements IEventUtils
+    export class EventUtils
     {
-        add(o: HTMLElement, evtName: string, evtHandler: () => void): EventAddResult {
+        static add(o: EventTarget, evtName: string, evtHandler: (e?: any) => void) : EventAddResult
+        {
             var eventObject = new EventAddResult();
             eventObject.detach = this.remove(o, evtName, evtHandler);
 
@@ -251,7 +205,8 @@ namespace Sm2ShimUtils
             return eventObject;
         }
 
-        remove(o: HTMLElement, evtName: string, evtHandler: () => void): any {
+        static remove(o: EventTarget, evtName: string, evtHandler: (e?: any) => void): any
+        {
             return (o, evtName, evtHandler) => {
                 return (window.removeEventListener !== undefined) ?
                     o.removeEventListener(evtName, evtHandler, false) :
@@ -259,7 +214,8 @@ namespace Sm2ShimUtils
             };
         }
 
-        preventDefault(e: any): boolean {
+        static preventDefault(e: any): boolean
+        {
             if (e.preventDefault) {
                 e.preventDefault();
             } else {
@@ -270,14 +226,6 @@ namespace Sm2ShimUtils
             return false;
         }
 
-    }
-
-    /**
-     * Feature base utilities.
-     * @interface Sm2ShimUtils.IFeatureUtils
-     */
-    export interface IFeatureUtils {
-        features() : LocalFeatureSupport;
     }
 
     /**
@@ -316,7 +264,7 @@ namespace Sm2ShimUtils
      * Feature base utilities.
      * @class Sm2ShimUtils.FeatureUtils
      */
-    export class FeatureUtils implements IFeatureUtils
+    export class FeatureUtils
     {
 
         testDiv: HTMLDivElement;
@@ -415,21 +363,11 @@ namespace Sm2ShimUtils
 
     /**
      * Position base utilities.
-     * @interface Sm2ShimUtils.IPositionUtils
-     */
-    export interface IPositionUtils
-    {
-        getOffX(o: any) : number;
-        getOffY(o: any) : number;
-    }
-
-    /**
-     * Position base utilities.
      * @class Sm2ShimUtils.PositionUtils
      */
-    export class PositionUtils implements IPositionUtils
+    export class PositionUtils
     {
-        getOffX(o: any): number
+        static getOffX(o: any): number
         {
 
             // http://www.xs4all.nl/~ppk/js/findpos.html
@@ -451,7 +389,7 @@ namespace Sm2ShimUtils
             return curleft;
         }
 
-        getOffY(o: any): number
+        static getOffY(o: any): number
         {
             // http://www.xs4all.nl/~ppk/js/findpos.html
             var curtop = 0;
@@ -476,20 +414,11 @@ namespace Sm2ShimUtils
 
     /**
      * Style base utilities.
-     * @interface Sm2ShimUtils.IStyleUtils
-     */
-    export interface IStyleUtils
-    {
-        get(node: any, styleProp: string) : string;
-    }
-
-    /**
-     * Style base utilities.
      * @class Sm2ShimUtils.StyleUtils
      */
-    export class StyleUtils implements IStyleUtils
+    export class StyleUtils
     {
-        get(node: any, styleProp: string): string
+        static get(node: any, styleProp: string): string
         {
 
             // http://www.quirksmode.org/dom/getstyles.html

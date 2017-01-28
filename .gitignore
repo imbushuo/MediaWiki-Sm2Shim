@@ -3,7 +3,5 @@ SelfHost.html
 .vscode
 debug.log
 .idea
-/TsSelfHost.html
+TsSelfHost.html
 MediaWiki-Sm2Shim.iml
-assets/js/UtilsTest.js
-assets/js/UtilsTest.js.map

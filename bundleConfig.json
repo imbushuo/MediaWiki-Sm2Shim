@@ -17,5 +17,43 @@
       "renameLocals": true
     },
     "sourceMap": false
+  },
+  {
+    "outputFileName": "assets/js/player-ts-bundled.dev.js",
+    "inputFiles": [
+      "assets/js/soundmanager2.js",
+      "assets/js/Framework/HResults.js",
+      "assets/js/Framework/Exception.js",
+      "assets/js/Framework/NotImplementedException.js",
+      "assets/js/Utils.js",
+      "assets/js/PlayerOptions.js",
+      "assets/js/Sm2Player.js",
+      "assets/js/Sm2PlaylistController.js",
+      "assets/js/PlayerUI.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "assets/js/player-ts-bundled.min.js",
+    "inputFiles": [
+      "assets/js/soundmanager2.js",
+      "assets/js/Framework/HResults.js",
+      "assets/js/Framework/Exception.js",
+      "assets/js/Framework/NotImplementedException.js",
+      "assets/js/Utils.js",
+      "assets/js/PlayerOptions.js",
+      "assets/js/Sm2Player.js",
+      "assets/js/Sm2PlaylistController.js",
+      "assets/js/PlayerUI.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
   }
 ]
