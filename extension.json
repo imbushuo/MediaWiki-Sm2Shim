@@ -1,7 +1,7 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1800.124.527.4601",
+    "version": "1800.127.2239.4620",
     "author": [
         "[https://imbushuo.net Bingxing Wang(The Little Moe New LLC)]",
         "[https://lmn.cat The Little Moe New LLC]",
@@ -23,7 +23,7 @@
     "ResourceModules": {
         "ext.sm2Shim": {
             "scripts": [
-                "extensions/Sm2Shim/assets/js/player-bundled.min.js"
+                "extensions/Sm2Shim/assets/js/Production/player-bundled.min.js"
             ],
             "styles": [
                 "extensions/Sm2Shim/assets/css/player-ui.min.css"

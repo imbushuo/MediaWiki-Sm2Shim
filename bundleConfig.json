@@ -7,10 +7,17 @@
     ]
   },
   {
-    "outputFileName": "assets/js/player-bundled.min.js",
+    "outputFileName": "assets/js/Production/player-bundled.min.js",
     "inputFiles": [
-      "assets/js/soundmanager2-nodebug-jsmin.js",
-      "assets/js/bar-ui.js"
+      "assets/js/Library/soundmanager2-nodebug-jsmin.js",
+      "assets/js/Framework/HResults.js",
+      "assets/js/Framework/Exception.js",
+      "assets/js/Framework/NotImplementedException.js",
+      "assets/js/Utils/Utils.js",
+      "assets/js/Options/PlayerOptions.js",
+      "assets/js/Player/Sm2Player.js",
+      "assets/js/Player/Sm2PlaylistController.js",
+      "assets/js/Player/PlayerUI.js"
     ],
     "minify": {
       "enabled": true,
@@ -19,41 +26,22 @@
     "sourceMap": false
   },
   {
-    "outputFileName": "assets/js/player-ts-bundled.dev.js",
+    "outputFileName": "assets/js/Development/player-ts-bundled.dev.js",
     "inputFiles": [
-      "assets/js/soundmanager2.js",
+      "assets/js/Library/soundmanager2.js",
       "assets/js/Framework/HResults.js",
       "assets/js/Framework/Exception.js",
       "assets/js/Framework/NotImplementedException.js",
-      "assets/js/Utils.js",
-      "assets/js/PlayerOptions.js",
-      "assets/js/Sm2Player.js",
-      "assets/js/Sm2PlaylistController.js",
-      "assets/js/PlayerUI.js"
+      "assets/js/Utils/Utils.js",
+      "assets/js/Options/PlayerOptions.js",
+      "assets/js/Player/Sm2Player.js",
+      "assets/js/Player/Sm2PlaylistController.js",
+      "assets/js/Player/PlayerUI.js"
     ],
     "minify": {
       "enabled": false,
       "renameLocals": false
     },
     "sourceMap": true
-  },
-  {
-    "outputFileName": "assets/js/player-ts-bundled.min.js",
-    "inputFiles": [
-      "assets/js/soundmanager2.js",
-      "assets/js/Framework/HResults.js",
-      "assets/js/Framework/Exception.js",
-      "assets/js/Framework/NotImplementedException.js",
-      "assets/js/Utils.js",
-      "assets/js/PlayerOptions.js",
-      "assets/js/Sm2Player.js",
-      "assets/js/Sm2PlaylistController.js",
-      "assets/js/PlayerUI.js"
-    ],
-    "minify": {
-      "enabled": true,
-      "renameLocals": true
-    },
-    "sourceMap": false
   }
 ]

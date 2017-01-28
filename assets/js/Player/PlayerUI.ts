@@ -9,8 +9,8 @@
  *
  */
 
-/// <reference path="SoundManager2.d.ts" />
-/// <reference path="Utils.ts" />
+/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Utils/Utils.ts" />
 /// <reference path="Sm2Player.ts" />
 
 import Sm2Player = Sm2Shim.Player.Sm2Player;
@@ -19,8 +19,9 @@ import domUtils = Sm2ShimUtils.DomUtils;
 const playerSelector = '.sm2-bar-ui';
 let players = [];
 
-soundManager.setup(<soundManager.ISm2SetupOption>{
-    // trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
+soundManager.setup(<soundManager.ISm2SetupOption>
+{
+    // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
     html5PollingInterval: 50,
     flashVersion: 9,
     debugMode: false,
@@ -30,9 +31,9 @@ soundManager.setup(<soundManager.ISm2SetupOption>{
 });
 
 soundManager.onready(() => {
-    let nodes, i, j;
 
-    nodes = domUtils.getAll(playerSelector);
+    let i, j;
+    const nodes = domUtils.getAll(playerSelector);
 
     if (nodes && nodes.length)
     {
@@ -41,9 +42,10 @@ soundManager.onready(() => {
             players.push(new Sm2Player(nodes[i]));
         }
     }
+
 });
 
-// expose to global
+// Expose to global
 (<any>window).sm2BarPlayers = players;
 (<any>window).SM2BarPlayer = Sm2Player;
 

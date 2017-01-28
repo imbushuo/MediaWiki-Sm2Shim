@@ -6335,9 +6335,9 @@ var System;
     var __HResults = (function () {
         function __HResults() {
         }
+        __HResults.E_NOTIMPL = 0x80004001;
         return __HResults;
     }());
-    __HResults.E_NOTIMPL = 0x80004001;
     System.__HResults = __HResults;
 })(System || (System = {}));
 //# sourceMappingURL=HResults.js.map
@@ -6364,9 +6364,8 @@ var System;
          * @param message The message that describes the error.
          */
         function Exception(message) {
-            var _this = _super.call(this, message) || this;
-            _this.helpLink = '';
-            return _this;
+            _super.call(this, message);
+            this.helpLink = '';
         }
         Object.defineProperty(Exception.prototype, "helpLink", {
             /**
@@ -6427,15 +6426,14 @@ var System;
     var NotImplementedException = (function (_super) {
         __extends(NotImplementedException, _super);
         function NotImplementedException(message) {
-            var _this = _super.call(this, message ? message : NotImplementedException.Arg_NotImplementedException) || this;
-            _this.name = "NotImplementedException";
-            _this.stack = new Error().stack;
-            _this.setErrorCode(System.__HResults.E_NOTIMPL);
-            return _this;
+            _super.call(this, message ? message : NotImplementedException.Arg_NotImplementedException);
+            this.name = "NotImplementedException";
+            this.stack = (new Error()).stack;
+            this.setErrorCode(System.__HResults.E_NOTIMPL);
         }
+        NotImplementedException.Arg_NotImplementedException = "The method or operation is not implemented.";
         return NotImplementedException;
     }(System.Exception));
-    NotImplementedException.Arg_NotImplementedException = "The method or operation is not implemented.";
     System.NotImplementedException = NotImplementedException;
 })(System || (System = {}));
 //# sourceMappingURL=NotImplementedException.js.map
@@ -6830,10 +6828,10 @@ var Sm2Shim;
  * Code released under BSD-2-Clause license.
  *
  */
-/// <reference path="PlayerOptions.ts" />
-/// <reference path="SoundManager2.d.ts" />
-/// <reference path="Framework/NotImplementedException.ts" />
-/// <reference path="Utils.ts" />
+/// <reference path="../Options/PlayerOptions.ts" />
+/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Framework/NotImplementedException.ts" />
+/// <reference path="../Utils/Utils.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
     var Player;
@@ -7466,9 +7464,9 @@ var Sm2Shim;
  * Code released under BSD-2-Clause license.
  *
  */
-/// <reference path="PlayerOptions.ts" />
-/// <reference path="SoundManager2.d.ts" />
-/// <reference path="Utils.ts" />
+/// <reference path="../Options/PlayerOptions.ts" />
+/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Utils/Utils.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
     var Player;
@@ -7663,15 +7661,15 @@ var Sm2Shim;
  * Code licensed under BSD license.
  *
  */
-/// <reference path="SoundManager2.d.ts" />
-/// <reference path="Utils.ts" />
+/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Utils/Utils.ts" />
 /// <reference path="Sm2Player.ts" />
 var Sm2Player = Sm2Shim.Player.Sm2Player;
 var domUtils = Sm2ShimUtils.DomUtils;
 var playerSelector = '.sm2-bar-ui';
 var players = [];
 soundManager.setup({
-    // trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
+    // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
     html5PollingInterval: 50,
     flashVersion: 9,
     debugMode: false,
@@ -7680,15 +7678,15 @@ soundManager.setup({
     url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/',
 });
 soundManager.onready(function () {
-    var nodes, i, j;
-    nodes = domUtils.getAll(playerSelector);
+    var i, j;
+    var nodes = domUtils.getAll(playerSelector);
     if (nodes && nodes.length) {
         for (i = 0, j = nodes.length; i < j; i++) {
             players.push(new Sm2Player(nodes[i]));
         }
     }
 });
-// expose to global
+// Expose to global
 window.sm2BarPlayers = players;
 window.SM2BarPlayer = Sm2Player;
 //# sourceMappingURL=PlayerUI.js.map
