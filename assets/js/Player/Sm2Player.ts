@@ -159,11 +159,11 @@ namespace Sm2Shim.Player
             }
 
             // Register events
-            eventUtils.add(this.dom.o, 'mousedown', (e: any) => this.handleMouseDown(e));
-            eventUtils.add(this.dom.o, 'click', (e: any) => this.handleClick(e));
-            eventUtils.add(document, 'mousemove', this.handleMouse.bind(this));
-            eventUtils.add(document, 'mouseup', this.releaseMouse.bind(this));
-            eventUtils.add(this.dom.progressTrack, 'mousedown', (e: any) =>
+            eventUtils.add<MouseEvent>(this.dom.o, 'mousedown', (e: MouseEvent) => this.handleMouseDown(e));
+            eventUtils.add<MouseEvent>(this.dom.o, 'click', (e: MouseEvent) => this.handleClick(e));
+            eventUtils.add<MouseEvent>(document, 'mousemove', this.handleMouse.bind(this));
+            eventUtils.add<MouseEvent>(document, 'mouseup', this.releaseMouse.bind(this));
+            eventUtils.add<MouseEvent>(this.dom.progressTrack, 'mousedown', (e: MouseEvent) =>
             {
                 if (Sm2Player.isRightClick(e))
                 {
@@ -371,7 +371,6 @@ namespace Sm2Shim.Player
 
                     if (navigator.userAgent.match(/mobile/i)) {
                         // Mobile will likely block the next play() call if there is a setTimeout() - so don't use one here.
-                        // TODO: Implement next method
                         this.actions.next();
                     } else {
                         if (this.playlistController.data.timer)
@@ -392,7 +391,6 @@ namespace Sm2Shim.Player
                     self.dom.progress.style.left = '0%';
                     const lastIndex = self.playlistController.data.selectedIndex;
 
-                    // TODO: Implement callback
                     self.callback('finish');
 
                     // Next track?
@@ -420,7 +418,6 @@ namespace Sm2Shim.Player
                         // explicitly stop?
                         // this.stop();
 
-                        // TODO: Implement callback
                         self.callback('end');
                     }
                 }
@@ -544,7 +541,6 @@ namespace Sm2Shim.Player
                     this.self.stopOtherSounds();
                 }
 
-                // TODO: if user pauses + unpauses a sound that had an error, try to play next?
                 this.self.soundObject.togglePause();
 
                 // Special case: clear "play next" timeout, if one exists.
@@ -610,13 +606,6 @@ namespace Sm2Shim.Player
                 {
                     this.playLink(item.getElementsByTagName('a')[0]);
                 }
-            },
-            shuffle: (e: any) =>
-            {
-                UNREFERENCED_PARAMETER(e);
-
-                // TODO: Implement this
-                throw new System.NotImplementedException();
             },
             repeat: (e: any) =>
             {
@@ -765,7 +754,7 @@ namespace Sm2Shim.Player
             self: this
         };
 
-        private static isRightClick(e: any) : boolean
+        private static isRightClick(e: MouseEvent) : boolean
         {
             // only pay attention to left clicks. old IE differs where there's no e.which, but e.button is 1 on left click.
             if (e && ((e.which && e.which === 2) || (e.which === undefined && e.button !== 1)))
@@ -801,7 +790,7 @@ namespace Sm2Shim.Player
             }
         }
 
-        private handleMouse (e: any) : any
+        private handleMouse (e: MouseEvent) : any
         {
             if (this.isGrabbing)
             {
@@ -842,7 +831,7 @@ namespace Sm2Shim.Player
         }
 
         // Local Events
-        private handleMouseDown(e: any)
+        private handleMouseDown(e: MouseEvent)
         {
             let links,
                 target;
@@ -878,7 +867,7 @@ namespace Sm2Shim.Player
             }
         }
 
-        private releaseMouse(e: any) : boolean
+        private releaseMouse(e: MouseEvent) : boolean
         {
             this.isGrabbing = false;
             cssUtils.removeClass(this.dom.o, 'grabbing');
@@ -886,13 +875,12 @@ namespace Sm2Shim.Player
             return false;
         }
 
-        private handleClick(e: any)
+        private handleClick(e: MouseEvent)
         {
             let evt,
                 target,
                 offset,
                 targetNodeName,
-                methodName,
                 mediaFileSrc,
                 handled;
 
@@ -943,11 +931,32 @@ namespace Sm2Shim.Player
 
                         if (offset !== -1)
                         {
-                            methodName = target.href.substr(offset + 1);
-                            if (methodName && this.actions[methodName])
+                            // Assume as handled
+                            handled = true;
+                            const methodName = target.href.substr(offset + 1);
+
+                            switch (methodName)
                             {
-                                handled = true;
-                                this.actions[methodName](e);
+                                case "play":
+                                    this.actions.play(e);
+                                    break;
+                                case "pause":
+                                    this.actions.pause();
+                                    break;
+                                case "prev":
+                                    this.actions.prev();
+                                    break;
+                                case "next":
+                                    this.actions.next();
+                                    break;
+                                case "repeat":
+                                    this.actions.repeat(e);
+                                    break;
+                                case "menu":
+                                    this.actions.menu(e);
+                                    break;
+                                default:
+                                    handled = false;
                             }
                         }
                     }

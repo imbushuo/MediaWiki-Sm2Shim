@@ -200,6 +200,7 @@ namespace Sm2ShimUtils
      */
     export class EventUtils
     {
+        static add<T>(o: EventTarget, evtName: string, evtHandler: (e?: T) => void) : EventAddResult;
         static add(o: EventTarget, evtName: string, evtHandler: (e?: any) => void) : EventAddResult
         {
             const eventObject = new EventAddResult();
@@ -215,6 +216,7 @@ namespace Sm2ShimUtils
             return eventObject;
         }
 
+        static remove<T>(o: EventTarget, evtName: string, evtHandler: (e?: T) => void): any;
         static remove(o: EventTarget, evtName: string, evtHandler: (e?: any) => void): any
         {
             if (window.removeEventListener !== undefined)
