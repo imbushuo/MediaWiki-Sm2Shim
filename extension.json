@@ -36,9 +36,9 @@
         ]
     },
     "config": {
-        "Sm2Shim_UseResourceManager": true,
+        "Sm2Shim_UseResourceManager": false,
         "Sm2Shim_ExternalCDNEndpoint": "//mmixstaticassets.azureedge.net/Sm2Shim",
-        "Sm2Shim_ExternalCDNVersionControlId": "170128-0100"
+        "Sm2Shim_ExternalCDNVersionControlId": "170130-0441"
     },
     "manifest_version": 1
 }
