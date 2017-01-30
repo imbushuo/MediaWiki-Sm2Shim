@@ -22,12 +22,12 @@ import domUtils = Sm2ShimUtils.DomUtils;
     const playerSelector = '.sm2-bar-ui';
     let players = [];
 
-    let pollingInterval = 50;
+    let pollingInterval = 200;
 
     // Detect mobile devices (power optimization)
     if (window.navigator.userAgent.match(/mobile/i))
     {
-        pollingInterval = 200;
+        pollingInterval = 500;
     }
 
     soundManager.setup(<soundManager.ISm2SetupOption>

@@ -7698,10 +7698,10 @@ var domUtils = Sm2ShimUtils.DomUtils;
 (function () {
     var playerSelector = '.sm2-bar-ui';
     var players = [];
-    var pollingInterval = 50;
+    var pollingInterval = 200;
     // Detect mobile devices (power optimization)
     if (window.navigator.userAgent.match(/mobile/i)) {
-        pollingInterval = 200;
+        pollingInterval = 500;
     }
     soundManager.setup({
         // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
