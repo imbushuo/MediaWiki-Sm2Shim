@@ -267,22 +267,22 @@ HTML;
                 $fullFeaturedControl = <<<HTML
             <div class="sm2-inline-element sm2-button-element">
                     <div class="sm2-button-bd">
-                            <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous">{$locResPrevious}</a>
+                            <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous"></a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#next" title="{$locResNext}" class="sm2-inline-button sm2-icon-next">{$locResNext}</a>
+                            <a href="#next" title="{$locResNext}" class="sm2-inline-button sm2-icon-next"></a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat" href="#repeat">{$locResRepeat}</a>
+                            <a href="#repeat" title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat"></a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-button-element sm2-menu">
                         <div class="sm2-button-bd">
-                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu">{$locResMenu}</a>
+                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu"></a>
                     </div>
             </div>
 HTML;
@@ -294,7 +294,7 @@ HTML;
                     <div class="sm2-inline-texture"></div>
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
-                            <a href="#play" title="{$locResPlayback}" class="sm2-inline-button sm2-icon-play-pause">{$locResPlayback}</a>
+                            <a href="#play" title="{$locResPlayback}" class="sm2-inline-button sm2-icon-play-pause"></a>
                         </div>
                     </div>
                     <div class="sm2-inline-element sm2-inline-status">

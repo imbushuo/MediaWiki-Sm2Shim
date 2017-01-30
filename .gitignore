@@ -5,3 +5,4 @@ debug.log
 .idea
 TsSelfHost.html
 MediaWiki-Sm2Shim.iml
+node_modules

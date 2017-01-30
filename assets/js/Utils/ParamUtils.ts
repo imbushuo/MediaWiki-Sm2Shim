@@ -11,5 +11,4 @@
 declare let UNREFERENCED_PARAMETER : any;
 UNREFERENCED_PARAMETER = (variable: any) =>
 {
-    // Do nothing
 };

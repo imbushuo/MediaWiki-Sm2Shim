@@ -13,6 +13,7 @@
 /// <reference path="../Library/SoundManager2.d.ts" />
 /// <reference path="../Framework/NotImplementedException.ts" />
 /// <reference path="../Utils/Utils.ts" />
+/// <reference path="../Utils/ParamUtils.ts" />
 
 namespace Sm2Shim.Player
 {
@@ -612,6 +613,8 @@ namespace Sm2Shim.Player
             },
             shuffle: (e: any) =>
             {
+                UNREFERENCED_PARAMETER(e);
+
                 // TODO: Implement this
                 throw new System.NotImplementedException();
             },

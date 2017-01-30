@@ -6437,6 +6437,27 @@ var System;
     System.NotImplementedException = NotImplementedException;
 })(System || (System = {}));
 //# sourceMappingURL=NotImplementedException.js.map
+/**
+ * ParamUtils.ts: Sm2Shim parameter utilities
+ *
+ * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
+ *
+ * This file is part of the project 'Sm2Shim'.
+ * Code licensed under BSD license.
+ *
+ */
+UNREFERENCED_PARAMETER = function (variable) {
+};
+//# sourceMappingURL=ParamUtils.js.map
+/**
+ * Utils.ts: Sm2Shim utilities
+ *
+ * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
+ *
+ * This file is part of the project 'Sm2Shim'.
+ * Code licensed under BSD license.
+ *
+ */
 var Sm2ShimUtils;
 (function (Sm2ShimUtils) {
     /**
@@ -6834,6 +6855,7 @@ var Sm2Shim;
 /// <reference path="../Library/SoundManager2.d.ts" />
 /// <reference path="../Framework/NotImplementedException.ts" />
 /// <reference path="../Utils/Utils.ts" />
+/// <reference path="../Utils/ParamUtils.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
     var Player;
@@ -6968,6 +6990,7 @@ var Sm2Shim;
                         }
                     },
                     shuffle: function (e) {
+                        UNREFERENCED_PARAMETER(e);
                         // TODO: Implement this
                         throw new System.NotImplementedException();
                     },
@@ -7668,30 +7691,39 @@ var Sm2Shim;
  */
 /// <reference path="../Library/SoundManager2.d.ts" />
 /// <reference path="../Utils/Utils.ts" />
+/// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="Sm2Player.ts" />
 var Sm2Player = Sm2Shim.Player.Sm2Player;
 var domUtils = Sm2ShimUtils.DomUtils;
-var playerSelector = '.sm2-bar-ui';
-var players = [];
-soundManager.setup({
-    // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
-    html5PollingInterval: 50,
-    flashVersion: 9,
-    debugMode: false,
-    debugFlash: false,
-    preferFlash: false,
-    url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/',
-});
-soundManager.onready(function () {
-    var i, j;
-    var nodes = domUtils.getAll(playerSelector);
-    if (nodes && nodes.length) {
-        for (i = 0, j = nodes.length; i < j; i++) {
-            players.push(new Sm2Player(nodes[i]));
-        }
+(function () {
+    var playerSelector = '.sm2-bar-ui';
+    var players = [];
+    var pollingInterval = 50;
+    // Detect mobile devices (power optimization)
+    if (window.navigator.userAgent.match(/mobile/i)) {
+        pollingInterval = 200;
     }
-});
-// Expose to global
-window.sm2BarPlayers = players;
-window.SM2BarPlayer = Sm2Player;
+    soundManager.setup({
+        // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
+        html5PollingInterval: pollingInterval,
+        flashPollingInterval: pollingInterval,
+        flashVersion: 9,
+        debugMode: false,
+        debugFlash: false,
+        preferFlash: false,
+        url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/'
+    });
+    soundManager.onready(function () {
+        var i, j;
+        var nodes = domUtils.getAll(playerSelector);
+        if (nodes && nodes.length) {
+            for (i = 0, j = nodes.length; i < j; i++) {
+                players.push(new Sm2Player(nodes[i]));
+            }
+        }
+    });
+    // Expose to global
+    window.sm2BarPlayers = players;
+    window.SM2BarPlayer = Sm2Player;
+}());
 //# sourceMappingURL=PlayerUI.js.map
