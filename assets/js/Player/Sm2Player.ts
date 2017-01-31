@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2014, Scott Schiller. All rights reserved.
  * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
+ * Copyright (c) 2017 David Huang. All rights reserved.
  *
  * This file is part of the project 'Sm2Shim'.
  * Code released under BSD-2-Clause license.
@@ -14,6 +15,7 @@
 /// <reference path="../Framework/NotImplementedException.ts" />
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
+/// <reference path="LrcParser.ts" />
 
 namespace Sm2Shim.Player
 {
@@ -27,6 +29,8 @@ namespace Sm2Shim.Player
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
     import Sm2PlayerOption = Sm2Shim.Options.Sm2PlayerOption;
+    import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
+    import ArgumentNullException = System.ArgumentNullException;
 
     export interface ISm2PlayerDomElements
     {
@@ -40,7 +44,9 @@ namespace Sm2Shim.Player
         progressTrack: HTMLElement;
         progressBar: HTMLElement;
         duration: HTMLElement;
-        volume: HTMLElement
+        volume: HTMLElement;
+        lyricsContainer: HTMLUListElement;
+        lyricsWrapper: HTMLElement;
     }
 
     export interface ISm2PlayerEventCallbacks
@@ -60,6 +66,11 @@ namespace Sm2Shim.Player
         legacy: string;
         noVolume: string;
         playlistOpen: string;
+        lyricHighlight: string;
+    }
+
+    interface NumberMap<T> {
+        [key: number]: T;
     }
 
     export class Sm2Player
@@ -73,7 +84,8 @@ namespace Sm2Shim.Player
             active: 'active',
             legacy: 'legacy',
             noVolume: 'no-volume',
-            playlistOpen: 'playlist-open'
+            playlistOpen: 'playlist-open',
+            lyricHighlight: 'lyric-content-current'
         };
         private extras =
         {
@@ -91,6 +103,12 @@ namespace Sm2Shim.Player
         private soundObject: soundManager.ISmSound;
         private defaultVolume: number;
         private isGrabbing: boolean;
+        private currentFileUrl: string;
+        private isLyricsReady: boolean;
+        private prevHighlightLnIndex: number;
+        private timeMarks: Array<number>;
+        private lastDurationSet: number;
+        private currentLyricHeight: number;
 
         playlistController: Sm2PlaylistController;
         on: ISm2PlayerEventCallbacks;
@@ -106,7 +124,9 @@ namespace Sm2Shim.Player
                 progressTrack: null,
                 progressBar: null,
                 duration: null,
-                volume: null
+                volume: null,
+                lyricsContainer: null,
+                lyricsWrapper: null
             };
 
         private self = this;
@@ -141,6 +161,9 @@ namespace Sm2Shim.Player
             this.dom.progressTrack = domUtils.get(this.dom.o, '.sm2-progress-track');
             this.dom.progressBar = domUtils.get(this.dom.o, '.sm2-progress-bar');
             this.dom.volume = domUtils.get(this.dom.o, 'a.sm2-volume-control');
+            this.dom.lyricsContainer = <HTMLUListElement>domUtils.get(this.dom.o, '.sm2-lyric-bd');
+            this.dom.lyricsWrapper = domUtils.get(this.dom.o, '.sm2-lyric-wrapper');
+            this.resetLyrics();
 
             // Measure volume control dimensions
 
@@ -203,6 +226,15 @@ namespace Sm2Shim.Player
             }
         }
 
+        private resetLyrics() : void
+        {
+            this.timeMarks = [];
+            this.prevHighlightLnIndex = -1;
+            this.lastDurationSet = -1;
+            this.isLyricsReady = false;
+            this.currentLyricHeight = 0;
+        }
+
         private stopOtherSounds() : void
         {
             if (this.playerOptions.stopOtherSounds) soundManager.stopAll();
@@ -211,6 +243,8 @@ namespace Sm2Shim.Player
         playLink(link: HTMLLinkElement) : void
         {
             const mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
+            const mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
+
             // If a link is OK, play it.
             if (soundManager.canPlayURL(mediaFileSrc))
             {
@@ -237,7 +271,7 @@ namespace Sm2Shim.Player
                 // TODO: function that also resets/hides timing info.
                 this.dom.progress.style.left = '0px';
                 this.dom.progressBar.style.width = '0px';
-
+                this.dom.lyricsContainer.innerHTML = '';
                 this.stopOtherSounds();
 
                 this.soundObject.play(<ISmSoundOptions>
@@ -245,7 +279,112 @@ namespace Sm2Shim.Player
                     url: mediaFileSrc,
                     position: 0
                 });
+                this.currentFileUrl = mediaFileSrc;
+                this.resetLyrics();
+
+                // Load lyrics
+                if (mediaLrcSrc)
+                {
+                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc);
+                }
             }
+        }
+
+        private loadAndPresentLyrics(mediaFileSrc: string, lrcSrc: string) : void
+        {
+            let self: Sm2Player;
+
+            function getLrcContent(requestId: string, lrcPath: string, debug?: boolean): Promise<Lyrics.LrcResult>
+            {
+                return new Promise<Lyrics.LrcResult>(resolve =>
+                {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("GET", lrcPath, true);
+
+                    xhr.onload = () =>
+                    {
+                        // Get content anyway. Will validate result later.
+                        let content = xhr.responseText;
+                        const parsedLrc = Light.Lyrics.LrcParser.parse(content);
+                        resolve(new Lyrics.LrcResult(parsedLrc != null, requestId, content, parsedLrc));
+                    };
+
+                    xhr.onerror = () =>
+                    {
+                        if (debug) console.warn(xhr.statusText);
+                        resolve(new Lyrics.LrcResult(false, requestId, null));
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            function htmlEntities(str) {
+                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            function renderMetadata(title: string, artist: string)
+            {
+                if (!title) throw new ArgumentNullException("title");
+                if (!artist) throw new ArgumentNullException("artist");
+
+                const metadataContent =
+                    '<b>' + htmlEntities(artist) + '</b>' +
+                    ' - ' +
+                    htmlEntities(title);
+
+                self.dom.playlistTarget.innerHTML = '<ul class="sm2-playlist-bd"><li>' +
+                    metadataContent +
+                    '</li></ul>';
+
+                if (self.dom.playlistTarget.getElementsByTagName('li')[0].scrollWidth >
+                    self.dom.playlistTarget.offsetWidth)
+                {
+                    // this item can use <marquee>, in fact.
+                    self.dom.playlistTarget.innerHTML = '<ul class="sm2-playlist-bd"><li><marquee>' +
+                        metadataContent + '</marquee></li></ul>';
+                }
+            }
+
+            async function presentContent()
+            {
+                // If LRC file is acceptable, download it.
+                let lrcContent = await getLrcContent(mediaFileSrc, lrcSrc, true);
+                // Sanity check
+                if (lrcContent.isRequestSucceeded && lrcContent.requestId == self.currentFileUrl)
+                {
+                    // Update metadata if necessary
+                    if (lrcContent.content.title &&
+                        lrcContent.content.artist)
+                    {
+                        renderMetadata(lrcContent.content.title, lrcContent.content.artist);
+                    }
+
+                    // Push lyrics to panel
+                    let i: number;
+                    const lrcSentences = lrcContent.content.sentences;
+                    let sentenceEntity = [];
+                    for (i = 0; i < lrcSentences.length; i++)
+                    {
+                        const sentence = lrcSentences[i];
+
+                        self.timeMarks.push(sentence.time);
+                        sentenceEntity.push('<li data-time="'
+                            + sentence.time
+                            + '" class="lyric-content">'
+                            + htmlEntities(sentence.content) +'</li>');
+                    }
+
+                    self.dom.lyricsContainer.innerHTML = sentenceEntity.join("");
+                }
+            }
+
+            self = this;
+            presentContent().then(() =>
+            {
+                // Set lyrics status.
+                self.isLyricsReady = true;
+            });
         }
 
         private makeSound(path: string) : ISmSound
@@ -277,6 +416,46 @@ namespace Sm2Shim.Player
                         self.dom.time.innerHTML = Sm2Shim.Player.Sm2Player.getTime(this.position, true);
                     }
 
+                    // Synchronize lyrics
+                    if (self.isLyricsReady)
+                    {
+                        // Find the nearest lyrics
+                        let i: number;
+                        for (i = 0; i < self.timeMarks.length; i++)
+                        {
+                            if (self.timeMarks[i] >= this.position) break;
+                        }
+
+                        if (self.timeMarks[i] != self.lastDurationSet)
+                        {
+                            if (self.prevHighlightLnIndex >= 0)
+                            {
+                                cssUtils.toggleClass(
+                                    <HTMLElement>self.dom.lyricsContainer.children[self.prevHighlightLnIndex],
+                                    self.css.lyricHighlight);
+                            }
+
+                            cssUtils.toggleClass(
+                                <HTMLElement>self.dom.lyricsContainer.children[i],
+                                self.css.lyricHighlight
+                            );
+
+                            // Also set scroll
+                            if (self.prevHighlightLnIndex >= 0)
+                            {
+                                self.currentLyricHeight += (<HTMLElement>
+                                    self.dom.lyricsContainer.children[self.prevHighlightLnIndex]).offsetHeight;
+                            }
+                            // Some tricky things
+                            if (self.currentLyricHeight >= 72)
+                            {
+                                self.dom.lyricsContainer.scrollTop = self.currentLyricHeight - 36;
+                            }
+
+                            self.prevHighlightLnIndex = i;
+                            self.lastDurationSet = self.timeMarks[i];
+                        }
+                    }
                 },
                 whileloading: function()
                 {

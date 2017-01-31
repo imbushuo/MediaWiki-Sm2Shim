@@ -14,7 +14,7 @@
   position: relative;
   display: inline-block;
   width: 100%;
-  font-family: -apple-system, "BlinkMacSystemFont", "Open Sans", "Roboto", "Segoe WP", "Segoe UI", "Healtivca", sans-serif;
+  font-family: -apple-system, "BlinkMacSystemFont", "Open Sans", "Roboto", "Segoe WP", "Segoe UI", "Healtivca", "Source Han Sans", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
   font-weight: normal;
   /* prevent background border bleed */
   -webkit-background-clip: padding-box;
@@ -824,14 +824,14 @@
 }
 /* some custom scrollbar trickery, where supported */
 .sm2-playlist-wrapper ul::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 .sm2-playlist-wrapper ul::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.33);
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .sm2-playlist-wrapper ul::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 5px;
   background: #fff;
 }
 .sm2-extra-controls {
@@ -880,6 +880,40 @@
   display: block;
   overflow: hidden;
 }
+.sm2-bar-ui .sm2-lyric-wrapper {
+  position: relative;
+  padding: 0.5em 0.5em 0.5em 0.25em;
+}
+.sm2-lyric-wrapper ul {
+  max-height: 9.25em;
+  overflow: auto;
+  line-height: 1.5em;
+  text-align: center;
+  padding-bottom: 5px;
+  font-size: 100%;
+  transition: all 1s ease;
+}
+/* scrollbar rules have to be separate, browsers not supporting this syntax will skip them when combined. */
+.sm2-lyric-wrapper ul::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.sm2-lyric-wrapper ul::-webkit-scrollbar {
+  width: 5px;
+}
+.sm2-lyric-wrapper ul::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.33);
+  border-radius: 5px;
+}
+.sm2-lyric-wrapper ul::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #fff;
+}
+.sm2-lyric-wrapper .lyric-content-current {
+  font-weight: 600;
+  font-size: 120%;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
 
 .sm2-bar-ui {
     font-size: 12px;
@@ -887,6 +921,11 @@
 
 .sm2-bar-ui .sm2-main-controls,
 .sm2-bar-ui .sm2-playlist-drawer {
+    background-color: #18901e;
+}
+
+.sm2-bar-ui .sm2-main-controls,
+.sm2-bar-ui .sm2-lyric-drawer {
     background-color: #18901e;
 }
 

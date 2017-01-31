@@ -9,13 +9,19 @@
   {
     "outputFileName": "assets/js/Production/player-bundled.min.js",
     "inputFiles": [
+      "assets/js/Library/core-promise.js",
       "assets/js/Library/soundmanager2-nodebug-jsmin.js",
       "assets/js/Framework/HResults.js",
       "assets/js/Framework/Exception.js",
+      "assets/js/Framework/ArgumentNullException.js",
       "assets/js/Framework/NotImplementedException.js",
+      "assets/js/Framework/TextReader.js",
       "assets/js/Utils/ParamUtils.js",
       "assets/js/Utils/Utils.js",
       "assets/js/Options/PlayerOptions.js",
+      "assets/js/Player/Models/LrcSentence.js",
+      "assets/js/Player/Models/ParsedLrc.js",
+      "assets/js/Player/LrcParser.js",
       "assets/js/Player/Sm2Player.js",
       "assets/js/Player/Sm2PlaylistController.js",
       "assets/js/Player/PlayerUI.js"
@@ -29,13 +35,19 @@
   {
     "outputFileName": "assets/js/Development/player-ts-bundled.dev.js",
     "inputFiles": [
-      "assets/js/Library/soundmanager2.js",
+      "assets/js/Library/core-promise.js",
+      "assets/js/Library/soundmanager2-nodebug-jsmin.js",
       "assets/js/Framework/HResults.js",
       "assets/js/Framework/Exception.js",
+      "assets/js/Framework/ArgumentNullException.js",
       "assets/js/Framework/NotImplementedException.js",
+      "assets/js/Framework/TextReader.js",
       "assets/js/Utils/ParamUtils.js",
       "assets/js/Utils/Utils.js",
       "assets/js/Options/PlayerOptions.js",
+      "assets/js/Player/Models/LrcSentence.js",
+      "assets/js/Player/Models/ParsedLrc.js",
+      "assets/js/Player/LrcParser.js",
       "assets/js/Player/Sm2Player.js",
       "assets/js/Player/Sm2PlaylistController.js",
       "assets/js/Player/PlayerUI.js"
