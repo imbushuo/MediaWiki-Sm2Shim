@@ -1856,31 +1856,23 @@ var Sm2Shim;
                             // Find the nearest lyrics
                             var i = void 0;
                             for (i = 0; i < self.timeMarks.length; i++) {
-                                if (self.timeMarks[i] >= this.position)
+                                if (self.timeMarks[i] > this.position)
                                     break;
                             }
+                            if (i > 0)
+                                i--;
                             if (self.timeMarks[i] != self.lastDurationSet) {
-
-                                if (self.prevHighlightLnIndex >= 0) {
-                                    if (self.dom.lyricsContainer.children[self.prevHighlightLnIndex])
-                                    {
-                                        cssUtils.toggleClass(self.dom.lyricsContainer.children[self.prevHighlightLnIndex],
-                                            self.css.lyricHighlight);
-                                    }
+                                if (self.prevHighlightLnIndex >= 0 &&
+                                    self.dom.lyricsContainer.children[self.prevHighlightLnIndex]) {
+                                    cssUtils.toggleClass(self.dom.lyricsContainer.children[self.prevHighlightLnIndex], self.css.lyricHighlight);
                                 }
-
-                                if (self.dom.lyricsContainer.children[i])
-                                {
-                                    cssUtils.toggleClass(self.dom.lyricsContainer.children[i],
-                                        self.css.lyricHighlight);
+                                if (self.dom.lyricsContainer.children[i]) {
+                                    cssUtils.toggleClass(self.dom.lyricsContainer.children[i], self.css.lyricHighlight);
                                 }
-
                                 // Also set scroll
                                 if (self.prevHighlightLnIndex >= 0) {
-                                    self.currentLyricHeight +=
-                                        self.dom.lyricsContainer.children[self.prevHighlightLnIndex].offsetHeight;
+                                    self.currentLyricHeight = self.dom.lyricsContainer.children[self.prevHighlightLnIndex].offsetTop;
                                 }
-
                                 // Some tricky things
                                 if (self.currentLyricHeight >= 72) {
                                     self.dom.lyricsContainer.scrollTop = self.currentLyricHeight - 36;

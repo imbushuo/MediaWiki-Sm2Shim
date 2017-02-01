@@ -926,3 +926,7 @@
   padding-bottom: 3px;
   padding-top: 3px;
 }
+.lyric-content {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+}

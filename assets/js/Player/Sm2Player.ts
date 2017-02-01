@@ -72,10 +72,6 @@ namespace Sm2Shim.Player
         lyricContainerHidden: string;
     }
 
-    interface NumberMap<T> {
-        [key: number]: T;
-    }
-
     export class Sm2Player
     {
         private playerNode: HTMLElement;
@@ -240,6 +236,10 @@ namespace Sm2Shim.Player
             this.lastDurationSet = -1;
             this.isLyricsReady = false;
             this.currentLyricHeight = 0;
+            if (this.dom.lyricsContainer)
+            {
+                this.dom.lyricsContainer.scrollTop = 0;
+            }
             cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
             cssUtils.addClass(this.dom.lyricsContainer, this.css.lyricContainerHidden);
             cssUtils.addClass(this.dom.lyricsWrapper, this.css.lyricContainerHidden);
@@ -439,8 +439,10 @@ namespace Sm2Shim.Player
                         let i: number;
                         for (i = 0; i < self.timeMarks.length; i++)
                         {
-                            if (self.timeMarks[i] >= this.position) break;
+                            if (self.timeMarks[i] > this.position) break;
                         }
+
+                        if (i > 0) i--;
 
                         if (self.timeMarks[i] != self.lastDurationSet)
                         {
@@ -463,14 +465,19 @@ namespace Sm2Shim.Player
                             // Also set scroll
                             if (self.prevHighlightLnIndex >= 0)
                             {
-                                self.currentLyricHeight = (<HTMLElement>
-                                    self.dom.lyricsContainer.children[self.prevHighlightLnIndex]).offsetTop;
+                                const prevChildElem = (<HTMLElement>
+                                    self.dom.lyricsContainer.children[self.prevHighlightLnIndex]);
+
+                                if (prevChildElem) self.currentLyricHeight = prevChildElem.offsetTop;
                             }
 
-                            // Some tricky things
-                            if (self.currentLyricHeight >= 72)
+                            if (self.dom.lyricsContainer)
                             {
-                                self.dom.lyricsContainer.scrollTop = self.currentLyricHeight - 36;
+                                if (Math.abs(self.currentLyricHeight - self.dom.lyricsContainer.scrollTop) >= 36)
+                                {
+                                    // Some tricky things
+                                    self.dom.lyricsContainer.scrollTop = self.currentLyricHeight;
+                                }
                             }
 
                             self.prevHighlightLnIndex = i;
@@ -593,6 +600,9 @@ namespace Sm2Shim.Player
 
                     self.callback('finish');
 
+                    // Reset lyrics
+                    self.resetLyrics.bind(self);
+
                     // Next track?
                     const item = self.playlistController.getNext();
 
@@ -601,23 +611,22 @@ namespace Sm2Shim.Player
                     if (item && self.playlistController.data.selectedIndex !== lastIndex ||
                         item && self.playlistController.data.loopMode)
                     {
-                        self.playlistController.select(item);
-                        self.setTitle(item);
-                        self.stopOtherSounds();
+                        const links = item.getElementsByTagName('a');
+                        let link: HTMLLinkElement;
+                        let mediaFileSrc, mediaLrcSrc: string;
+                        let mediaLrcOffset: number;
 
-                        // Play next track
-                        this.play(<ISmSoundOptions>
+                        if (links.length) link = links[0];
+                        if (link)
                         {
-                            url: self.playlistController.getURL()
-                        });
-
+                            self.playLink(link);
+                        }
                     }
                     else
                     {
                         // end of playlist case
                         // explicitly stop?
                         // this.stop();
-
                         self.callback('end');
                     }
                 }
