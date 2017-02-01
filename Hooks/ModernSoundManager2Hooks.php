@@ -255,8 +255,8 @@ HTML;
      * @return bool Value indicates whether a file is an internal file.
      */
     private static function isInternalFile(string $fileLocation) {
-        return strpos($fileLocation, Sm2ShimConstants::HttpUrlHeader) !== 0 &&
-            strpos($fileLocation, Sm2ShimConstants::HttpsUrlHeader) !== 0;
+        return strpos($fileLocation, \Sm2ShimConstants::HttpUrlHeader) !== 0 &&
+            strpos($fileLocation, \Sm2ShimConstants::HttpsUrlHeader) !== 0;
     }
 
     public static function renderModernSoundManager(
