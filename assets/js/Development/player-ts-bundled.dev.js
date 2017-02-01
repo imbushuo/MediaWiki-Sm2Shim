@@ -1670,6 +1670,9 @@ var Sm2Shim;
                 this.isGrabbing = false;
                 if (defaultItem) {
                     this.setTitle(defaultItem);
+                    var defaultItemLink = defaultItem.getElementsByTagName('a')[0];
+                    this.currentFileUrl = defaultItemLink.getAttribute(Sm2Shim.Options.FileSrcAttribute);
+                    this.loadLyrics(defaultItemLink);
                 }
                 // Register events
                 eventUtils.add(this.dom.o, 'mousedown', function (e) { return _this.handleMouseDown(e); });
@@ -1720,12 +1723,22 @@ var Sm2Shim;
                 if (this.playerOptions.stopOtherSounds)
                     soundManager.stopAll();
             };
-            Sm2Player.prototype.playLink = function (link) {
+            Sm2Player.prototype.loadLyrics = function (link) {
                 var mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 var mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
                 var mediaLrcOffset = parseInt(link.getAttribute(Sm2Shim.Options.FileLyricOffsetAttribute));
                 var mediaLrcIgnoreMetadataRaw = link.getAttribute(Sm2Shim.Options.FileLyricIgnoreMetadataAttribute);
                 var mediaLrcIgnoreMetadata = ((mediaLrcIgnoreMetadataRaw ? mediaLrcIgnoreMetadataRaw : '').toLowerCase() === 'true');
+                if (soundManager.canPlayURL(mediaFileSrc)) {
+                    this.resetLyrics();
+                    // Load lyrics
+                    if (mediaLrcSrc) {
+                        this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset, mediaLrcIgnoreMetadata);
+                    }
+                }
+            };
+            Sm2Player.prototype.playLink = function (link) {
+                var mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 // If a link is OK, play it.
                 if (soundManager.canPlayURL(mediaFileSrc)) {
                     // If there's a timer due to failure to play one track, cancel it.
@@ -1751,11 +1764,7 @@ var Sm2Shim;
                         position: 0
                     });
                     this.currentFileUrl = mediaFileSrc;
-                    this.resetLyrics();
-                    // Load lyrics
-                    if (mediaLrcSrc) {
-                        this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset, mediaLrcIgnoreMetadata);
-                    }
+                    this.loadLyrics(link);
                 }
             };
             Sm2Player.prototype.loadAndPresentLyrics = function (mediaFileSrc, lrcSrc, offset, ignoreMetadata) {

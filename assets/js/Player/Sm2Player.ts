@@ -184,6 +184,10 @@ namespace Sm2Shim.Player
             if (defaultItem)
             {
                 this.setTitle(defaultItem);
+                const defaultItemLink = defaultItem.getElementsByTagName('a')[0];
+
+                this.currentFileUrl = defaultItemLink.getAttribute(Sm2Shim.Options.FileSrcAttribute);
+                this.loadLyrics(defaultItemLink);
             }
 
             // Register events
@@ -253,7 +257,7 @@ namespace Sm2Shim.Player
             if (this.playerOptions.stopOtherSounds) soundManager.stopAll();
         }
 
-        playLink(link: HTMLLinkElement) : void
+        private loadLyrics(link: HTMLLinkElement) : void
         {
             const mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
             const mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
@@ -261,6 +265,22 @@ namespace Sm2Shim.Player
             const mediaLrcIgnoreMetadataRaw = link.getAttribute(Sm2Shim.Options.FileLyricIgnoreMetadataAttribute);
             const mediaLrcIgnoreMetadata =
                 ((mediaLrcIgnoreMetadataRaw ? mediaLrcIgnoreMetadataRaw : '').toLowerCase() === 'true');
+
+            if (soundManager.canPlayURL(mediaFileSrc))
+            {
+                this.resetLyrics();
+
+                // Load lyrics
+                if (mediaLrcSrc)
+                {
+                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset, mediaLrcIgnoreMetadata);
+                }
+            }
+        }
+
+        playLink(link: HTMLLinkElement) : void
+        {
+            const mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
 
             // If a link is OK, play it.
             if (soundManager.canPlayURL(mediaFileSrc))
@@ -296,13 +316,7 @@ namespace Sm2Shim.Player
                     position: 0
                 });
                 this.currentFileUrl = mediaFileSrc;
-                this.resetLyrics();
-
-                // Load lyrics
-                if (mediaLrcSrc)
-                {
-                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset, mediaLrcIgnoreMetadata);
-                }
+                this.loadLyrics(link);
             }
         }
 
