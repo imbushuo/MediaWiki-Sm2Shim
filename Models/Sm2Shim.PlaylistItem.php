@@ -85,7 +85,7 @@ class PlaylistItem
 
         if (empty($album))
         {
-            $this->title = wfMessage('sm2shim-defaultAlbum')->plain();
+            $this->album = wfMessage('sm2shim-defaultAlbum')->plain();
         }
         else
         {
@@ -94,7 +94,7 @@ class PlaylistItem
 
         if (empty($artist))
         {
-            $this->title = wfMessage('sm2shim-defaultArtist')->plain();
+            $this->artist = wfMessage('sm2shim-defaultArtist')->plain();
         }
         else
         {
