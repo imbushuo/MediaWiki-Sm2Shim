@@ -232,6 +232,16 @@ HTML;
                         </ul>
                     </div>
                 </div>
+                <div class="bd sm2-lyric-drawer sm2-element">
+                    <div class="sm2-inline-texture">
+                        <div class="sm2-box-shadow"></div>
+                    </div>
+                    <!-- Lyrics content goes here -->
+                    <div class="sm2-lyric-wrapper">
+                        <ul class="sm2-lyric-bd">
+                        </ul>
+                    </div>
+                </div>
             </div>
 HTML;
 
