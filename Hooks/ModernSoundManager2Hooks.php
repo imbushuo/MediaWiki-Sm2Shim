@@ -345,7 +345,7 @@ HTML;
             $errorHeader = wfMessage("sm2shim-error")->escaped();
             $exceptionMsg = $exc->getMessage();
             return <<<HTML
-<b class="warning" style="color: red">{errorHeader}{$exceptionMsg}</b>
+<b class="warning" style="color: red">{$errorHeader}{$exceptionMsg}</b>
 HTML;
 
         }
