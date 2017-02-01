@@ -47,6 +47,7 @@ namespace Sm2Shim.Player
         volume: HTMLElement;
         lyricsContainer: HTMLUListElement;
         lyricsWrapper: HTMLElement;
+        lyricsDrawer: HTMLElement;
     }
 
     export interface ISm2PlayerEventCallbacks
@@ -67,6 +68,7 @@ namespace Sm2Shim.Player
         noVolume: string;
         playlistOpen: string;
         lyricHighlight: string;
+        lyricHidden: string;
     }
 
     interface NumberMap<T> {
@@ -85,7 +87,8 @@ namespace Sm2Shim.Player
             legacy: 'legacy',
             noVolume: 'no-volume',
             playlistOpen: 'playlist-open',
-            lyricHighlight: 'lyric-content-current'
+            lyricHighlight: 'lyric-content-current',
+            lyricHidden: 'sm2-lyric-wrapper-hidden'
         };
         private extras =
         {
@@ -126,7 +129,8 @@ namespace Sm2Shim.Player
                 duration: null,
                 volume: null,
                 lyricsContainer: null,
-                lyricsWrapper: null
+                lyricsWrapper: null,
+                lyricsDrawer: null
             };
 
         private self = this;
@@ -163,6 +167,7 @@ namespace Sm2Shim.Player
             this.dom.volume = domUtils.get(this.dom.o, 'a.sm2-volume-control');
             this.dom.lyricsContainer = <HTMLUListElement>domUtils.get(this.dom.o, '.sm2-lyric-bd');
             this.dom.lyricsWrapper = domUtils.get(this.dom.o, '.sm2-lyric-wrapper');
+            this.dom.lyricsDrawer = domUtils.get(this.dom.o, '.sm2-lyric-drawer');
             this.resetLyrics();
 
             // Measure volume control dimensions
@@ -233,6 +238,7 @@ namespace Sm2Shim.Player
             this.lastDurationSet = -1;
             this.isLyricsReady = false;
             this.currentLyricHeight = 0;
+            cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
         }
 
         private stopOtherSounds() : void
@@ -244,6 +250,7 @@ namespace Sm2Shim.Player
         {
             const mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
             const mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
+            const mediaLrcOffset = parseInt(link.getAttribute(Sm2Shim.Options.FileLyricOffsetAttribute));
 
             // If a link is OK, play it.
             if (soundManager.canPlayURL(mediaFileSrc))
@@ -285,13 +292,15 @@ namespace Sm2Shim.Player
                 // Load lyrics
                 if (mediaLrcSrc)
                 {
-                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc);
+                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset);
                 }
             }
         }
 
-        private loadAndPresentLyrics(mediaFileSrc: string, lrcSrc: string) : void
+        private loadAndPresentLyrics(mediaFileSrc: string, lrcSrc: string, offset?: number) : void
         {
+            if (!offset) offset = 0;
+
             let self: Sm2Player;
 
             function getLrcContent(requestId: string, lrcPath: string, debug?: boolean): Promise<Lyrics.LrcResult>
@@ -368,9 +377,9 @@ namespace Sm2Shim.Player
                     {
                         const sentence = lrcSentences[i];
 
-                        self.timeMarks.push(sentence.time);
+                        self.timeMarks.push(sentence.time + offset);
                         sentenceEntity.push('<li data-time="'
-                            + sentence.time
+                            + (sentence.time + offset)
                             + '" class="lyric-content">'
                             + htmlEntities(sentence.content) +'</li>');
                     }
@@ -384,6 +393,7 @@ namespace Sm2Shim.Player
             {
                 // Set lyrics status.
                 self.isLyricsReady = true;
+                cssUtils.removeClass(self.dom.lyricsDrawer, self.css.lyricHidden);
             });
         }
 

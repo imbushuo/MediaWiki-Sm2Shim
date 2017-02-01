@@ -884,6 +884,9 @@
   position: relative;
   padding: 0.5em 0.5em 0.5em 0.25em;
 }
+.sm2-lyric-wrapper-hidden {
+  display: none;
+}
 .sm2-lyric-wrapper ul {
   max-height: 9.25em;
   overflow: auto;

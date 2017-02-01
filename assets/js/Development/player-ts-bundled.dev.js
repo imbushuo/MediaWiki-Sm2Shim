@@ -1029,6 +1029,7 @@ var Sm2Shim;
         Options.SoundManagerSetupOption = SoundManagerSetupOption;
         Options.FileSrcAttribute = "data-filesrc";
         Options.FileLyricAttribute = "data-lyricsrc";
+        Options.FileLyricOffsetAttribute = "data-lyricoffset";
     })(Options = Sm2Shim.Options || (Sm2Shim.Options = {}));
 })(Sm2Shim || (Sm2Shim = {}));
 //# sourceMappingURL=PlayerOptions.js.map
@@ -1415,7 +1416,8 @@ var Sm2Shim;
                     legacy: 'legacy',
                     noVolume: 'no-volume',
                     playlistOpen: 'playlist-open',
-                    lyricHighlight: 'lyric-content-current'
+                    lyricHighlight: 'lyric-content-current',
+                    lyricHidden: 'sm2-lyric-wrapper-hidden'
                 };
                 this.extras = {
                     loadFailedCharacter: '<span title="Failed to load/play." class="load-error">✖</span>'
@@ -1439,7 +1441,8 @@ var Sm2Shim;
                     duration: null,
                     volume: null,
                     lyricsContainer: null,
-                    lyricsWrapper: null
+                    lyricsWrapper: null,
+                    lyricsDrawer: null
                 };
                 this.self = this;
                 // Event handlers
@@ -1650,6 +1653,7 @@ var Sm2Shim;
                 this.dom.volume = domUtils.get(this.dom.o, 'a.sm2-volume-control');
                 this.dom.lyricsContainer = domUtils.get(this.dom.o, '.sm2-lyric-bd');
                 this.dom.lyricsWrapper = domUtils.get(this.dom.o, '.sm2-lyric-wrapper');
+                this.dom.lyricsDrawer = domUtils.get(this.dom.o, '.sm2-lyric-drawer');
                 this.resetLyrics();
                 // Measure volume control dimensions
                 this.dom.duration = domUtils.get(this.dom.o, '.sm2-inline-duration');
@@ -1698,6 +1702,7 @@ var Sm2Shim;
                 this.lastDurationSet = -1;
                 this.isLyricsReady = false;
                 this.currentLyricHeight = 0;
+                cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
             };
             Sm2Player.prototype.stopOtherSounds = function () {
                 if (this.playerOptions.stopOtherSounds)
@@ -1706,6 +1711,7 @@ var Sm2Shim;
             Sm2Player.prototype.playLink = function (link) {
                 var mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 var mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
+                var mediaLrcOffset = parseInt(link.getAttribute(Sm2Shim.Options.FileLyricOffsetAttribute));
                 // If a link is OK, play it.
                 if (soundManager.canPlayURL(mediaFileSrc)) {
                     // If there's a timer due to failure to play one track, cancel it.
@@ -1735,11 +1741,13 @@ var Sm2Shim;
                     this.resetLyrics();
                     // Load lyrics
                     if (mediaLrcSrc) {
-                        this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc);
+                        this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset);
                     }
                 }
             };
-            Sm2Player.prototype.loadAndPresentLyrics = function (mediaFileSrc, lrcSrc) {
+            Sm2Player.prototype.loadAndPresentLyrics = function (mediaFileSrc, lrcSrc, offset) {
+                if (!offset)
+                    offset = 0;
                 var self;
                 function getLrcContent(requestId, lrcPath, debug) {
                     return new Promise(function (resolve) {
@@ -1800,9 +1808,9 @@ var Sm2Shim;
                                         sentenceEntity = [];
                                         for (i = 0; i < lrcSentences.length; i++) {
                                             sentence = lrcSentences[i];
-                                            self.timeMarks.push(sentence.time);
+                                            self.timeMarks.push(sentence.time + offset);
                                             sentenceEntity.push('<li data-time="'
-                                                + sentence.time
+                                                + (sentence.time + offset)
                                                 + '" class="lyric-content">'
                                                 + htmlEntities(sentence.content) + '</li>');
                                         }
@@ -1817,6 +1825,7 @@ var Sm2Shim;
                 presentContent().then(function () {
                     // Set lyrics status.
                     self.isLyricsReady = true;
+                    cssUtils.removeClass(self.dom.lyricsDrawer, self.css.lyricHidden);
                 });
             };
             Sm2Player.prototype.makeSound = function (path) {
