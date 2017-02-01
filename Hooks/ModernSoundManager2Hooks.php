@@ -57,8 +57,11 @@ class ModernSoundManager2Hooks
         $playlistElementContent = array();
         $parserOutput = $parser->getOutput();
 
-        foreach ($playlist->getPlaylist() as $playlistItem)
+        foreach ($playlist->getPlaylist() as &$playlistItem)
         {
+            // Initialize
+            $entityAttributes = array();
+            
             // Metadata
             $escapedArtist = htmlentities($playlistItem->getArtist());
             $escapedAlbum = htmlentities($playlistItem->getAlbum());
