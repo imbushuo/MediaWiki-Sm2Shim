@@ -181,6 +181,7 @@ class Playlist
     private $schemaVersion;
     private $loop;
     private $autoPlay;
+    private $backgroundColor;
 
     /**
      * Playlist constructor.
@@ -188,13 +189,16 @@ class Playlist
      * @param $schemaVersion integer Schema version.
      * @param $loop boolean Value indicates whether loop is enabled.
      * @param $autoPlay boolean Value indicates whether auto play is enabled.
+     * @param $backgroundColor string Background color value in hex string form.
      */
-    public function __construct($playlist, $schemaVersion = 1, $loop = false, $autoPlay = false)
+    public function __construct($playlist, $schemaVersion = 1,
+                                $loop = false, $autoPlay = false, $backgroundColor = '')
     {
         $this->playlist = $playlist;
         $this->schemaVersion = $schemaVersion;
         $this->loop = $loop;
         $this->autoPlay = $autoPlay;
+        $this->backgroundColor = $backgroundColor;
     }
 
     /**
@@ -227,5 +231,13 @@ class Playlist
     public function getAutoPlay()
     {
         return $this->autoPlay;
+    }
+
+    /**
+     * @return string Background color value in hex string form.
+     */
+    public function getBackgroundColor(): string
+    {
+        return $this->backgroundColor;
     }
 }

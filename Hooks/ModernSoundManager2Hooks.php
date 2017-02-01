@@ -121,18 +121,14 @@ class ModernSoundManager2Hooks
         if (!$isLightMode)
         {
             // Validate and set CSS for additional settings
-            if (isset($paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId]) &&
-                $paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId] != \Sm2ShimConstants::EmptyString) {
+            if ($playlist->getBackgroundColor() != \Sm2ShimConstants::EmptyString) {
                 // To Lowercase and trim the magic "0x"
-                $colorRaw = strtolower($paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId]);
+                $colorRaw = strtolower($playlist->getBackgroundColor());
                 // Make sure it starts with "0x"
-                if (strpos($colorRaw, \Sm2ShimConstants::FlashMp3ParamValueBackgroundMagicHeader) === 0) {
-                    // So trim the magic header
-                    $colorRaw = substr($colorRaw, 2);
-                    // Perform sanity check for input values
-                    if (ModernSoundManager2Hooks::validateHexColor($colorRaw)) {
-                        $inlineBackgroundStyle = "background-color: #$colorRaw";
-                    }
+                // No magic header
+                // Perform sanity check for input values
+                if (ModernSoundManager2Hooks::validateHexColor($colorRaw)) {
+                    $inlineBackgroundStyle = "background-color: #$colorRaw";
                 }
             }
         }
@@ -276,6 +272,7 @@ HTML;
             $schemaVersion = 1;
             $loop = false;
             $autoPlay = false;
+            $bgColor = '';
 
             $parsedPlaylist = array();
 
@@ -287,14 +284,15 @@ HTML;
                 $schemaVersion = (int) $rawDeserialized->schemaVersion;
 
             if (isset($rawDeserialized->loop) && is_bool($rawDeserialized->loop))
-            {
                 $loop = (boolean) $rawDeserialized->loop;
-            }
 
             if (isset($rawDeserialized->autoPlay) && is_bool($rawDeserialized->autoPlay))
-            {
                 $autoPlay = (boolean) $rawDeserialized->autoPlay;
-            }
+
+            if (isset($rawDeserialized->backgroundColor)
+                && is_string($rawDeserialized->backgroundColor)
+                && !empty($rawDeserialized->backgroundColor))
+                $bgColor = (string) $rawDeserialized->backgroundColor;
 
             // Parse playlist items
             foreach ($rawDeserialized->playlist as &$playlistEntity)
@@ -303,7 +301,7 @@ HTML;
             }
 
             // Get playlist entity.
-            $playlist = new Models\Playlist($parsedPlaylist, $schemaVersion, $loop, $autoPlay);
+            $playlist = new Models\Playlist($parsedPlaylist, $schemaVersion, $loop, $autoPlay, $bgColor);
 
             // Render playback control
             return ModernSoundManager2Hooks::renderModernSoundManagerByModel($playlist, $parser);
