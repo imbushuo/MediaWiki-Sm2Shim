@@ -8,8 +8,6 @@
  */
 
 namespace TheLittleMoeNewLlc\Sm2Shim\Models;
-
-include_once "../Exceptions/InvalidDataException.php";
 use TheLittleMoeNewLlc\Sm2Shim\Exceptions;
 
 class PlaylistItem

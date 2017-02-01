@@ -14,7 +14,10 @@
     "AutoloadClasses": {
         "Sm2ShimHooks": "Sm2Shim.Class.php",
         "Sm2ShimConstants": "Sm2ShimConstants.php",
-        "TheLittleMoeNewLlc\\Sm2Shim\\Hooks\\ModernSoundManager2Hooks": "Hooks\\ModernSoundManager2Hooks.php"
+        "TheLittleMoeNewLlc\\Sm2Shim\\Exceptions\\InvalidDataException": "Exceptions/InvalidDataException.php",
+        "TheLittleMoeNewLlc\\Sm2Shim\\Models\\PlaylistItem": "Models/Sm2Shim.PlaylistItem.php",
+        "TheLittleMoeNewLlc\\Sm2Shim\\Models\\Playlist": "Models/Sm2Shim.PlaylistItem.php",
+        "TheLittleMoeNewLlc\\Sm2Shim\\Hooks\\ModernSoundManager2Hooks": "Hooks/ModernSoundManager2Hooks.php"
     },
     "Hooks": {
         "ParserFirstCallInit": [

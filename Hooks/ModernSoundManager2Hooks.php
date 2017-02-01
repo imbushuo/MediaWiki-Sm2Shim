@@ -8,8 +8,6 @@
  */
 
 namespace TheLittleMoeNewLlc\Sm2Shim\Hooks;
-include_once "../Models/Sm2Shim.PlaylistItem.php";
-include_once "../Exceptions/InvalidDataException.php";
 
 use TheLittleMoeNewLlc\Sm2Shim\Exceptions;
 use TheLittleMoeNewLlc\Sm2Shim\Models;
@@ -38,7 +36,7 @@ class ModernSoundManager2Hooks
      * @throws \InvalidArgumentException Thrown if the given parameter is null.
      */
     private static function renderModernSoundManagerByModel(
-        Models\Playlist $playlist, \Parser $parser, boolean $isLightMode = false)
+        Models\Playlist $playlist, \Parser $parser, $isLightMode = null)
     {
         if ($playlist == null) throw new \InvalidArgumentException();
 

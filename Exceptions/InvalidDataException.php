@@ -9,9 +9,6 @@
 
 namespace TheLittleMoeNewLlc\Sm2Shim\Exceptions;
 
-
-use Exception;
-
 class InvalidDataException extends \Exception
 {
 }
