@@ -400,8 +400,7 @@
   left: 0;
   top: 0;
   width: 100%;
-  list-style-type: none !important;
-  list-style-image: none !important;
+  list-style: none none !important;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1074,6 +1073,8 @@
   font-size: 100%;
   // Transition
   transition: all 1s ease;
+  // VE fix
+  list-style: none none !important;
 }
 
 /* scrollbar rules have to be separate, browsers not supporting this syntax will skip them when combined. */
