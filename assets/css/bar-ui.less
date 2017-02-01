@@ -40,6 +40,11 @@
   overflow: hidden;
   /* just for fun (animate normal / full-width) */
   transition: max-width 0.2s ease-in-out;
+  // Cancel use select
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .sm2-bar-ui .sm2-playlist li {
@@ -1045,14 +1050,21 @@
   padding: 0.5em 0.5em 0.5em 0.25em;
 }
 
-.sm2-lyric-wrapper-hidden {
+.sm2-bar-ui .sm2-lyric-wrapper-hidden {
+  padding: 0 !important;
+}
+
+.sm2-lyric-container-hidden {
   display: none;
+  padding: 0 !important;
+  width: 0 !important;
 }
 
 .sm2-lyric-wrapper ul {
   // Height
   max-height: 9.25em;
-  overflow: auto;
+  // Hide scrollbar all the time
+  overflow: hidden;
   line-height: 1.5em;
   text-align: center;
   // Additional padding

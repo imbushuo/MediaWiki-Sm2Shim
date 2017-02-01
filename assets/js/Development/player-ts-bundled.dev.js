@@ -1417,7 +1417,8 @@ var Sm2Shim;
                     noVolume: 'no-volume',
                     playlistOpen: 'playlist-open',
                     lyricHighlight: 'lyric-content-current',
-                    lyricHidden: 'sm2-lyric-wrapper-hidden'
+                    lyricHidden: 'sm2-lyric-container-hidden',
+                    lyricContainerHidden: 'sm2-lyric-wrapper-hidden'
                 };
                 this.extras = {
                     loadFailedCharacter: '<span title="Failed to load/play." class="load-error">✖</span>'
@@ -1703,6 +1704,8 @@ var Sm2Shim;
                 this.isLyricsReady = false;
                 this.currentLyricHeight = 0;
                 cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
+                cssUtils.addClass(this.dom.lyricsContainer, this.css.lyricContainerHidden);
+                cssUtils.addClass(this.dom.lyricsWrapper, this.css.lyricContainerHidden);
             };
             Sm2Player.prototype.stopOtherSounds = function () {
                 if (this.playerOptions.stopOtherSounds)
@@ -1746,6 +1749,7 @@ var Sm2Shim;
                 }
             };
             Sm2Player.prototype.loadAndPresentLyrics = function (mediaFileSrc, lrcSrc, offset) {
+                var _this = this;
                 if (!offset)
                     offset = 0;
                 var self;
@@ -1826,6 +1830,8 @@ var Sm2Shim;
                     // Set lyrics status.
                     self.isLyricsReady = true;
                     cssUtils.removeClass(self.dom.lyricsDrawer, self.css.lyricHidden);
+                    cssUtils.removeClass(self.dom.lyricsWrapper, self.css.lyricContainerHidden);
+                    cssUtils.removeClass(_this.dom.lyricsContainer, _this.css.lyricContainerHidden);
                 });
             };
             Sm2Player.prototype.makeSound = function (path) {
@@ -1854,14 +1860,27 @@ var Sm2Shim;
                                     break;
                             }
                             if (self.timeMarks[i] != self.lastDurationSet) {
+
                                 if (self.prevHighlightLnIndex >= 0) {
-                                    cssUtils.toggleClass(self.dom.lyricsContainer.children[self.prevHighlightLnIndex], self.css.lyricHighlight);
+                                    if (self.dom.lyricsContainer.children[self.prevHighlightLnIndex])
+                                    {
+                                        cssUtils.toggleClass(self.dom.lyricsContainer.children[self.prevHighlightLnIndex],
+                                            self.css.lyricHighlight);
+                                    }
                                 }
-                                cssUtils.toggleClass(self.dom.lyricsContainer.children[i], self.css.lyricHighlight);
+
+                                if (self.dom.lyricsContainer.children[i])
+                                {
+                                    cssUtils.toggleClass(self.dom.lyricsContainer.children[i],
+                                        self.css.lyricHighlight);
+                                }
+
                                 // Also set scroll
                                 if (self.prevHighlightLnIndex >= 0) {
-                                    self.currentLyricHeight += self.dom.lyricsContainer.children[self.prevHighlightLnIndex].offsetHeight;
+                                    self.currentLyricHeight +=
+                                        self.dom.lyricsContainer.children[self.prevHighlightLnIndex].offsetHeight;
                                 }
+
                                 // Some tricky things
                                 if (self.currentLyricHeight >= 72) {
                                     self.dom.lyricsContainer.scrollTop = self.currentLyricHeight - 36;

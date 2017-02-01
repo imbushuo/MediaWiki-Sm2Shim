@@ -69,6 +69,7 @@ namespace Sm2Shim.Player
         playlistOpen: string;
         lyricHighlight: string;
         lyricHidden: string;
+        lyricContainerHidden: string;
     }
 
     interface NumberMap<T> {
@@ -88,7 +89,8 @@ namespace Sm2Shim.Player
             noVolume: 'no-volume',
             playlistOpen: 'playlist-open',
             lyricHighlight: 'lyric-content-current',
-            lyricHidden: 'sm2-lyric-wrapper-hidden'
+            lyricHidden: 'sm2-lyric-container-hidden',
+            lyricContainerHidden: 'sm2-lyric-wrapper-hidden'
         };
         private extras =
         {
@@ -239,6 +241,8 @@ namespace Sm2Shim.Player
             this.isLyricsReady = false;
             this.currentLyricHeight = 0;
             cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
+            cssUtils.addClass(this.dom.lyricsContainer, this.css.lyricContainerHidden);
+            cssUtils.addClass(this.dom.lyricsWrapper, this.css.lyricContainerHidden);
         }
 
         private stopOtherSounds() : void
@@ -394,6 +398,8 @@ namespace Sm2Shim.Player
                 // Set lyrics status.
                 self.isLyricsReady = true;
                 cssUtils.removeClass(self.dom.lyricsDrawer, self.css.lyricHidden);
+                cssUtils.removeClass(self.dom.lyricsWrapper, self.css.lyricContainerHidden);
+                cssUtils.removeClass(this.dom.lyricsContainer, this.css.lyricContainerHidden);
             });
         }
 
@@ -438,24 +444,29 @@ namespace Sm2Shim.Player
 
                         if (self.timeMarks[i] != self.lastDurationSet)
                         {
-                            if (self.prevHighlightLnIndex >= 0)
+                            if (self.prevHighlightLnIndex >= 0 &&
+                                <HTMLElement>self.dom.lyricsContainer.children[self.prevHighlightLnIndex])
                             {
                                 cssUtils.toggleClass(
                                     <HTMLElement>self.dom.lyricsContainer.children[self.prevHighlightLnIndex],
                                     self.css.lyricHighlight);
                             }
 
-                            cssUtils.toggleClass(
-                                <HTMLElement>self.dom.lyricsContainer.children[i],
-                                self.css.lyricHighlight
-                            );
+                            if (<HTMLElement>self.dom.lyricsContainer.children[i])
+                            {
+                                cssUtils.toggleClass(
+                                    <HTMLElement>self.dom.lyricsContainer.children[i],
+                                    self.css.lyricHighlight
+                                );
+                            }
 
                             // Also set scroll
                             if (self.prevHighlightLnIndex >= 0)
                             {
-                                self.currentLyricHeight += (<HTMLElement>
-                                    self.dom.lyricsContainer.children[self.prevHighlightLnIndex]).offsetHeight;
+                                self.currentLyricHeight = (<HTMLElement>
+                                    self.dom.lyricsContainer.children[self.prevHighlightLnIndex]).offsetTop;
                             }
+
                             // Some tricky things
                             if (self.currentLyricHeight >= 72)
                             {
@@ -640,7 +651,7 @@ namespace Sm2Shim.Player
             }
         }
 
-        private static getTime(msec, useString) : any
+        static getTime(msec, useString) : any
         {
 
             // convert milliseconds to hh:mm:ss, return as object literal or string
