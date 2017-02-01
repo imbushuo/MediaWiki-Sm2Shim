@@ -924,20 +924,14 @@
 .sm2-lyric-wrapper .lyric-content-current {
   font-weight: 600;
   font-size: 120%;
-  transition: font 0.2s ease;
+  transition: font 0.15s ease;
   padding-bottom: 3px;
   padding-top: 3px;
 }
 .lyric-content {
   margin-left: 10px !important;
   margin-right: 10px !important;
-  transition: font 0.2s ease;
-}
-.sm2-lyric-bd {
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  transition: all 0.3s ease;
+  transition: font 0.15s ease;
 }
 
 .sm2-bar-ui {

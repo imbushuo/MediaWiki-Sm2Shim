@@ -1401,6 +1401,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="LrcParser.ts" />
+/// <reference path="../Library/jquery.d.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
     var Player;
@@ -1890,15 +1891,24 @@ var Sm2Shim;
                                     cssUtils.toggleClass(self.dom.lyricsContainer.children[i], self.css.lyricHighlight);
                                 }
                                 // Also set scroll
+                                // jQuery will be utilized if available
                                 if (self.prevHighlightLnIndex >= 0) {
                                     var prevChildElem = self.dom.lyricsContainer.children[self.prevHighlightLnIndex];
-                                    if (prevChildElem)
-                                        self.currentLyricHeight = prevChildElem.offsetTop;
+                                    if (prevChildElem) {
+                                        self.currentLyricHeight = prevChildElem.offsetTop - (prevChildElem.offsetHeight / 2);
+                                    }
                                 }
                                 if (self.dom.lyricsContainer) {
-                                    if (Math.abs(self.currentLyricHeight - self.dom.lyricsContainer.scrollTop) >= 36) {
+                                    if (Math.abs(self.currentLyricHeight - self.dom.lyricsContainer.scrollTop) >= 42) {
                                         // Some tricky things
-                                        self.dom.lyricsContainer.scrollTop = self.currentLyricHeight;
+                                        if (window.jQuery) {
+                                            $(self.dom.lyricsContainer).clearQueue().animate({
+                                                scrollTop: self.currentLyricHeight
+                                            }, 370);
+                                        }
+                                        else {
+                                            self.dom.lyricsContainer.scrollTop = self.currentLyricHeight;
+                                        }
                                     }
                                 }
                                 self.prevHighlightLnIndex = i;
