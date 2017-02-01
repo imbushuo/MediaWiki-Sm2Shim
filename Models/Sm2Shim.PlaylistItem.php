@@ -19,6 +19,7 @@ class PlaylistItem
 
     private $audioFileUrl;
     private $lrcFileUrl;
+    private $navigationUrl;
     private $lrcFileOffset;
     private $ignoreLrcMetadata;
 
@@ -36,6 +37,7 @@ class PlaylistItem
 
         $audioFileUrl = $entity->audioFileUrl;
         $lrcFileUrl = isset($entity->lrcFileUrl) ? $entity->lrcFileUrl : "";
+        $navigationUrl = isset($entity->navigationUrl) ? $entity->navigationUrl : "";
         $lrcFileOffset = isset($entity->lrcFileOffset) ? $entity->lrcFileOffset : 0;
         $ignoreLrcMetadata = isset($entity->ignoreLrcMetadata) ? $entity->ignoreLrcMetadata : false;
         $title = isset($entity->title) ? $entity->title : "";
@@ -58,10 +60,14 @@ class PlaylistItem
      * @param $album string Album title (optional)
      * @param $artist string Artist name (optional)
      * @param $isExplicit boolean Whether is explicit song or not (optional)
+     * @param $navigationUrl string Navigation URL (optional)
      * @throws Exceptions\InvalidDataException Thrown if the given @param $audioFileUrl is null or empty.
      */
-    public function __construct($audioFileUrl, $lrcFileUrl = "", $lrcFileOffset = 0, $ignoreLrcMetadata = false,
-                                $title = "", $album = "", $artist = "", $isExplicit = false)
+    public function __construct($audioFileUrl, $lrcFileUrl = "",
+                                $lrcFileOffset = 0, $ignoreLrcMetadata = false,
+                                $title = "", $album = "",
+                                $artist = "", $isExplicit = false,
+                                $navigationUrl = "")
     {
         // Sanity check
         if (empty($audioFileUrl))
@@ -105,6 +111,7 @@ class PlaylistItem
         $this->lrcFileOffset = $lrcFileOffset;
         $this->lrcFileUrl = $lrcFileUrl;
         $this->ignoreLrcMetadata = $ignoreLrcMetadata;
+        $this->navigationUrl = $navigationUrl;
     }
 
     /**
@@ -171,6 +178,14 @@ class PlaylistItem
         return $this->ignoreLrcMetadata;
     }
 
+    /**
+     * @return string Navigation URL (optional).
+     */
+    public function getNavigationUrl(): string
+    {
+        return $this->navigationUrl;
+    }
+
 }
 
 class Playlist
@@ -180,6 +195,7 @@ class Playlist
     private $loop;
     private $autoPlay;
     private $backgroundColor;
+    private $isOpen;
 
     /**
      * Playlist constructor.
@@ -188,15 +204,18 @@ class Playlist
      * @param $loop boolean Value indicates whether loop is enabled.
      * @param $autoPlay boolean Value indicates whether auto play is enabled.
      * @param $backgroundColor string Background color value in hex string form.
+     * @param $isOpen boolean Value indicates whether playlist is opened (at UI side).
      */
     public function __construct($playlist, $schemaVersion = 1,
-                                $loop = false, $autoPlay = false, $backgroundColor = '')
+                                $loop = false, $autoPlay = false,
+                                $backgroundColor = '', $isOpen = false)
     {
         $this->playlist = $playlist;
         $this->schemaVersion = $schemaVersion;
         $this->loop = $loop;
         $this->autoPlay = $autoPlay;
         $this->backgroundColor = $backgroundColor;
+        $this->isOpen = $isOpen;
     }
 
     /**
@@ -237,5 +256,13 @@ class Playlist
     public function getBackgroundColor(): string
     {
         return $this->backgroundColor;
+    }
+
+    /**
+     * @return bool Value indicates whether playlist is opened (at UI side).
+     */
+    public function getPlaylistOpenStatus(): bool
+    {
+        return $this->isOpen;
     }
 }

@@ -50,6 +50,7 @@ class ModernSoundManager2Hooks
         {
             if ($playlist->getAutoPlay()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimAutoPlayClass);
             if ($playlist->getLoop()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimLoopPlayClass);
+            if ($playlist->getPlaylistOpenStatus()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimOpenPlaylist);
         }
         else
         {
@@ -73,7 +74,7 @@ class ModernSoundManager2Hooks
 
             // File address and LRC properties
             $entityAddress = $playlistItem->getAudioFileUrl();
-            $entityNavigationAddress = $playlistItem->getAudioFileUrl();
+            $entityNavigationAddress = $playlistItem->getNavigationUrl();
 
             if (ModernSoundManager2Hooks::isInternalFile($entityAddress))
             {
@@ -307,6 +308,7 @@ HTML;
             $loop = false;
             $autoPlay = false;
             $bgColor = '';
+            $playlistOpen = false;
 
             $parsedPlaylist = array();
 
@@ -333,6 +335,9 @@ HTML;
                 && !empty($rawDeserialized->backgroundColor))
                 $bgColor = (string) $rawDeserialized->backgroundColor;
 
+            if (isset($rawDeserialized->isPlaylistOpen) && is_bool($rawDeserialized->isPlaylistOpen))
+                $playlistOpen = (boolean) $rawDeserialized->isPlaylistOpen;
+
             // Parse playlist items
             foreach ($rawDeserialized->playlist as &$playlistEntity)
             {
@@ -340,7 +345,8 @@ HTML;
             }
 
             // Get playlist entity.
-            $playlist = new Models\Playlist($parsedPlaylist, $schemaVersion, $loop, $autoPlay, $bgColor);
+            $playlist = new Models\Playlist($parsedPlaylist, $schemaVersion,
+                $loop, $autoPlay, $bgColor, $playlistOpen);
 
             // Render playback control
             return ModernSoundManager2Hooks::renderModernSoundManagerByModel($playlist, $parser);
@@ -367,11 +373,11 @@ HTML;
      * @param array $args Tag arguments, which are entered like HTML tag attributes;
      * this is an associative array indexed by attribute name.
      *
-     * @param Parser $parser The parent parser (a Parser object);
+     * @param \Parser $parser The parent parser (a Parser object);
      * more advanced extensions use this to obtain the contextual Title, parse wiki text,
      * expand braces, register link relationships and dependencies, etc.
      *
-     * @param PPFrame $frame The parent frame (a PPFrame object).
+     * @param \PPFrame $frame The parent frame (a PPFrame object).
      * This is used together with $parser to provide the parser with more complete
      * information on the context in which the extension was called.
      *
@@ -392,11 +398,11 @@ HTML;
      * @param array $args Tag arguments, which are entered like HTML tag attributes;
      * this is an associative array indexed by attribute name.
      *
-     * @param Parser $parser The parent parser (a Parser object);
+     * @param \Parser $parser The parent parser (a Parser object);
      * more advanced extensions use this to obtain the contextual Title, parse wiki text,
      * expand braces, register link relationships and dependencies, etc.
      *
-     * @param PPFrame $frame The parent frame (a PPFrame object).
+     * @param \PPFrame $frame The parent frame (a PPFrame object).
      * This is used together with $parser to provide the parser with more complete
      * information on the context in which the extension was called.
      *
@@ -417,7 +423,7 @@ HTML;
      * @param array $args Tag arguments, which are entered like HTML tag attributes;
      * this is an associative array indexed by attribute name.
      *
-     * @param Parser $parser The parent parser (a Parser object);
+     * @param \Parser $parser The parent parser (a Parser object);
      * more advanced extensions use this to obtain the contextual Title, parse wiki text,
      * expand braces, register link relationships and dependencies, etc.
      *
@@ -437,7 +443,7 @@ HTML;
             $params = explode(\Sm2ShimConstants::ParamsQualifier, $input);
 
             // Sanity check: Are parameters well-formed?
-            if (empty($params)) return \Sm2ShimHooks::EmptyString;
+            if (empty($params)) return \Sm2ShimConstants::EmptyString;
 
             // The first one must present - files
             $files = $params[0];
@@ -445,7 +451,7 @@ HTML;
 
             $paramsParsed[\Sm2ShimConstants::Sm2ShimParamTypeFiles] = $files;
             $filesParsed = explode(\Sm2ShimConstants::FilesQualifier, $files);
-            if (empty($filesParsed)) return \Sm2ShimHooks::EmptyString;
+            if (empty($filesParsed)) return \Sm2ShimConstants::EmptyString;
 
             // Sanity check: Did we retrieved more than one parameter?
             // Rest parameters will be parsed again in order to obtain key-value structure
@@ -464,7 +470,7 @@ HTML;
             if (isset($args[\Sm2ShimConstants::FlashMp3ParamTypeId]) &&
                 $args[\Sm2ShimConstants::FlashMp3ParamTypeId] == \Sm2ShimConstants::FlashMp3ParamValueTypeLastFm
             ) {
-                return \Sm2ShimHooks::EmptyString;
+                return \Sm2ShimConstants::EmptyString;
             }
 
             // Additional settings expect those stated below is deprecated and will be ignored.
@@ -526,6 +532,7 @@ HTML;
             {
                 $entityAddress = $fileLocation;
                 $entityTitle = "";
+                $entityNavigationAddress = "";
                 if (self::isInternalFile($fileLocation))
                 {
                     // Get address for internal files
@@ -547,11 +554,12 @@ HTML;
                     $entityNavigationAddress = $entityAddress;
                 }
 
-                $playlistItem = new Models\PlaylistItem($entityAddress, "", 0, false, $entityTitle);
+                $playlistItem = new Models\PlaylistItem($entityAddress, "",
+                    0, false, $entityTitle, "", "", false, $entityNavigationAddress);
                 array_push($playlistItems, $playlistItem);
             }
 
-            $playlist = new Models\Playlist($playlistItems, 1, $loop, $autoPlay, $backgroundColor);
+            $playlist = new Models\Playlist($playlistItems, 1, $loop, $autoPlay, $backgroundColor, $openPlaylist);
 
             return self::renderModernSoundManagerByModel($playlist, $parser, $liteMode);
         }
