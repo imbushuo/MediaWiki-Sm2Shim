@@ -310,6 +310,11 @@ HTML;
 
             $parsedPlaylist = array();
 
+            if (!isset($rawDeserialized))
+            {
+                throw new Exceptions\InvalidDataException(wfMessage("sm2shim-invalidJson")->plain(), 80070057);
+            }
+
             // Parse structure
             if (!isset($rawDeserialized->playlist) && !is_array($rawDeserialized->playlist))
                 throw new Exceptions\InvalidDataException(wfMessage("sm2shim-playlistRequired")->plain(), 80070057);
@@ -344,8 +349,11 @@ HTML;
         {
             $errorHeader = wfMessage("sm2shim-error")->escaped();
             $exceptionMsg = $exc->getMessage();
+            if (!empty($exceptionMsg)) $exceptionMsg = htmlentities($exceptionMsg);
+            else $exceptionMsg = wfMessage("sm2shim-unknown")->escaped();
+
             return <<<HTML
-<b class="warning" style="color: red">{$errorHeader}{$exceptionMsg}</b>
+<b class="warning" style="color: #820009">{$errorHeader}{$exceptionMsg}</b>
 HTML;
 
         }

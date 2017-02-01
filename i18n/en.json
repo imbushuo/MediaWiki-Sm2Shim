@@ -18,5 +18,7 @@
   "sm2shim-invalidItem": "The playlist specified is invalid.",
   "sm2shim-audioFileUrlRequired": "Each playlist item must contains at least file URL (audioFileUrl property).",
   "sm2shim-playlistRequired": "No playlist is specified.",
-  "sm2shim-error": "Something happened: "
+  "sm2shim-error": "Something happened: ",
+  "sm2shim-unknown": "Unknown error has occurred.",
+  "sm2shim-invalidJson": "The playlist specified is not a valid JSON string."
 }
