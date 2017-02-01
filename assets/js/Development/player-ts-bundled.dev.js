@@ -1709,6 +1709,7 @@ var Sm2Shim;
                 this.isLyricsReady = false;
                 this.currentLyricHeight = 0;
                 if (this.dom.lyricsContainer) {
+                    this.dom.lyricsContainer.innerHTML = '';
                     this.dom.lyricsContainer.scrollTop = 0;
                 }
                 cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
@@ -1744,7 +1745,6 @@ var Sm2Shim;
                     // TODO: function that also resets/hides timing info.
                     this.dom.progress.style.left = '0px';
                     this.dom.progressBar.style.width = '0px';
-                    this.dom.lyricsContainer.innerHTML = '';
                     this.stopOtherSounds();
                     this.soundObject.play({
                         url: mediaFileSrc,
@@ -2410,34 +2410,36 @@ var Sm2Shim;
 var Sm2Player = Sm2Shim.Player.Sm2Player;
 var domUtils = Sm2ShimUtils.DomUtils;
 (function () {
-    var playerSelector = '.sm2-bar-ui';
-    var players = [];
-    var pollingInterval = 200;
-    // Detect mobile devices (power optimization)
-    if (window.navigator.userAgent.match(/mobile/i)) {
-        pollingInterval = 500;
-    }
-    soundManager.setup({
-        // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
-        html5PollingInterval: pollingInterval,
-        flashPollingInterval: pollingInterval,
-        flashVersion: 9,
-        debugMode: false,
-        debugFlash: false,
-        preferFlash: false,
-        url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/'
-    });
-    soundManager.onready(function () {
-        var i, j;
-        var nodes = domUtils.getAll(playerSelector);
-        if (nodes && nodes.length) {
-            for (i = 0, j = nodes.length; i < j; i++) {
-                players.push(new Sm2Player(nodes[i]));
-            }
+    if (!window.SM2BarPlayer) {
+        var playerSelector_1 = '.sm2-bar-ui';
+        var players_1 = [];
+        var pollingInterval = 200;
+        // Detect mobile devices (power optimization)
+        if (window.navigator.userAgent.match(/mobile/i)) {
+            pollingInterval = 500;
         }
-    });
-    // Expose to global
-    window.sm2BarPlayers = players;
-    window.SM2BarPlayer = Sm2Player;
+        soundManager.setup({
+            // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
+            html5PollingInterval: pollingInterval,
+            flashPollingInterval: pollingInterval,
+            flashVersion: 9,
+            debugMode: false,
+            debugFlash: false,
+            preferFlash: false,
+            url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/'
+        });
+        soundManager.onready(function () {
+            var i, j;
+            var nodes = domUtils.getAll(playerSelector_1);
+            if (nodes && nodes.length) {
+                for (i = 0, j = nodes.length; i < j; i++) {
+                    players_1.push(new Sm2Player(nodes[i]));
+                }
+            }
+        });
+        // Expose to global
+        window.sm2BarPlayers = players_1;
+        window.SM2BarPlayer = Sm2Player;
+    }
 }());
 //# sourceMappingURL=PlayerUI.js.map

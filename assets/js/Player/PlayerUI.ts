@@ -18,47 +18,48 @@ import Sm2Player = Sm2Shim.Player.Sm2Player;
 import domUtils = Sm2ShimUtils.DomUtils;
 
 (function (){
-
-    const playerSelector = '.sm2-bar-ui';
-    let players = [];
-
-    let pollingInterval = 200;
-
-    // Detect mobile devices (power optimization)
-    if (window.navigator.userAgent.match(/mobile/i))
+    if(!(<any>window).SM2BarPlayer)
     {
-        pollingInterval = 500;
-    }
+        const playerSelector = '.sm2-bar-ui';
+        let players = [];
 
-    soundManager.setup(<soundManager.ISm2SetupOption>
+        let pollingInterval = 200;
+
+        // Detect mobile devices (power optimization)
+        if (window.navigator.userAgent.match(/mobile/i))
         {
-            // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
-            html5PollingInterval: pollingInterval,
-            flashPollingInterval: pollingInterval,
-            flashVersion: 9,
-            debugMode: false,
-            debugFlash: false,
-            preferFlash: false,
-            url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/'
-        });
-
-    soundManager.onready(() => {
-
-        let i, j;
-        const nodes = domUtils.getAll(playerSelector);
-
-        if (nodes && nodes.length)
-        {
-            for (i = 0, j = nodes.length; i < j; i++)
-            {
-                players.push(new Sm2Player(nodes[i]));
-            }
+            pollingInterval = 500;
         }
 
-    });
+        soundManager.setup(<soundManager.ISm2SetupOption>
+            {
+                // Trade-off: higher UI responsiveness (play/progress bar), but may use more CPU.
+                html5PollingInterval: pollingInterval,
+                flashPollingInterval: pollingInterval,
+                flashVersion: 9,
+                debugMode: false,
+                debugFlash: false,
+                preferFlash: false,
+                url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/'
+            });
 
-    // Expose to global
-    (<any>window).sm2BarPlayers = players;
-    (<any>window).SM2BarPlayer = Sm2Player;
+        soundManager.onready(() => {
 
+            let i, j;
+            const nodes = domUtils.getAll(playerSelector);
+
+            if (nodes && nodes.length)
+            {
+                for (i = 0, j = nodes.length; i < j; i++)
+                {
+                    players.push(new Sm2Player(nodes[i]));
+                }
+            }
+
+        });
+
+        // Expose to global
+        (<any>window).sm2BarPlayers = players;
+        (<any>window).SM2BarPlayer = Sm2Player;
+    }
 }());

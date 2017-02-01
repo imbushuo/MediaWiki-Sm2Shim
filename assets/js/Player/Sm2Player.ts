@@ -240,6 +240,7 @@ namespace Sm2Shim.Player
             this.currentLyricHeight = 0;
             if (this.dom.lyricsContainer)
             {
+                this.dom.lyricsContainer.innerHTML = '';
                 this.dom.lyricsContainer.scrollTop = 0;
             }
             cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
@@ -287,7 +288,6 @@ namespace Sm2Shim.Player
                 // TODO: function that also resets/hides timing info.
                 this.dom.progress.style.left = '0px';
                 this.dom.progressBar.style.width = '0px';
-                this.dom.lyricsContainer.innerHTML = '';
                 this.stopOtherSounds();
 
                 this.soundObject.play(<ISmSoundOptions>
