@@ -255,6 +255,9 @@ namespace Sm2Shim.Player
             const mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
             const mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
             const mediaLrcOffset = parseInt(link.getAttribute(Sm2Shim.Options.FileLyricOffsetAttribute));
+            const mediaLrcIgnoreMetadataRaw = link.getAttribute(Sm2Shim.Options.FileLyricIgnoreMetadataAttribute);
+            const mediaLrcIgnoreMetadata =
+                ((mediaLrcIgnoreMetadataRaw ? mediaLrcIgnoreMetadataRaw : '').toLowerCase() === 'true');
 
             // If a link is OK, play it.
             if (soundManager.canPlayURL(mediaFileSrc))
@@ -296,12 +299,16 @@ namespace Sm2Shim.Player
                 // Load lyrics
                 if (mediaLrcSrc)
                 {
-                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset);
+                    this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset, mediaLrcIgnoreMetadata);
                 }
             }
         }
 
-        private loadAndPresentLyrics(mediaFileSrc: string, lrcSrc: string, offset?: number) : void
+        private loadAndPresentLyrics(
+            mediaFileSrc: string,
+            lrcSrc: string,
+            offset?: number,
+            ignoreMetadata?: boolean) : void
         {
             if (!offset) offset = 0;
 
@@ -368,7 +375,8 @@ namespace Sm2Shim.Player
                 {
                     // Update metadata if necessary
                     if (lrcContent.content.title &&
-                        lrcContent.content.artist)
+                        lrcContent.content.artist &&
+                        !ignoreMetadata)
                     {
                         renderMetadata(lrcContent.content.title, lrcContent.content.artist);
                     }
@@ -613,8 +621,6 @@ namespace Sm2Shim.Player
                     {
                         const links = item.getElementsByTagName('a');
                         let link: HTMLLinkElement;
-                        let mediaFileSrc, mediaLrcSrc: string;
-                        let mediaLrcOffset: number;
 
                         if (links.length) link = links[0];
                         if (link)

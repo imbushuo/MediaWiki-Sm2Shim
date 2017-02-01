@@ -35,4 +35,5 @@ namespace Sm2Shim.Options
     export const FileSrcAttribute: string = "data-filesrc";
     export const FileLyricAttribute: string = "data-lyricsrc";
     export const FileLyricOffsetAttribute: string = "data-lyricoffset";
+    export const FileLyricIgnoreMetadataAttribute: string ="data-lyricignoremetadata";
 }
