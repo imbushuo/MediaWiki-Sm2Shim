@@ -106,7 +106,7 @@ class ModernSoundManager2Hooks
             }
 
             $entityHtmlContent = \Html::rawElement(\Sm2ShimConstants::HtmlElementLi, [],
-                \Html::element(\Sm2ShimConstants::HtmlElementA, $entityAttributes, $metadata));
+                \Html::rawElement(\Sm2ShimConstants::HtmlElementA, $entityAttributes, $metadata));
             array_push($playlistElementContent, $entityHtmlContent);
 
             // Lite mode will have only one file
