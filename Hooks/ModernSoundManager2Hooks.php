@@ -23,6 +23,10 @@ class ModernSoundManager2Hooks
     public static function onParserSetup(\Parser &$parser) {
         $parser->setHook(\Sm2ShimConstants::ModernSoundManager2Tag,
             'TheLittleMoeNewLlc\Sm2Shim\Hooks\ModernSoundManager2Hooks::renderModernSoundManager');
+        $parser->setHook(\Sm2ShimConstants::FlashMp3Tag,
+            'TheLittleMoeNewLlc\Sm2Shim\Hooks\ModernSoundManager2Hooks::renderLegacyFlashMp3');
+        $parser->setHook(\Sm2ShimConstants::SoundManager2ButtonTag,
+            'TheLittleMoeNewLlc\Sm2Shim\Hooks\ModernSoundManager2Hooks::renderLegacySoundManager2Button');
 
         return true;
     }
@@ -36,7 +40,7 @@ class ModernSoundManager2Hooks
      * @throws \InvalidArgumentException Thrown if the given parameter is null.
      */
     private static function renderModernSoundManagerByModel(
-        Models\Playlist $playlist, \Parser $parser, $isLightMode = null)
+        Models\Playlist $playlist, \Parser &$parser, $isLightMode = null)
     {
         if ($playlist == null) throw new \InvalidArgumentException();
 
@@ -134,26 +138,7 @@ class ModernSoundManager2Hooks
             }
         }
 
-        // Because input validation is completed, required CSS and JS will be injected.
-        // ResourceLoader is so slow - we can't wait for that.
-        global $wgSm2Shim_UseResourceManager,
-               $wgSm2Shim_ExternalCDNEndpoint,
-               $wgSm2Shim_ExternalCDNVersionControlId;
-
-        if ($wgSm2Shim_UseResourceManager) {
-            $parserOutput->addModules(\Sm2ShimConstants::Sm2ShimBundleId);
-            $parserOutput->addModuleStyles(\Sm2ShimConstants::Sm2ShimBundleId);
-        } else {
-            $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
-            $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
-
-            $sm2ModuleHeader = <<<HTML
-<link rel="stylesheet" href="{$cssEndpoint}">
-<script type="text/javascript" src="{$jsEndpoint}"></script>
-HTML;
-
-            $parserOutput->addHeadItem($sm2ModuleHeader, $sm2ModuleHeader);
-        }
+        ModernSoundManager2Hooks::addClientDependency($parser);
 
         $locResPlayback = wfMessage('sm2shim-playpause')->escaped();
         $locResJsRequired = wfMessage('sm2shim-jsrequired')->escaped();
@@ -272,6 +257,44 @@ HTML;
             strpos($fileLocation, \Sm2ShimConstants::HttpsUrlHeader) !== 0;
     }
 
+    /**
+     * Method that injects client dependency.
+     * @param \Parser $parser MediaWiki parser.
+     */
+    private static function addClientDependency(\Parser &$parser)
+    {
+        $parserOutput = $parser->getOutput();
+
+        // Because input validation is completed, required CSS and JS will be injected.
+        // ResourceLoader is so slow - we can't wait for that.
+        global $wgSm2Shim_UseResourceManager,
+               $wgSm2Shim_ExternalCDNEndpoint,
+               $wgSm2Shim_ExternalCDNVersionControlId;
+
+        if ($wgSm2Shim_UseResourceManager) {
+            $parserOutput->addModules(\Sm2ShimConstants::Sm2ShimBundleId);
+            $parserOutput->addModuleStyles(\Sm2ShimConstants::Sm2ShimBundleId);
+        } else {
+            $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
+            $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
+
+            $sm2ModuleHeader = <<<HTML
+<link rel="stylesheet" href="{$cssEndpoint}">
+<script type="text/javascript" src="{$jsEndpoint}"></script>
+HTML;
+
+            $parserOutput->addHeadItem($sm2ModuleHeader, $sm2ModuleHeader);
+        }
+    }
+
+    /**
+     * Method that renders modern sound manager.
+     * @param $input string Parser input (JSON string)
+     * @param array $args Parser attributes (not used)
+     * @param \Parser $parser MediaWiki parser.
+     * @param \PPFrame $frame Preprocessor frame.
+     * @return mixed|string
+     */
     public static function renderModernSoundManager(
         $input, array $args, \Parser $parser, \PPFrame $frame)
     {
@@ -319,10 +342,212 @@ HTML;
         }
         catch (Exceptions\InvalidDataException $exc)
         {
+            $errorHeader = wfMessage("sm2shim-error")->escaped();
+            $exceptionMsg = $exc->getMessage();
             return <<<HTML
-<p class="warning" style="color: red">Error occurred: {$exc->getMessage()}</p>
+<b class="warning" style="color: red">{errorHeader}{$exceptionMsg}</b>
 HTML;
 
         }
+    }
+
+    /**
+     * Method that handles legacy <flashmp3> tags.
+     *
+     * @param $input mixed between tags, or null if the tag is "closed", i.e. <sample />
+     *
+     * @param array $args Tag arguments, which are entered like HTML tag attributes;
+     * this is an associative array indexed by attribute name.
+     *
+     * @param Parser $parser The parent parser (a Parser object);
+     * more advanced extensions use this to obtain the contextual Title, parse wiki text,
+     * expand braces, register link relationships and dependencies, etc.
+     *
+     * @param PPFrame $frame The parent frame (a PPFrame object).
+     * This is used together with $parser to provide the parser with more complete
+     * information on the context in which the extension was called.
+     *
+     * @return mixed Parsed HTML content.
+     */
+    public static function renderLegacyFlashMp3(
+        $input, array $args, \Parser $parser, \PPFrame $frame)
+    {
+        // Render player using full-feature mode
+        return self::renderLegacyPlayer($input, $args, $parser, false);
+    }
+
+    /**
+     * Method that handles legacy <sm2> tags.
+     *
+     * @param $input Mixed between tags, or null if the tag is "closed", i.e. <sample />
+     *
+     * @param array $args Tag arguments, which are entered like HTML tag attributes;
+     * this is an associative array indexed by attribute name.
+     *
+     * @param Parser $parser The parent parser (a Parser object);
+     * more advanced extensions use this to obtain the contextual Title, parse wiki text,
+     * expand braces, register link relationships and dependencies, etc.
+     *
+     * @param PPFrame $frame The parent frame (a PPFrame object).
+     * This is used together with $parser to provide the parser with more complete
+     * information on the context in which the extension was called.
+     *
+     * @return mixed Parsed HTML content.
+     */
+    public static function renderLegacySoundManager2Button(
+        $input, array $args, \Parser $parser, \PPFrame $frame)
+    {
+        // Render player using light mode
+        return self::renderLegacyPlayer($input, $args, $parser, true);
+    }
+
+    /**
+     * Method that handles player output.
+     *
+     * @param $input mixed between tags, or null if the tag is "closed", i.e. <sample />
+     *
+     * @param array $args Tag arguments, which are entered like HTML tag attributes;
+     * this is an associative array indexed by attribute name.
+     *
+     * @param Parser $parser The parent parser (a Parser object);
+     * more advanced extensions use this to obtain the contextual Title, parse wiki text,
+     * expand braces, register link relationships and dependencies, etc.
+     *
+     * @param bool $isLiteMode Value indicates whether use lite mode.
+     *
+     * @return mixed Parsed HTML content.
+     */
+    private static function renderLegacyPlayer(
+        $input, array $args, \Parser $parser, bool $isLiteMode) {
+
+        // Sanity check: Did we receive non self-closed tags?
+        if ($input != null)
+        {
+            // Parse arguments without escaping characters, we will do it later
+            // And files will always be the first element
+            // TODO: Sanity check for the first element
+            $params = explode(\Sm2ShimConstants::ParamsQualifier, $input);
+
+            // Sanity check: Are parameters well-formed?
+            if (empty($params)) return \Sm2ShimHooks::EmptyString;
+
+            // The first one must present - files
+            $files = $params[0];
+            unset($params[0]);
+
+            $paramsParsed[\Sm2ShimConstants::Sm2ShimParamTypeFiles] = $files;
+            $filesParsed = explode(\Sm2ShimConstants::FilesQualifier, $files);
+            if (empty($filesParsed)) return \Sm2ShimHooks::EmptyString;
+
+            // Sanity check: Did we retrieved more than one parameter?
+            // Rest parameters will be parsed again in order to obtain key-value structure
+            if (!empty($params)) {
+                foreach ($params as $param) {
+                    $keyValue = explode(\Sm2ShimConstants::ParamValueQualifier, $param);
+                    if (count($keyValue) == 2) {
+                        $paramsParsed[$keyValue[0]] = $keyValue[1];
+                    }
+                }
+            }
+
+            // LastFM support is dropped in this SM2 shim.
+            // Type will be detected - any <flashmp3> tags with attribute type="lastfm" will be ignored.
+            // ID support is deprecated, attempts to set ID for <flashmp3> tags will be ignored.
+            if (isset($args[\Sm2ShimConstants::FlashMp3ParamTypeId]) &&
+                $args[\Sm2ShimConstants::FlashMp3ParamTypeId] == \Sm2ShimConstants::FlashMp3ParamValueTypeLastFm
+            ) {
+                return \Sm2ShimHooks::EmptyString;
+            }
+
+            // Additional settings expect those stated below is deprecated and will be ignored.
+            // Parse additional settings: AutoStart, Loop, Bg (Background color)
+            // Going to generate HTML code.
+
+            $loop = false;
+            $autoPlay = false;
+            $openPlaylist = false;
+            $liteMode = false;
+            $backgroundColor = "";
+
+            if (!$isLiteMode)
+            {
+                if (isset($paramsParsed[\Sm2ShimConstants::FlashMp3ParamAutoPlayId]) &&
+                    $paramsParsed[\Sm2ShimConstants::FlashMp3ParamAutoPlayId] === "yes"
+                ) {
+                    $autoPlay = true;
+                }
+
+                if (isset($paramsParsed[\Sm2ShimConstants::FlashMp3ParamLoopId]) &&
+                    $paramsParsed[\Sm2ShimConstants::FlashMp3ParamLoopId] === "yes"
+                ) {
+                    $loop = true;
+                }
+
+                if (isset($paramsParsed[\Sm2ShimConstants::Sm2ShimOpenPlaylist]) &&
+                    $paramsParsed[\Sm2ShimConstants::Sm2ShimOpenPlaylist] === "yes"
+                ) {
+                    $openPlaylist = true;
+                }
+            }
+            else
+            {
+                $liteMode = true;
+            }
+
+            // Validate and set CSS for additional settings
+            if (isset($paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId]) &&
+                $paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId] != \Sm2ShimConstants::EmptyString)
+            {
+                // To Lowercase and trim the magic "0x"
+                $colorRaw = strtolower($paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId]);
+                // Make sure it starts with "0x"
+                if (strpos($colorRaw, \Sm2ShimConstants::FlashMp3ParamValueBackgroundMagicHeader) === 0) {
+                    // So trim the magic header
+                    $colorRaw = substr($colorRaw, 2);
+                    // Perform sanity check for input values
+                    if (self::validateHexColor($colorRaw)) {
+                        $backgroundColor = $colorRaw;
+                    }
+                }
+            }
+
+            $playlistItems = array();
+
+            // Iterate all files to retrieve link
+            foreach ($filesParsed as $fileLocation)
+            {
+                $entityAddress = $fileLocation;
+                $entityTitle = "";
+                if (self::isInternalFile($fileLocation))
+                {
+                    // Get address for internal files
+                    $mwEntityTitle = \Title::newFromText($fileLocation, NS_IMAGE);
+                    if ($mwEntityTitle == null) continue;
+
+                    $fileLocation = wfFindFile($mwEntityTitle);
+                    if ($fileLocation)
+                    {
+                        $entityAddress = $fileLocation->getUrl();
+                        $entityTitle = $fileLocation->getTitle();
+                        $entityNavigationAddress = $entityTitle->getLocalURL();
+                    }
+                }
+                else
+                {
+                    // Generate title and add external link reference
+                    // Link to external site
+                    $entityNavigationAddress = $entityAddress;
+                }
+
+                $playlistItem = new Models\PlaylistItem($entityAddress, "", 0, false, $entityTitle);
+                array_push($playlistItems, $playlistItem);
+            }
+
+            $playlist = new Models\Playlist($playlistItems, 1, $loop, $autoPlay, $backgroundColor);
+
+            return self::renderModernSoundManagerByModel($playlist, $parser, $liteMode);
+        }
+
+        return \Sm2ShimConstants::EmptyString;
     }
 }

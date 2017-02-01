@@ -11,5 +11,12 @@
   "sm2shim-next": "Next >",
   "sm2shim-repeat": "Loop",
   "sm2shim-menu": "Playlist",
-  "sm2shim-track": "Track"
+  "sm2shim-track": "Track",
+  "sm2shim-defaultTitle": "Unknown Title",
+  "sm2shim-defaultAlbum": "Unknown Album",
+  "sm2shim-defaultArtist": "Unknown Artist",
+  "sm2shim-invalidItem": "The playlist specified is invalid.",
+  "sm2shim-audioFileUrlRequired": "Each playlist item must contains at least file URL (audioFileUrl property).",
+  "sm2shim-playlistRequired": "No playlist is specified.",
+  "sm2shim-error": "Something happened: "
 }

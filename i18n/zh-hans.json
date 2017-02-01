@@ -11,5 +11,12 @@
   "sm2shim-next": "下一曲 >",
   "sm2shim-repeat": "循环播放",
   "sm2shim-menu": "播放列表",
-  "sm2shim-track": "曲目"
+  "sm2shim-track": "曲目",
+  "sm2shim-defaultTitle": "未知标题",
+  "sm2shim-defaultAlbum": "未知专辑",
+  "sm2shim-defaultArtist": "未知歌手",
+  "sm2shim-invalidItem": "给定的播放列表不是有效的播放列表。",
+  "sm2shim-audioFileUrlRequired": "每个播放列表项目应至少具有文件 URL 属性。 （属性 audioFileUrl）",
+  "sm2shim-playlistRequired": "没有指定播放列表。",
+  "sm2shim-error": "发生了一些问题： "
 }
