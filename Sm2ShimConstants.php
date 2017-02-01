@@ -32,7 +32,7 @@ class Sm2ShimConstants {
     const FlashMp3ParamValueBackgroundMagicHeader = '0x';
     const FlashMp3ParamAutoPlayId = 'autostart';
     const FlashMp3ParamLoopId = 'loop';
-    const Sm2ShimOpenPlaylist = 'playlist-open';
+    const Sm2ShimOpenPlaylist = 'openplaylist';
 
     const Sm2ShimParamTypeFiles = 'files';
     const Sm2ShimBundleId = 'ext.sm2Shim';

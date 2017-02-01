@@ -50,7 +50,8 @@ class ModernSoundManager2Hooks
         {
             if ($playlist->getAutoPlay()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimAutoPlayClass);
             if ($playlist->getLoop()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimLoopPlayClass);
-            if ($playlist->getPlaylistOpenStatus()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimOpenPlaylist);
+            if ($playlist->getPlaylistOpenStatus()) array_push($playerClasses,
+                \Sm2ShimConstants::Sm2ShimPlaylistOpenClass);
         }
         else
         {
