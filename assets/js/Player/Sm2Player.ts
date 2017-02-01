@@ -1,6 +1,8 @@
 /**
- * Sm2Player.ts: Core player component for Sm2Shim
+ * @license
  *
+ * Sm2Player.ts: Core player component for Sm2Shim
+ * -----------------------------------------------
  * Copyright (c) 2014, Scott Schiller. All rights reserved.
  * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
  * Copyright (c) 2017 David Huang. All rights reserved.

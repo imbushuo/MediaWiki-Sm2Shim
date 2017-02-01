@@ -1030,6 +1030,7 @@ var Sm2Shim;
         Options.FileSrcAttribute = "data-filesrc";
         Options.FileLyricAttribute = "data-lyricsrc";
         Options.FileLyricOffsetAttribute = "data-lyricoffset";
+        Options.FileLyricIgnoreMetadataAttribute = "data-lyricignoremetadata";
     })(Options = Sm2Shim.Options || (Sm2Shim.Options = {}));
 })(Sm2Shim || (Sm2Shim = {}));
 //# sourceMappingURL=PlayerOptions.js.map
@@ -1166,14 +1167,16 @@ var Light;
 })(Light || (Light = {}));
 //# sourceMappingURL=ParsedLrc.js.map
 /**
- * LrcParser.ts: LRC parser component for Sm2Shim
+ * @license
  *
- * Copyright (c) 2014 - 2017, Light Studio. All rights reserved.
+ * LrcParser.ts: LRC parser component (Light.Lyrics) for Sm2Shim
+ * -------------------------------------------------------------
+ * Copyright (c) 2014 - 2017, Light Studio(Henry King, David Huang, Ben Wang). All rights reserved.
  * Copyright (c) 2016 - 2017, AnnAngela. All rights reserved.
  * Copyright (c) 2017, The Little Moe New LLC. All rights reserved.
  *
- * This file is part of the project 'Sm2Shim'.
- * Code licensed under BSD license.
+ * This file is part of the project 'Sm2Shim' and 'Light Player'.
+ * TypeScript version licensed under BSD-2-Clause license.
  *
  */
 /// <reference path="../Framework/TextReader.ts" />
@@ -1345,8 +1348,10 @@ var Sm2Shim;
 })(Sm2Shim || (Sm2Shim = {}));
 //# sourceMappingURL=LrcParser.js.map
 /**
- * Sm2Player.ts: Core player component for Sm2Shim
+ * @license
  *
+ * Sm2Player.ts: Core player component for Sm2Shim
+ * -----------------------------------------------
  * Copyright (c) 2014, Scott Schiller. All rights reserved.
  * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
  * Copyright (c) 2017 David Huang. All rights reserved.
@@ -1703,6 +1708,9 @@ var Sm2Shim;
                 this.lastDurationSet = -1;
                 this.isLyricsReady = false;
                 this.currentLyricHeight = 0;
+                if (this.dom.lyricsContainer) {
+                    this.dom.lyricsContainer.scrollTop = 0;
+                }
                 cssUtils.addClass(this.dom.lyricsDrawer, this.css.lyricHidden);
                 cssUtils.addClass(this.dom.lyricsContainer, this.css.lyricContainerHidden);
                 cssUtils.addClass(this.dom.lyricsWrapper, this.css.lyricContainerHidden);
@@ -1715,6 +1723,8 @@ var Sm2Shim;
                 var mediaFileSrc = link.getAttribute(Sm2Shim.Options.FileSrcAttribute);
                 var mediaLrcSrc = link.getAttribute(Sm2Shim.Options.FileLyricAttribute);
                 var mediaLrcOffset = parseInt(link.getAttribute(Sm2Shim.Options.FileLyricOffsetAttribute));
+                var mediaLrcIgnoreMetadataRaw = link.getAttribute(Sm2Shim.Options.FileLyricIgnoreMetadataAttribute);
+                var mediaLrcIgnoreMetadata = ((mediaLrcIgnoreMetadataRaw ? mediaLrcIgnoreMetadataRaw : '').toLowerCase() === 'true');
                 // If a link is OK, play it.
                 if (soundManager.canPlayURL(mediaFileSrc)) {
                     // If there's a timer due to failure to play one track, cancel it.
@@ -1744,11 +1754,11 @@ var Sm2Shim;
                     this.resetLyrics();
                     // Load lyrics
                     if (mediaLrcSrc) {
-                        this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset);
+                        this.loadAndPresentLyrics(mediaFileSrc, mediaLrcSrc, mediaLrcOffset, mediaLrcIgnoreMetadata);
                     }
                 }
             };
-            Sm2Player.prototype.loadAndPresentLyrics = function (mediaFileSrc, lrcSrc, offset) {
+            Sm2Player.prototype.loadAndPresentLyrics = function (mediaFileSrc, lrcSrc, offset, ignoreMetadata) {
                 var _this = this;
                 if (!offset)
                     offset = 0;
@@ -1804,7 +1814,8 @@ var Sm2Shim;
                                     if (lrcContent.isRequestSucceeded && lrcContent.requestId == self.currentFileUrl) {
                                         // Update metadata if necessary
                                         if (lrcContent.content.title &&
-                                            lrcContent.content.artist) {
+                                            lrcContent.content.artist &&
+                                            !ignoreMetadata) {
                                             renderMetadata(lrcContent.content.title, lrcContent.content.artist);
                                         }
                                         i = void 0;
@@ -1871,11 +1882,15 @@ var Sm2Shim;
                                 }
                                 // Also set scroll
                                 if (self.prevHighlightLnIndex >= 0) {
-                                    self.currentLyricHeight = self.dom.lyricsContainer.children[self.prevHighlightLnIndex].offsetTop;
+                                    var prevChildElem = self.dom.lyricsContainer.children[self.prevHighlightLnIndex];
+                                    if (prevChildElem)
+                                        self.currentLyricHeight = prevChildElem.offsetTop;
                                 }
-                                // Some tricky things
-                                if (self.currentLyricHeight >= 72) {
-                                    self.dom.lyricsContainer.scrollTop = self.currentLyricHeight - 36;
+                                if (self.dom.lyricsContainer) {
+                                    if (Math.abs(self.currentLyricHeight - self.dom.lyricsContainer.scrollTop) >= 36) {
+                                        // Some tricky things
+                                        self.dom.lyricsContainer.scrollTop = self.currentLyricHeight;
+                                    }
                                 }
                                 self.prevHighlightLnIndex = i;
                                 self.lastDurationSet = self.timeMarks[i];
@@ -1964,19 +1979,21 @@ var Sm2Shim;
                         self.dom.progress.style.left = '0%';
                         var lastIndex = self.playlistController.data.selectedIndex;
                         self.callback('finish');
+                        // Reset lyrics
+                        self.resetLyrics.bind(self);
                         // Next track?
                         var item = self.playlistController.getNext();
                         // Don't play the same item over and over again, if at end of playlist etc.
                         // Or if there is only one item and loop mode is on - play again
                         if (item && self.playlistController.data.selectedIndex !== lastIndex ||
                             item && self.playlistController.data.loopMode) {
-                            self.playlistController.select(item);
-                            self.setTitle(item);
-                            self.stopOtherSounds();
-                            // Play next track
-                            this.play({
-                                url: self.playlistController.getURL()
-                            });
+                            var links = item.getElementsByTagName('a');
+                            var link = void 0;
+                            if (links.length)
+                                link = links[0];
+                            if (link) {
+                                self.playLink(link);
+                            }
                         }
                         else {
                             // end of playlist case

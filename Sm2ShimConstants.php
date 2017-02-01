@@ -14,6 +14,7 @@ class Sm2ShimConstants {
     const Space = ' ';
     const FlashMp3Tag = 'flashmp3';
     const SoundManager2ButtonTag = 'sm2';
+    const ModernSoundManager2Tag = 'modernsoundmanager';
 
     const ParamsQualifier = '|';
     const ParamValueQualifier = '=';

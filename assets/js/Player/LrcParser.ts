@@ -1,12 +1,14 @@
 ﻿/**
- * LrcParser.ts: LRC parser component for Sm2Shim
+ * @license
  *
- * Copyright (c) 2014 - 2017, Light Studio. All rights reserved.
+ * LrcParser.ts: LRC parser component (Light.Lyrics) for Sm2Shim
+ * -------------------------------------------------------------
+ * Copyright (c) 2014 - 2017, Light Studio(Henry King, David Huang, Ben Wang). All rights reserved.
  * Copyright (c) 2016 - 2017, AnnAngela. All rights reserved.
  * Copyright (c) 2017, The Little Moe New LLC. All rights reserved.
  *
- * This file is part of the project 'Sm2Shim'.
- * Code licensed under BSD license.
+ * This file is part of the project 'Sm2Shim' and 'Light Player'.
+ * TypeScript version licensed under BSD-2-Clause license.
  *
  */
 

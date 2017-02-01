@@ -1,7 +1,7 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1800.131.2234.4961",
+    "version": "1800.201.125.5001",
     "author": [
         "[https://imbushuo.net Bingxing Wang(The Little Moe New LLC)]",
         "[https://lmn.cat The Little Moe New LLC]",
@@ -13,11 +13,13 @@
     "type": "parserhook",
     "AutoloadClasses": {
         "Sm2ShimHooks": "Sm2Shim.Class.php",
-        "Sm2ShimConstants": "Sm2ShimConstants.php"
+        "Sm2ShimConstants": "Sm2ShimConstants.php",
+        "TheLittleMoeNewLlc\\Sm2Shim\\Hooks\\ModernSoundManager2Hooks": "Hooks\\ModernSoundManager2Hooks.php"
     },
     "Hooks": {
         "ParserFirstCallInit": [
-            "Sm2ShimHooks::onParserSetup"
+            "Sm2ShimHooks::onParserSetup",
+            "TheLittleMoeNewLlc\\Sm2Shim\\Hooks\\ModernSoundManager2Hooks::onParserSetup"
         ]
     },
     "ResourceModules": {
@@ -38,7 +40,7 @@
     "config": {
         "Sm2Shim_UseResourceManager": false,
         "Sm2Shim_ExternalCDNEndpoint": "//mmixstaticassets.azureedge.net/Sm2Shim",
-        "Sm2Shim_ExternalCDNVersionControlId": "170130-0517"
+        "Sm2Shim_ExternalCDNVersionControlId": "170201-0125"
     },
     "manifest_version": 1
 }
