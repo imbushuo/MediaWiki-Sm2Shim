@@ -209,7 +209,7 @@ HTML;
                     </div>
                     {$fullFeaturedControl}
                 </div>
-                <div class="bd sm2-lyric-drawer sm2-element">
+                <div class="bd sm2-lyric-drawer sm2-element" style="{$inlineBackgroundStyle}">
                     <div class="sm2-inline-texture">
                         <div class="sm2-box-shadow"></div>
                     </div>
