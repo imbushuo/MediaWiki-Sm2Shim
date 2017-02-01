@@ -61,7 +61,7 @@ class ModernSoundManager2Hooks
         {
             // Initialize
             $entityAttributes = array();
-            
+
             // Metadata
             $escapedArtist = htmlentities($playlistItem->getArtist());
             $escapedAlbum = htmlentities($playlistItem->getAlbum());
@@ -224,6 +224,16 @@ HTML;
                     </div>
                     {$fullFeaturedControl}
                 </div>
+                <div class="bd sm2-lyric-drawer sm2-element">
+                    <div class="sm2-inline-texture">
+                        <div class="sm2-box-shadow"></div>
+                    </div>
+                    <!-- Lyrics content goes here -->
+                    <div class="sm2-lyric-wrapper">
+                        <ul class="sm2-lyric-bd">
+                        </ul>
+                    </div>
+                </div>
                 <div class="bd sm2-playlist-drawer sm2-element" style="{$inlineBackgroundStyle}">
                     <div class="sm2-inline-texture">
                         <div class="sm2-box-shadow"></div>
@@ -232,16 +242,6 @@ HTML;
                     <div class="sm2-playlist-wrapper">
                         <ul class="sm2-playlist-bd">
                             {$playlistContent}
-                        </ul>
-                    </div>
-                </div>
-                <div class="bd sm2-lyric-drawer sm2-element">
-                    <div class="sm2-inline-texture">
-                        <div class="sm2-box-shadow"></div>
-                    </div>
-                    <!-- Lyrics content goes here -->
-                    <div class="sm2-lyric-wrapper">
-                        <ul class="sm2-lyric-bd">
                         </ul>
                     </div>
                 </div>
