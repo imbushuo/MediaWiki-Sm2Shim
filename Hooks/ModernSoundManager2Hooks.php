@@ -122,6 +122,8 @@ class ModernSoundManager2Hooks
             if ($isLightMode) break;
         }
 
+        $isListOperationAvailable = sizeof($playlistElementContent) > 1;
+
         $playlistContent = implode(\Sm2ShimConstants::EmptyString, $playlistElementContent);
         $inlineBackgroundStyle = \Sm2ShimConstants::EmptyString;
 
@@ -151,27 +153,41 @@ class ModernSoundManager2Hooks
 
         $fullFeaturedControl = \Sm2ShimConstants::EmptyString;
 
-        if (!$isLightMode) {
-            $fullFeaturedControl = <<<HTML
-            <div class="sm2-inline-element sm2-button-element">
+        if (!$isLightMode)
+        {
+            $orderControlButton = "";
+            $menuButton = "";
+
+            if ($isListOperationAvailable)
+            {
+                $orderControlButton = <<<HTML
                     <div class="sm2-button-bd">
                             <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous"></a>
                         </div>
                     </div>
-                    <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
+                        <div class="sm2-inline-element sm2-button-element">
+                            <div class="sm2-button-bd">
                             <a href="#next" title="{$locResNext}" class="sm2-inline-button sm2-icon-next"></a>
                         </div>
                     </div>
+HTML;
+                $menuButton = <<<HTML
+                    <div class="sm2-inline-element sm2-button-element sm2-menu">
+                        <div class="sm2-button-bd">
+                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu"></a>
+                    </div>
+HTML;
+            }
+
+            $fullFeaturedControl = <<<HTML
+            <div class="sm2-inline-element sm2-button-element">
+                    {$orderControlButton}
                     <div class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd">
                             <a href="#repeat" title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat"></a>
                         </div>
                     </div>
-                    <div class="sm2-inline-element sm2-button-element sm2-menu">
-                        <div class="sm2-button-bd">
-                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu"></a>
-                    </div>
+                    {$menuButton}
             </div>
 HTML;
         }
