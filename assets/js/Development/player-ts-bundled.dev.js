@@ -1401,7 +1401,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="LrcParser.ts" />
-/// <reference path="../Framework/jquery.d.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
     var Player;

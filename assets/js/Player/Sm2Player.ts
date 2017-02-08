@@ -18,7 +18,6 @@
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="LrcParser.ts" />
-/// <reference path="../Framework/jquery.d.ts" />
 
 namespace Sm2Shim.Player
 {

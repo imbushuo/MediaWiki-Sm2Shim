@@ -23,6 +23,7 @@
   "dependencies": {
     "knockout": "^3.4.1",
     "SoundManager2": "soundmanager2#*",
-    "core-promise": "^0.3.3"
+    "core-promise": "^0.3.3",
+    "requirejs": "^2.3.2"
   }
 }
