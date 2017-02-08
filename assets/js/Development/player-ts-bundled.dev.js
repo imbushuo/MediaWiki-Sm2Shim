@@ -1396,12 +1396,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 /// <reference path="../Options/PlayerOptions.ts" />
-/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../Framework/NotImplementedException.ts" />
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="LrcParser.ts" />
-/// <reference path="../Library/jquery.d.ts" />
+/// <reference path="../Framework/jquery.d.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
     var Player;
@@ -2226,7 +2226,7 @@ var Sm2Shim;
  *
  */
 /// <reference path="../Options/PlayerOptions.ts" />
-/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../Utils/Utils.ts" />
 var Sm2Shim;
 (function (Sm2Shim) {
@@ -2422,7 +2422,7 @@ var Sm2Shim;
  * Code licensed under BSD license.
  *
  */
-/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="Sm2Player.ts" />

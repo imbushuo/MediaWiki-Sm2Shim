@@ -1,0 +1,28 @@
+{
+  "name": "Moegirlpedia-Sm2Shim",
+  "description": "Moegirlpedia SM2 Shim Media Player",
+  "main": "",
+  "authors": [
+    "The Little Moe New LLC"
+  ],
+  "license": "BSD-2-Clause",
+  "keywords": [
+    "soundmanager2",
+    "player"
+  ],
+  "homepage": "https://github.com/imbushuo/MediaWiki-Sm2Shim",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/js/Library",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "knockout": "^3.4.1",
+    "SoundManager2": "soundmanager2#*",
+    "core-promise": "^0.3.3"
+  }
+}

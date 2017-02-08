@@ -7,3 +7,6 @@ TsSelfHost.html
 MediaWiki-Sm2Shim.iml
 node_modules
 assets/lrcstaging
+assets/js/Library
+obj
+bin

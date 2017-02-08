@@ -13,12 +13,12 @@
  */
 
 /// <reference path="../Options/PlayerOptions.ts" />
-/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../Framework/NotImplementedException.ts" />
 /// <reference path="../Utils/Utils.ts" />
 /// <reference path="../Utils/ParamUtils.ts" />
 /// <reference path="LrcParser.ts" />
-/// <reference path="../Library/jquery.d.ts" />
+/// <reference path="../Framework/jquery.d.ts" />
 
 namespace Sm2Shim.Player
 {

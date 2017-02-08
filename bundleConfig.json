@@ -9,8 +9,8 @@
   {
     "outputFileName": "assets/js/Production/player-bundled.min.js",
     "inputFiles": [
-      "assets/js/Library/core-promise.js",
-      "assets/js/Library/soundmanager2-nodebug-jsmin.js",
+      "assets/js/Library/core-promise/client/core-promise.js",
+      "assets/js/Library/SoundManager2/script/soundmanager2-nodebug-jsmin.js",
       "assets/js/Framework/HResults.js",
       "assets/js/Framework/Exception.js",
       "assets/js/Framework/ArgumentNullException.js",
@@ -35,8 +35,8 @@
   {
     "outputFileName": "assets/js/Development/player-ts-bundled.dev.js",
     "inputFiles": [
-      "assets/js/Library/core-promise.js",
-      "assets/js/Library/soundmanager2-nodebug-jsmin.js",
+      "assets/js/Library/core-promise/client/core-promise.js",
+      "assets/js/Library/SoundManager2/script/soundmanager2-nodebug-jsmin.js",
       "assets/js/Framework/HResults.js",
       "assets/js/Framework/Exception.js",
       "assets/js/Framework/ArgumentNullException.js",

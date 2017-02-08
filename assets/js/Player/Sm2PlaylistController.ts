@@ -10,7 +10,7 @@
  */
 
 /// <reference path="../Options/PlayerOptions.ts" />
-/// <reference path="../Library/SoundManager2.d.ts" />
+/// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../Utils/Utils.ts" />
 
 namespace Sm2Shim.Player
