@@ -21,7 +21,7 @@ namespace Sm2Shim.Player.ViewModels
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
 
-    class PlaylistItem
+    class PlaylistItemViewModel
     {
         audioFileSrc: KnockoutObservable<string>;
         lrcFileSrc: KnockoutObservable<string>;
@@ -65,11 +65,11 @@ namespace Sm2Shim.Player.ViewModels
             });
 
             this.title = ko.computed(() =>
-                PlaylistItem.overrideStringSelection(this.titleMetadataOverride, this.lrcTitle));
+                PlaylistItemViewModel.overrideStringSelection(this.titleMetadataOverride, this.lrcTitle));
             this.artist = ko.computed(() =>
-                PlaylistItem.overrideStringSelection(this.artistMetadataOverride, this.lrcArtist));
+                PlaylistItemViewModel.overrideStringSelection(this.artistMetadataOverride, this.lrcArtist));
             this.album = ko.computed(() =>
-                PlaylistItem.overrideStringSelection(this.albumMetadataOverride, this.lrcAlbum));
+                PlaylistItemViewModel.overrideStringSelection(this.albumMetadataOverride, this.lrcAlbum));
 
         }
 
@@ -80,15 +80,112 @@ namespace Sm2Shim.Player.ViewModels
         }
     }
 
+    class TimeControlViewModel
+    {
+        timeIndicatorText: KnockoutObservable<string>;
+        durationIndicatorText: KnockoutObservable<string>;
+        progressbarLeft: KnockoutObservable<string>;
+        progressbarWidth: KnockoutObservable<string>;
+
+        private _currentTime: KnockoutObservable<number>;
+        private _duration: KnockoutObservable<number>;
+        private m_parent: PlayerViewModel;
+        private m_isChangeAllowed: boolean;
+
+        get currentTime() : number
+        {
+            return this._currentTime();
+        }
+
+        set currentTime(value: number)
+        {
+            if (value >= 0 && value <= this.duration && this.m_isChangeAllowed) this._currentTime(value);
+        }
+
+        get duration() : number
+        {
+            return this._duration();
+        }
+
+        set duration(value: number)
+        {
+            if (value >= 0) this._duration(value);
+        }
+
+        resetTimer() : void
+        {
+            this._currentTime(0);
+            this._duration(0);
+            this.m_isChangeAllowed = true;
+        }
+
+        onInputStart() : boolean
+        {
+            this.m_isChangeAllowed = false;
+            return true;
+        }
+
+        onInputEnd(viewModel: TimeControlViewModel, event: MouseEvent) : boolean
+        {
+            // Get target
+            const target = <HTMLInputElement> event.target;
+            // Commit change
+            this.m_parent.setPosition(parseInt(target.value));
+            // Unlock
+            this.m_isChangeAllowed = true;
+            return true;
+        }
+
+        static getTime(msec, useString) : any
+        {
+            // Convert milliseconds to hh:mm:ss, return as object literal or string
+            const nSec = Math.floor(msec / 1000),
+                hh = Math.floor(nSec / 3600),
+                min = Math.floor(nSec / 60) - Math.floor(hh * 60),
+                sec = Math.floor(nSec - (hh * 3600) - (min * 60));
+
+            // If (min === 0 && sec === 0) return null; // return 0:00 as null
+            return (useString ?
+                ((hh ? hh + ':' : '') + (hh && min < 10 ? '0' + min : min) + ':' + (sec < 10 ? '0' + sec : sec)) :
+                {
+                    'min': min,
+                    'sec': sec
+                });
+        }
+
+        constructor(parent: PlayerViewModel)
+        {
+            this._currentTime = ko.observable(0);
+            this._duration = ko.observable(0);
+            this.m_parent = parent;
+            this.m_isChangeAllowed = true;
+
+            this.timeIndicatorText = ko.computed(() => TimeControlViewModel.getTime(this._currentTime(), true));
+            this.durationIndicatorText = ko.computed(() => TimeControlViewModel.getTime(this._duration(), true));
+            this.progressbarLeft = ko.computed(() =>
+            {
+                const progressMaxLeft = 100;
+                return Math.min(progressMaxLeft,
+                        Math.max(0, (progressMaxLeft *
+                        (this._currentTime() / this._duration())))) + '%';
+
+            });
+            this.progressbarWidth = ko.computed(() =>
+            {
+                return Math.min(100,
+                        Math.max(0,
+                            (100 * this._currentTime() / this._duration()))) + '%';
+            });
+        }
+    }
+
     export class PlayerViewModel
     {
-        playlistItems: KnockoutObservableArray<PlaylistItem>;
-        currentItem: KnockoutObservable<PlaylistItem>;
+        playlistItems: KnockoutObservableArray<PlaylistItemViewModel>;
+        currentItem: KnockoutObservable<PlaylistItemViewModel>;
         currentIndex: KnockoutObservable<number>;
         isCompactMode: KnockoutObservable<boolean>;
 
-        timeIndicatorText: KnockoutObservable<string>;
-        remainingIndicatorText: KnockoutObservable<string>;
         isPlaylistExpanded: KnockoutObservable<boolean>;
         isLoopEnabled: KnockoutObservable<boolean>;
         isAutoPlayEnabled: KnockoutObservable<boolean>;
@@ -101,8 +198,7 @@ namespace Sm2Shim.Player.ViewModels
         isPaused: KnockoutObservable<boolean>;
         isGrabbing: KnockoutObservable<boolean>;
 
-        progressbarLeft: KnockoutObservable<string>;
-        progressbarWidth: KnockoutObservable<string>;
+        timerViewModel: KnockoutObservable<TimeControlViewModel>;
 
         currentSound: ISmSound;
 
@@ -111,9 +207,7 @@ namespace Sm2Shim.Player.ViewModels
             if (!playlist) throw new ArgumentNullException("playlist");
 
             // Initialize collections
-            this.playlistItems = ko.observableArray<PlaylistItem>();
-            this.timeIndicatorText = ko.observable("0:00");
-            this.remainingIndicatorText = ko.observable("0:00");
+            this.playlistItems = ko.observableArray<PlaylistItemViewModel>();
             this.isPlaylistExpanded = ko.observable(playlist.isPlaylistOpen);
             this.isLoopEnabled = ko.observable(playlist.loop);
             this.isAutoPlayEnabled = ko.observable(playlist.autoPlay);
@@ -121,9 +215,7 @@ namespace Sm2Shim.Player.ViewModels
             this.isPlaying = ko.computed(() => !this.isPaused());
             this.isCompactMode = ko.observable(playlist.compactMode);
             this.isGrabbing = ko.observable(false);
-
-            this.progressbarLeft = ko.observable("0%");
-            this.progressbarWidth = ko.observable("0%");
+            this.timerViewModel = ko.observable(new TimeControlViewModel(this));
 
             // Load playlist
             let i: number;
@@ -136,7 +228,7 @@ namespace Sm2Shim.Player.ViewModels
                 const album = playlistEntity.album ? playlistEntity.album : "Unknown Album";
 
                 this.playlistItems.push(
-                    new PlaylistItem(playlistEntity.audioFileUrl, playlistEntity.lrcUrl,
+                    new PlaylistItemViewModel(playlistEntity.audioFileUrl, playlistEntity.lrcUrl,
                         title, album, artist, playlistEntity.isExplicit, playlistEntity.navigationUrl));
             }
 
@@ -157,14 +249,12 @@ namespace Sm2Shim.Player.ViewModels
 
             // Start playback if set
             if (this.isAutoPlayEnabled()) this.play();
+
         }
 
         resetTimer() : void
         {
-            this.timeIndicatorText("0:00");
-            this.remainingIndicatorText("0:00");
-            this.progressbarLeft("0%");
-            this.progressbarWidth("0%");
+            this.timerViewModel().resetTimer();
         }
 
         loopButtonHandler() : void
@@ -255,28 +345,13 @@ namespace Sm2Shim.Player.ViewModels
                     // Update time
                     if (this.currentSound.duration)
                     {
-                        const time = PlayerViewModel.getTime(this.currentSound.position, true);
-                        const progressMaxLeft = 100;
-                        let left,
-                            width;
-
-                        left = Math.min(progressMaxLeft,
-                                Math.max(0, (progressMaxLeft *
-                                (this.currentSound.position / this.currentSound.durationEstimate)))) + '%';
-
-                        width = Math.min(100,
-                                Math.max(0,
-                                (100 * this.currentSound.position / this.currentSound.durationEstimate))) + '%';
-
-                        this.timeIndicatorText(time);
-                        this.progressbarLeft(left);
-                        this.progressbarWidth(width);
+                        this.timerViewModel().currentTime = this.currentSound.position;
                     }
                 },
                 onload: (success: boolean) => {
                     if (success)
                     {
-                        this.remainingIndicatorText(PlayerViewModel.getTime(this.currentSound.duration, true));
+                        this.timerViewModel().duration = this.currentSound.duration;
                     }
                 },
                 onfinish: () => {
@@ -321,41 +396,32 @@ namespace Sm2Shim.Player.ViewModels
             }
         }
 
-        handleMouseDown(e: MouseEvent) : void
+        setPosition(position: number) : void
         {
-            if (PlayerViewModel.isRightClick(e)) return;
-
-            this.isGrabbing(true);
+            if (this.currentSound && this.currentSound.duration)
+            {
+                this.timerViewModel().currentTime = position;
+                this.currentSound.setPosition(position);
+                // A little hackish: ensure UI updates immediately with current position,
+                // even if audio is buffering and hasn't moved there yet.
+                if (this.currentSound._iO && this.currentSound._iO.whileplaying)
+                {
+                    this.currentSound._iO.whileplaying.apply(this.currentSound);
+                }
+            }
         }
 
-        onPlaylistItemClick = (item: PlaylistItem) : void =>
+        onPlaylistItemClick = (item: PlaylistItemViewModel) : void =>
         {
             const index = this.playlistItems.indexOf(item);
             if (index >= 0) this.setIndex(index, true);
-        }
-
-        static getTime(msec, useString) : any
-        {
-            // Convert milliseconds to hh:mm:ss, return as object literal or string
-            const nSec = Math.floor(msec / 1000),
-                hh = Math.floor(nSec / 3600),
-                min = Math.floor(nSec / 60) - Math.floor(hh * 60),
-                sec = Math.floor(nSec - (hh * 3600) - (min * 60));
-
-            // If (min === 0 && sec === 0) return null; // return 0:00 as null
-            return (useString ?
-                ((hh ? hh + ':' : '') + (hh && min < 10 ? '0' + min : min) + ':' + (sec < 10 ? '0' + sec : sec)) :
-                {
-                    'min': min,
-                    'sec': sec
-                });
         }
 
         private static isRightClick(e: MouseEvent) : boolean
         {
             // Only pay attention to left clicks.
             // Old IE differs where there's no e.which, but e.button is 1 on left click.
-            if (e && ((e.which && e.which === 2) || (e.which === undefined && e.button !== 1)))
+            if (e && ((e.which && e.which === 3) || (e.which === undefined && e.button !== 1)))
             {
                 // http://www.quirksmode.org/js/events_properties.html#button
                 return true;

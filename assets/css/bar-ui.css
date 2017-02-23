@@ -37,6 +37,9 @@
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+.sm2-full-container {
+  display: table;
+}
 .sm2-bar-ui .sm2-playlist li {
   text-align: center;
   margin-top: -2px;
@@ -289,12 +292,6 @@
   padding-left: 0.75em;
   padding-right: 0.75em;
 }
-.sm2-bar-ui .sm2-inline-element {
-  /* extra-small em scales up nicely, vs. 1px which gets fat */
-  border-right: 0.075em dotted #666;
-  /* legacy */
-  border-right: 0.075em solid rgba(0, 0, 0, 0.1);
-}
 .sm2-bar-ui .sm2-inline-element.noborder {
   border-right: none;
 }
@@ -303,14 +300,10 @@
   padding: 0 0.25em;
 }
 .sm2-bar-ui .sm2-inline-element:first-of-type {
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
   overflow: hidden;
 }
 .sm2-bar-ui .sm2-inline-element:last-of-type {
   border-right: none;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
 }
 .sm2-bar-ui .sm2-inline-status a:hover {
   background-color: transparent;
@@ -377,7 +370,7 @@
 .sm2-progress .sm2-progress-ball,
 .sm2-progress .sm2-progress-bar {
   position: relative;
-  width: 100%;
+  width: 110px;
   height: 0.65em;
   border-radius: 0.65em;
 }
@@ -433,6 +426,10 @@
   /* legacy */
   background-image: none, none;
   /* modern browsers */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
 }
 /* scrollbar rules have to be separate, browsers not supporting this syntax will skip them when combined. */
 .sm2-playlist-wrapper ul::-webkit-scrollbar-track {
