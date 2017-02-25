@@ -5,8 +5,7 @@
     <title>Sm2Shim Player Widget</title>
 </head>
 <body>
-    <div class="sm2-bar-ui" data-bind='css: { "playlist-open": isPlaylistExpanded(), "sm2-bar-ui-lite": isCompactMode(),
-        "grabbing": isGrabbing() }'>
+    <div class="sm2-bar-ui" data-bind='css: { "playlist-open": isPlaylistExpanded(), "sm2-bar-ui-lite": isCompactMode()}'>
         <div class="bd sm2-main-controls" data-bind='css: { "paused": isPaused, "playing": isPlaying }'>
             <div class="sm2-inline-texture"></div>
             <div class="sm2-inline-element sm2-button-element" data-bind="click: playPauseHandler">
@@ -35,13 +34,21 @@
                         <div class="sm2-row">
                             <div class="sm2-inline-time"><span data-bind="text: timeIndicatorText"></span></div>
                             <div class="sm2-progress-bd">
-                                <input data-bind="attr: { max: _duration },
-                                    event: { mousedown: onInputStart, mouseup: onInputEnd,
-                                     touchstart: onInputStart, touchend: onInputEnd },
+                                <input data-bind="
+                                    attr: {
+                                        max: _duration
+                                    },
+                                    event: {
+                                        mousedown: onInputStart,
+                                        mouseup: onInputEnd,
+                                        touchstart: onInputStart,
+                                        touchend: onInputEnd
+                                    },
                                     value: _currentTime,
-                                    valueUpdate: 'change'" type="range"
-                                       min="0"
-                                       class="sm2-progress-track" />
+                                    valueUpdate: 'input'"
+                                    type="range"
+                                    min="0"
+                                    class="sm2-progress-track" />
                             </div>
                             <div class="sm2-inline-duration"><span data-bind="text: durationIndicatorText"></span></div>
                         </div>
@@ -89,6 +96,24 @@
                             <span data-bind="text: artist"></span>
                         </a>
                     </li>
+                </ul>
+            </div>
+        </div>
+        <div data-bind="if: !isCompactMode() && lyricsViewModel().isEnabled()" class="bd sm2-lyric-drawer sm2-element">
+            <div class="sm2-inline-texture">
+                <div class="sm2-box-shadow"></div>
+            </div>
+            <!-- Lyrics content goes here -->
+            <div class="sm2-lyric-wrapper" data-bind="with: lyricsViewModel">
+                <ul class="sm2-lyric-bd" data-bind="foreach: sentences">
+                    <li class="lyric-content" data-bind='
+                        text: content,
+                        attr: {
+                            "data-time": time
+                        },
+                        css: {
+                            "lyric-content-current": isCurrent
+                        }'></li>
                 </ul>
             </div>
         </div>

@@ -4,8 +4,9 @@
  * PlayerViewModel.ts: Core player ViewModel
  * -----------------------------------------------
  * Copyright (c) 2014, Scott Schiller. All rights reserved.
+ * Copyright (c) 2015 - 2017, Light Studio. All rights reserved.
+ * Copyright (c) 2016 - 2017, David Huang. All rights reserved.
  * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
- * Copyright (c) 2017 David Huang. All rights reserved.
  *
  * This file is part of the project 'Sm2Shim'.
  * Code released under BSD-2-Clause license.
@@ -13,6 +14,9 @@
  */
 
 /// <reference path="../../../Models/ModernPlaylist.ts" />
+/// <reference path="../../../assets/js/Player/Models/LrcSentence.ts" />
+/// <reference path="../../../assets/js/Player/Models/ParsedLrc.ts" />
+/// <reference path="../../../assets/js/Player/LrcParser.ts" />
 
 namespace Sm2Shim.Player.ViewModels
 {
@@ -20,6 +24,7 @@ namespace Sm2Shim.Player.ViewModels
     import ArgumentNullException = System.ArgumentNullException;
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
+    import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
 
     class PlaylistItemViewModel
     {
@@ -179,6 +184,162 @@ namespace Sm2Shim.Player.ViewModels
         }
     }
 
+    class LyricsSentenceViewModel
+    {
+        time: number;
+        content: KnockoutObservable<string>;
+        isCurrent: KnockoutObservable<boolean>;
+
+        constructor(time: number, content: string)
+        {
+            this.time = time;
+            this.content = ko.observable(content);
+            this.isCurrent = ko.observable(false);
+        }
+
+        toggleCurrent() : void
+        {
+            this.isCurrent(!this.isCurrent());
+        }
+    }
+
+    class LyricsViewModel
+    {
+        isEnabled: KnockoutObservable<boolean>;
+        sentences: KnockoutObservableArray<LyricsSentenceViewModel>;
+
+        private m_current: PlaylistItemViewModel;
+        private m_parsedLrcResult: Lyrics.LrcResult;
+        private m_prevPivot: number;
+        private m_nextTimeMark: number;
+        private m_timeMarks: number[];
+
+        constructor()
+        {
+            this.isEnabled = ko.observable(false);
+            this.sentences = ko.observableArray<LyricsSentenceViewModel>();
+            this.m_prevPivot = -1;
+            this.m_nextTimeMark = -1;
+            this.m_timeMarks = [];
+        }
+
+        initializeLyrics(item: PlaylistItemViewModel)
+        {
+            // Sanity check
+            if (item && item.lrcFileSrc())
+            {
+                this.isEnabled(true);
+                this.m_current = item;
+
+                // If sanity check passed, load LRC file.
+                this.loadAndParseLrcFileAsync().then(() => this.bindLyricsSentences());
+            }
+        }
+
+        synchronizeLyrics(position: number, overridePivot?: boolean);
+        synchronizeLyrics(position: number, overridePivot: boolean) : void
+        {
+            if (!this.isEnabled()) return;
+
+            // Determine if we have to update lyrics
+            if (position < this.m_nextTimeMark && !overridePivot) return;
+
+            // Search for lyrics sentence
+            const sentences = this.sentences();
+
+            // Reset if required
+            if (overridePivot)
+            {
+                if (this.m_prevPivot >= 0) sentences[this.m_prevPivot].toggleCurrent();
+                this.m_prevPivot = -1;
+                this.m_nextTimeMark = 0;
+            }
+
+            const searchPivot = (this.m_prevPivot >= 0) ? this.m_prevPivot : 0;
+            let i: number;
+            for (i = searchPivot; i < this.m_timeMarks.length; i++)
+            {
+                if (this.m_timeMarks[i] > position) break;
+            }
+
+            // Update sentence and pivots
+            if (i < this.m_timeMarks.length - 1)
+                this.m_nextTimeMark = this.m_timeMarks[i];
+
+            // Toggle prev one if set
+            if (this.m_prevPivot >= 0) sentences[this.m_prevPivot].toggleCurrent();
+            // Toggle current
+            sentences[i].toggleCurrent();
+            // Set previous pivot
+            this.m_prevPivot = i;
+        }
+
+        private async loadAndParseLrcFileAsync()
+        {
+            // No sanity check since the caller path is determined
+
+            const lrcResult = await LyricsViewModel.downloadLrcAsync(
+                this.m_current.lrcFileSrc(), this.m_current.audioFileSrc());
+
+            // Make sure we are still loading lyrics for correct file
+            if (lrcResult &&
+                lrcResult.isRequestSucceeded &&
+                lrcResult.requestId == this.m_current.audioFileSrc())
+            {
+                this.m_parsedLrcResult = lrcResult;
+            }
+        }
+
+        private bindLyricsSentences()
+        {
+            // Push lyrics to panel
+            let i: number;
+            const lrcSentences = this.m_parsedLrcResult.content.sentences;
+
+            for (i = 0; i < lrcSentences.length; i++)
+            {
+                const sentence = lrcSentences[i];
+                this.sentences.push(new LyricsSentenceViewModel(sentence.time, sentence.content));
+                this.m_timeMarks.push(sentence.time);
+            }
+        }
+
+        private static downloadLrcAsync(lrcPath: string, requestId: string) : Promise<Lyrics.LrcResult>
+        {
+            return new Promise<Lyrics.LrcResult>((resolve, reject) =>
+            {
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", lrcPath, true);
+
+                xhr.onload = () =>
+                {
+                    // Get content anyway. Will validate result later.
+                    let content = xhr.responseText;
+                    const parsedLrc = Light.Lyrics.LrcParser.parse(content);
+                    resolve(new Lyrics.LrcResult(parsedLrc != null, requestId, content, parsedLrc));
+                };
+
+                xhr.onerror = () =>
+                {
+                    reject(new Lyrics.LrcResult(false, requestId, null));
+                };
+
+                xhr.send(null);
+            });
+        }
+
+        reset() : void
+        {
+            this.m_prevPivot = -1;
+            this.m_nextTimeMark = -1;
+            this.m_timeMarks = [];
+            this.m_current = null;
+            this.m_parsedLrcResult = null;
+            this.sentences.removeAll();
+            this.isEnabled(false);
+        }
+    }
+
     export class PlayerViewModel
     {
         playlistItems: KnockoutObservableArray<PlaylistItemViewModel>;
@@ -199,6 +360,7 @@ namespace Sm2Shim.Player.ViewModels
         isGrabbing: KnockoutObservable<boolean>;
 
         timerViewModel: KnockoutObservable<TimeControlViewModel>;
+        lyricsViewModel: KnockoutObservable<LyricsViewModel>;
 
         currentSound: ISmSound;
 
@@ -216,6 +378,7 @@ namespace Sm2Shim.Player.ViewModels
             this.isCompactMode = ko.observable(playlist.compactMode);
             this.isGrabbing = ko.observable(false);
             this.timerViewModel = ko.observable(new TimeControlViewModel(this));
+            this.lyricsViewModel = ko.observable(new LyricsViewModel());
 
             // Load playlist
             let i: number;
@@ -228,7 +391,7 @@ namespace Sm2Shim.Player.ViewModels
                 const album = playlistEntity.album ? playlistEntity.album : "Unknown Album";
 
                 this.playlistItems.push(
-                    new PlaylistItemViewModel(playlistEntity.audioFileUrl, playlistEntity.lrcUrl,
+                    new PlaylistItemViewModel(playlistEntity.audioFileUrl, playlistEntity.lrcFileUrl,
                         title, album, artist, playlistEntity.isExplicit, playlistEntity.navigationUrl));
             }
 
@@ -319,7 +482,12 @@ namespace Sm2Shim.Player.ViewModels
             // Clean up
             this.resetTimer();
             this.isPaused(true);
+            this.lyricsViewModel().reset();
             if (!silentSwitch) soundManager.pauseAll();
+
+            // Request LRC to load.
+            // LRC ViewModel will check entity anyway
+            this.lyricsViewModel().initializeLyrics(entity);
 
             // Create sound object
             this.currentSound = soundManager.createSound(<ISmSoundOptions>
@@ -344,9 +512,9 @@ namespace Sm2Shim.Player.ViewModels
                 whileplaying: () => {
                     // Update time
                     if (this.currentSound.duration)
-                    {
                         this.timerViewModel().currentTime = this.currentSound.position;
-                    }
+                    // Synchronize lyrics
+                    this.lyricsViewModel().synchronizeLyrics(this.currentSound.position);
                 },
                 onload: (success: boolean) => {
                     if (success)
@@ -408,6 +576,8 @@ namespace Sm2Shim.Player.ViewModels
                 {
                     this.currentSound._iO.whileplaying.apply(this.currentSound);
                 }
+                // Reset lyrics
+                this.lyricsViewModel().synchronizeLyrics(position, true);
             }
         }
 

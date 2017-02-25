@@ -25,7 +25,7 @@ namespace Sm2Shim.Player.Models
     interface IModernPlaylistItem
     {
         audioFileUrl: string;
-        lrcUrl: string;
+        lrcFileUrl: string;
         title: string;
         album: string;
         artist: string;
