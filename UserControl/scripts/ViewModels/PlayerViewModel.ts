@@ -4,9 +4,8 @@
  * PlayerViewModel.ts: Core player ViewModel
  * -----------------------------------------------
  * Copyright (c) 2014, Scott Schiller. All rights reserved.
- * Copyright (c) 2015 - 2017, Light Studio. All rights reserved.
- * Copyright (c) 2016 - 2017, David Huang. All rights reserved.
- * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
+ * Copyright (c) 2015 - 2017, Light Studio, David Huang, Bingxing Wang and Henry King. All rights reserved.
+ * Copyright (c) 2016 - 2017, The Little Moe New LLC, Bingxing Wang. All rights reserved.
  *
  * This file is part of the project 'Sm2Shim'.
  * Code released under BSD-2-Clause license.
@@ -138,6 +137,8 @@ namespace Sm2Shim.Player.ViewModels
             this.m_parent.setPosition(parseInt(target.value));
             // Unlock
             this.m_isChangeAllowed = true;
+
+            // Make default event work so we can adjust time
             return true;
         }
 
@@ -587,15 +588,5 @@ namespace Sm2Shim.Player.ViewModels
             if (index >= 0) this.setIndex(index, true);
         }
 
-        private static isRightClick(e: MouseEvent) : boolean
-        {
-            // Only pay attention to left clicks.
-            // Old IE differs where there's no e.which, but e.button is 1 on left click.
-            if (e && ((e.which && e.which === 3) || (e.which === undefined && e.button !== 1)))
-            {
-                // http://www.quirksmode.org/js/events_properties.html#button
-                return true;
-            }
-        }
     }
 }
