@@ -1,7 +1,6 @@
 .vscode
 .idea
 node_modules
-Library
 Framework/*.js
 Options/*.js
 Player/*.js
@@ -14,3 +13,4 @@ Models/*.js
 *.js.map
 *.lock.json
 MediaWiki-Sm2Shim.iml
+Library
