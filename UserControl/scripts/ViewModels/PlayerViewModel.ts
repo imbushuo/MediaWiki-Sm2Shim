@@ -214,6 +214,7 @@ namespace Sm2Shim.Player.ViewModels
         private m_prevPivot: number;
         private m_nextTimeMark: number;
         private m_timeMarks: number[];
+        private m_pollingInterval: number;
 
         constructor()
         {
@@ -222,6 +223,13 @@ namespace Sm2Shim.Player.ViewModels
             this.m_prevPivot = -1;
             this.m_nextTimeMark = -1;
             this.m_timeMarks = [];
+
+            this.m_pollingInterval = 200;
+            // Detect mobile devices (power optimization)
+            if (window.navigator.userAgent.match(/mobile/i))
+            {
+                this.m_pollingInterval = 500;
+            }
         }
 
         initializeLyrics(item: PlaylistItemViewModel)
@@ -265,12 +273,12 @@ namespace Sm2Shim.Player.ViewModels
 
             // Update sentence and pivots
             if (i < this.m_timeMarks.length - 1)
-                this.m_nextTimeMark = this.m_timeMarks[i];
+                this.m_nextTimeMark = this.m_timeMarks[i + 1] - this.m_pollingInterval;
 
             // Toggle prev one if set
             if (this.m_prevPivot >= 0) sentences[this.m_prevPivot].toggleCurrent();
             // Toggle current
-            sentences[i].toggleCurrent();
+            if (sentences[i]) sentences[i].toggleCurrent();
             // Set previous pivot
             this.m_prevPivot = i;
         }

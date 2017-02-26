@@ -4,7 +4,7 @@ node_modules
 Framework/*.js
 Options/*.js
 Player/*.js
-Utils/*.js
+Utilities/*.js
 Player/Models/*.js
 CoreServices/*.js
 UserControl/scripts/ViewModels/*.js
