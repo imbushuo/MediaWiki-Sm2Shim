@@ -13,9 +13,9 @@
  */
 
 /// <reference path="../../../Models/ModernPlaylist.ts" />
-/// <reference path="../../../assets/js/Player/Models/LrcSentence.ts" />
-/// <reference path="../../../assets/js/Player/Models/ParsedLrc.ts" />
-/// <reference path="../../../assets/js/Player/LrcParser.ts" />
+/// <reference path="../../../Player/Models/LrcSentence.ts" />
+/// <reference path="../../../Player/Models/ParsedLrc.ts" />
+/// <reference path="../../../Player/LrcParser.ts" />
 
 namespace Sm2Shim.Player.ViewModels
 {

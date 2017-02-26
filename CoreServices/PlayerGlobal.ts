@@ -14,7 +14,7 @@ import PlayerViewModel = Sm2Shim.Player.ViewModels.PlayerViewModel;
  *
  */
 
-/// <reference path="../assets/js/Framework/SoundManager2.d.ts" />
+/// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../UserControl/scripts/ViewModels/PlayerViewModel.ts" />
 
 (function (){

@@ -12,12 +12,12 @@
  *
  */
 
-/// <reference path="../../assets/js/Options/PlayerOptions.ts" />
-/// <reference path="../../assets/js/Framework/SoundManager2.d.ts" />
-/// <reference path="../../assets/js/Framework/NotImplementedException.ts" />
-/// <reference path="../../assets/js/Utils/Utils.ts" />
-/// <reference path="../../assets/js/Utils/ParamUtils.ts" />
-/// <reference path="../../assets/js/Player/LrcParser.ts" />
+/// <reference path="../../Options/PlayerOptions.ts" />
+/// <reference path="../../Framework/SoundManager2.d.ts" />
+/// <reference path="../../Framework/NotImplementedException.ts" />
+/// <reference path="../../Utilities/Utils.ts" />
+/// <reference path="../../Utilities/ParamUtils.ts" />
+/// <reference path="../../Player/LrcParser.ts" />
 
 export module Sm2Shim.Player.Widget
 {
