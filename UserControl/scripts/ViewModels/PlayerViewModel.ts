@@ -24,6 +24,7 @@ namespace Sm2Shim.Player.ViewModels
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
     import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
+    import reject = Promise.reject;
 
     class PlaylistItemViewModel
     {
@@ -33,6 +34,7 @@ namespace Sm2Shim.Player.ViewModels
         navigationLink: KnockoutObservable<string>;
         tooltip: KnockoutObservable<string>;
         isCurrent: KnockoutObservable<boolean>;
+        coverImageUrl: KnockoutObservable<string>;
 
         lrcTitle: string;
         lrcAlbum: string;
@@ -50,7 +52,7 @@ namespace Sm2Shim.Player.ViewModels
             audioFileSrc: string, lrcFileSrc?: string,
             titleMetadataOverride?: string, albumMetadataOverride?: string,
             artistMetadataOverride?: string, isExplicit?: boolean,
-            navigationLink?: string)
+            navigationLink?: string, coverImageUrl?: string)
         {
             this.audioFileSrc = ko.observable(audioFileSrc);
             this.lrcFileSrc = ko.observable(lrcFileSrc);
@@ -59,6 +61,7 @@ namespace Sm2Shim.Player.ViewModels
             this.artistMetadataOverride = artistMetadataOverride;
             this.isExplicit = ko.observable(isExplicit);
             this.navigationLink = ko.observable(navigationLink);
+            this.coverImageUrl = ko.observable(coverImageUrl);
             this.lrcTitle = "";
             this.lrcAlbum = "";
             this.lrcArtist = "";
@@ -95,6 +98,7 @@ namespace Sm2Shim.Player.ViewModels
         private _duration: KnockoutObservable<number>;
         private m_parent: PlayerViewModel;
         private m_isChangeAllowed: boolean;
+        private m_prevPos: number;
 
         get currentTime() : number
         {
@@ -120,12 +124,14 @@ namespace Sm2Shim.Player.ViewModels
         {
             this._currentTime(0);
             this._duration(0);
+            this.m_prevPos = 0;
             this.m_isChangeAllowed = true;
         }
 
         onInputStart() : boolean
         {
             this.m_isChangeAllowed = false;
+            this.m_prevPos = this._currentTime();
             return true;
         }
 
@@ -134,7 +140,11 @@ namespace Sm2Shim.Player.ViewModels
             // Get target
             const target = <HTMLInputElement> event.target;
             // Commit change
-            this.m_parent.setPosition(parseInt(target.value));
+            this.m_parent.setPosition(parseInt(target.value)).catch(() =>
+            {
+                // Rejected - reset timer
+                this._currentTime(this.m_prevPos);
+            });
             // Unlock
             this.m_isChangeAllowed = true;
 
@@ -163,6 +173,7 @@ namespace Sm2Shim.Player.ViewModels
         {
             this._currentTime = ko.observable(0);
             this._duration = ko.observable(0);
+            this.m_prevPos = 0;
             this.m_parent = parent;
             this.m_isChangeAllowed = true;
 
@@ -390,6 +401,8 @@ namespace Sm2Shim.Player.ViewModels
 
         currentSound: ISmSound;
 
+        private m_stopped: boolean;
+
         constructor(playlist: IModernPlaylist)
         {
             if (!playlist) throw new ArgumentNullException("playlist");
@@ -405,6 +418,7 @@ namespace Sm2Shim.Player.ViewModels
             this.isGrabbing = ko.observable(false);
             this.timerViewModel = ko.observable(new TimeControlViewModel(this));
             this.lyricsViewModel = ko.observable(new LyricsViewModel());
+            this.m_stopped = false;
 
             // Load playlist
             let i: number;
@@ -418,7 +432,8 @@ namespace Sm2Shim.Player.ViewModels
 
                 this.playlistItems.push(
                     new PlaylistItemViewModel(playlistEntity.audioFileUrl, playlistEntity.lrcFileUrl,
-                        title, album, artist, playlistEntity.isExplicit, playlistEntity.navigationUrl));
+                        title, album, artist, playlistEntity.isExplicit, playlistEntity.navigationUrl,
+                        playlistEntity.coverImageUrl));
             }
 
             // Set current index to 0 as default
@@ -510,6 +525,7 @@ namespace Sm2Shim.Player.ViewModels
             this.isPaused(true);
             this.lyricsViewModel().reset();
             if (!silentSwitch) soundManager.pauseAll();
+            this.m_stopped = false;
 
             // Request LRC to load.
             // LRC ViewModel will check entity anyway
@@ -556,6 +572,7 @@ namespace Sm2Shim.Player.ViewModels
                     }
                     else
                     {
+                        this.m_stopped = true;
                         this.isPaused(true);
                     }
                 }
@@ -590,21 +607,38 @@ namespace Sm2Shim.Player.ViewModels
             }
         }
 
-        setPosition(position: number) : void
+        setPosition(position: number) : Promise<boolean>
         {
-            if (this.currentSound && this.currentSound.duration)
+            return new Promise<boolean>((resolve, reject) =>
             {
-                this.timerViewModel().currentTime = position;
-                this.currentSound.setPosition(position);
-                // A little hackish: ensure UI updates immediately with current position,
-                // even if audio is buffering and hasn't moved there yet.
-                if (this.currentSound._iO && this.currentSound._iO.whileplaying)
+                if (this.currentSound && this.currentSound.duration)
                 {
-                    this.currentSound._iO.whileplaying.apply(this.currentSound);
+                    // If the sound has stopped, reject the request.
+                    if (this.m_stopped)
+                    {
+                        reject(false);
+                    }
+                    else
+                    {
+                        this.timerViewModel().currentTime = position;
+                        this.currentSound.setPosition(position);
+                        // A little hackish: ensure UI updates immediately with current position,
+                        // even if audio is buffering and hasn't moved there yet.
+                        if (this.currentSound._iO && this.currentSound._iO.whileplaying)
+                        {
+                            this.currentSound._iO.whileplaying.apply(this.currentSound);
+                        }
+                        // Reset lyrics
+                        this.lyricsViewModel().synchronizeLyrics(position, true);
+                        // Accept request
+                        resolve(true);
+                    }
                 }
-                // Reset lyrics
-                this.lyricsViewModel().synchronizeLyrics(position, true);
-            }
+                else
+                {
+                    reject(false);
+                }
+            });
         }
 
         onPlaylistItemClick = (item: PlaylistItemViewModel) : void =>

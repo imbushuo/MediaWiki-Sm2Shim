@@ -20,7 +20,7 @@
                 const lyricsContainer = element.parentElement;
                 if (lyricsContainer)
                 {
-                    // Basic scroll support (pretty dirty)
+                    // Basic scroll support (pretty dirty) if jQuery is not present
                     const currLnIndex = Array.prototype.indexOf.call(lyricsContainer.children, element);
                     if (currLnIndex >= 3)
                     {
@@ -33,6 +33,16 @@
                             // Approaching the end. Scroll itself.
                             element.scrollIntoView(false);
                         }
+                    }
+                    else if (currLnIndex < 1)
+                    {
+                        // Make sure it is on the top
+                        element.scrollIntoView();
+                    }
+
+                    if ((<any>window).jQuery != undefined)
+                    {
+
                     }
                 }
             }

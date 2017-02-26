@@ -14,6 +14,10 @@
                 </div>
             </div>
             <div class="sm2-full-container" data-bind="ifnot: isCompactMode">
+                <div class="sm2-inline-element sm2-inline-cover" data-bind="if: currentItem().coverImageUrl()">
+                    <img data-bind='attr: { src: currentItem().coverImageUrl() }'
+                         class="sm2-inline-cover-img" />
+                </div>
                 <div class="sm2-inline-element sm2-inline-status">
                     <div class="sm2-playlist">
                         <div class="sm2-playlist-target">

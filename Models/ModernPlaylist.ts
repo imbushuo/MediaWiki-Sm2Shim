@@ -31,5 +31,6 @@ namespace Sm2Shim.Player.Models
         artist: string;
         isExplicit: boolean;
         navigationUrl: string;
+        coverImageUrl: string;
     }
 }
