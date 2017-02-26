@@ -5,26 +5,56 @@
         <meta charset="UTF-8" />
         <title>SoundManager 2: Bar UI Player Self Host via KnockoutJS</title>
         <meta name="viewport" content="width=500, initial-scale=1">
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-        <script src="Library/knockout/dist/knockout.debug.js"></script>
-        <script src="CoreServices/TemplateLoader.js"></script>
-        <script src="Framework/HResults.js"></script>
-        <script src="Framework/Exception.js"></script>
-        <script src="Framework/ArgumentNullException.js"></script>
-        <script src="Library/core-promise/client/core-promise.js"></script>
-        <script src="Library/SoundManager2/script/soundmanager2.js"></script>
-        <script src="Player/Models/LrcSentence.js"></script>
-        <script src="Player/Models/ParsedLrc.js"></script>
-        <script src="Framework/TextReader.js"></script>
-        <script src="Player/LrcParser.js"></script>
-        <script src="UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js"></script>
-        <script src="UserControl/scripts/ViewModels/PlayerViewModel.js"></script>
-        <script src="CoreServices/PlayerGlobal.js"></script>
+        <link rel="stylesheet" href="assets/css/win-ring-bundled.min.css" />
         <link rel="stylesheet" href="assets/css/bar-ui.css"/>
         <link rel="stylesheet" href="assets/css/base-ui.css" />
     </head>
 
     <body>
+    <div class="sm2-loading-stub">
+        <div class="loader">
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+        </div>
+    </div>
+    <div class="sm2-loading-stub">
+        <div class="loader">
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+            <div class="box">
+                <div class="circle"></div>
+            </div>
+        </div>
+    </div>
     <div data-bind='component: {
         name: "sm2-player-fx",
         params: {
@@ -73,7 +103,21 @@
     }'>
 
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="Library/knockout/dist/knockout.debug.js"></script>
+    <script src="CoreServices/TemplateLoader.js"></script>
+    <script src="Framework/HResults.js"></script>
+    <script src="Framework/Exception.js"></script>
+    <script src="Framework/ArgumentNullException.js"></script>
+    <script src="Library/core-promise/client/core-promise.js"></script>
+    <script src="Library/SoundManager2/script/soundmanager2.js"></script>
+    <script src="Player/Models/LrcSentence.js"></script>
+    <script src="Player/Models/ParsedLrc.js"></script>
+    <script src="Framework/TextReader.js"></script>
+    <script src="Player/LrcParser.js"></script>
+    <script src="UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js"></script>
+    <script src="UserControl/scripts/ViewModels/PlayerViewModel.js"></script>
+    <script src="CoreServices/PlayerGlobal.js"></script>
     </body>
 
 </html>

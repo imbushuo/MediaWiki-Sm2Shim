@@ -7,6 +7,12 @@
     ]
   },
   {
+    "outputFileName": "assets/css/win-ring-bundled.css",
+    "inputFiles": [
+      "assets/css/win-ring.css"
+    ]
+  },
+  {
     "outputFileName": "bin/Debug/player.js",
     "inputFiles": [
       "Library/knockout/dist/knockout.debug.js",
@@ -33,6 +39,7 @@
   {
     "outputFileName": "bin/Release/player.js",
     "inputFiles": [
+
       "Library/knockout/dist/knockout.js",
       "CoreServices/TemplateLoader.js",
       "Framework/HResults.js",

@@ -1,5 +1,6 @@
 import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
 import PlayerViewModel = Sm2Shim.Player.ViewModels.PlayerViewModel;
+import load = soundManager.load;
 /**
  * @license
  *
@@ -54,6 +55,16 @@ import PlayerViewModel = Sm2Shim.Player.ViewModels.PlayerViewModel;
         });
 
         ko.applyBindings();
+
+        // Remove any loading stubs
+        const loadingStubs = document.getElementsByClassName("sm2-loading-stub");
+        if (loadingStubs)
+        {
+            while (loadingStubs.length > 0)
+            {
+                loadingStubs[0].parentNode.removeChild(loadingStubs[0]);
+            }
+        }
     });
 
     // Expose to global
