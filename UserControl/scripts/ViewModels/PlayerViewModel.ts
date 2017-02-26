@@ -36,13 +36,13 @@ namespace Sm2Shim.Player.ViewModels
         isCurrent: KnockoutObservable<boolean>;
         coverImageUrl: KnockoutObservable<string>;
 
-        lrcTitle: string;
-        lrcAlbum: string;
-        lrcArtist: string;
+        lrcTitle: KnockoutObservable<string>;
+        lrcAlbum: KnockoutObservable<string>;
+        lrcArtist: KnockoutObservable<string>;
 
-        titleMetadataOverride: string;
-        albumMetadataOverride: string;
-        artistMetadataOverride: string;
+        titleMetadataOverride: KnockoutObservable<string>;
+        albumMetadataOverride: KnockoutObservable<string>;
+        artistMetadataOverride: KnockoutObservable<string>;
 
         title: KnockoutObservable<string>;
         album: KnockoutObservable<string>;
@@ -56,15 +56,15 @@ namespace Sm2Shim.Player.ViewModels
         {
             this.audioFileSrc = ko.observable(audioFileSrc);
             this.lrcFileSrc = ko.observable(lrcFileSrc);
-            this.titleMetadataOverride = titleMetadataOverride;
-            this.albumMetadataOverride = albumMetadataOverride;
-            this.artistMetadataOverride = artistMetadataOverride;
+            this.titleMetadataOverride = ko.observable(titleMetadataOverride);
+            this.albumMetadataOverride = ko.observable(albumMetadataOverride);
+            this.artistMetadataOverride = ko.observable(artistMetadataOverride);
             this.isExplicit = ko.observable(isExplicit);
             this.navigationLink = ko.observable(navigationLink);
             this.coverImageUrl = ko.observable(coverImageUrl);
-            this.lrcTitle = "";
-            this.lrcAlbum = "";
-            this.lrcArtist = "";
+            this.lrcTitle = ko.observable("");
+            this.lrcAlbum = ko.observable("");
+            this.lrcArtist = ko.observable("");
             this.isCurrent = ko.observable(false);
 
             this.tooltip = ko.computed(() => {
@@ -72,18 +72,38 @@ namespace Sm2Shim.Player.ViewModels
             });
 
             this.title = ko.computed(() =>
-                PlaylistItemViewModel.overrideStringSelection(this.titleMetadataOverride, this.lrcTitle));
+                PlaylistItemViewModel.overrideStringSelection([
+                    this.titleMetadataOverride(),
+                    this.lrcTitle(),
+                    "Unknown Title"
+                ]));
             this.artist = ko.computed(() =>
-                PlaylistItemViewModel.overrideStringSelection(this.artistMetadataOverride, this.lrcArtist));
+                PlaylistItemViewModel.overrideStringSelection([
+                    this.artistMetadataOverride(),
+                    this.lrcArtist(),
+                    "Unknown Artist"
+                ]));
             this.album = ko.computed(() =>
-                PlaylistItemViewModel.overrideStringSelection(this.albumMetadataOverride, this.lrcAlbum));
+                PlaylistItemViewModel.overrideStringSelection([
+                    this.albumMetadataOverride(),
+                    this.lrcAlbum(),
+                    "Unknown Album"
+                ]));
 
         }
 
         private static overrideStringSelection(
-            override: string, fallback: string) : string
+            fallbackSequence: string[]) : string
         {
-            return (override && override != "") ? override : fallback;
+            if (fallbackSequence)
+            {
+                for (let i = 0; i < fallbackSequence.length; i++)
+                {
+                    if (fallbackSequence[i]) return fallbackSequence[i];
+                }
+            }
+
+            return "Unknown";
         }
     }
 
@@ -140,13 +160,13 @@ namespace Sm2Shim.Player.ViewModels
             // Get target
             const target = <HTMLInputElement> event.target;
             // Commit change
-            this.m_parent.setPosition(parseInt(target.value)).catch(() =>
+            viewModel.m_parent.setPosition(parseInt(target.value)).catch(() =>
             {
                 // Rejected - reset timer
-                this._currentTime(this.m_prevPos);
+                viewModel._currentTime(this.m_prevPos);
             });
             // Unlock
-            this.m_isChangeAllowed = true;
+            viewModel.m_isChangeAllowed = true;
 
             // Make default event work so we can adjust time
             return true;
@@ -328,6 +348,11 @@ namespace Sm2Shim.Player.ViewModels
 
         private bindLyricsSentences()
         {
+            // Update metadata
+            this.m_current.lrcAlbum(this.m_parsedLrcResult.content.album);
+            this.m_current.lrcArtist(this.m_parsedLrcResult.content.artist);
+            this.m_current.lrcTitle(this.m_parsedLrcResult.content.title);
+
             // Push lyrics to panel
             let i: number;
             const lrcSentences = this.m_parsedLrcResult.content.sentences;
@@ -426,13 +451,11 @@ namespace Sm2Shim.Player.ViewModels
             {
                 const playlistEntity = playlist.playlist[i];
                 if (!playlistEntity || !playlistEntity.audioFileUrl) continue;
-                const title = playlistEntity.title ? playlistEntity.title : "Unknown Title";
-                const artist = playlistEntity.artist ? playlistEntity.artist : "Unknown Artist";
-                const album = playlistEntity.album ? playlistEntity.album : "Unknown Album";
 
                 this.playlistItems.push(
                     new PlaylistItemViewModel(playlistEntity.audioFileUrl, playlistEntity.lrcFileUrl,
-                        title, album, artist, playlistEntity.isExplicit, playlistEntity.navigationUrl,
+                        playlistEntity.title, playlistEntity.album, playlistEntity.artist,
+                        playlistEntity.isExplicit, playlistEntity.navigationUrl,
                         playlistEntity.coverImageUrl));
             }
 

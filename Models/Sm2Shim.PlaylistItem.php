@@ -20,6 +20,7 @@ class PlaylistItem
     private $audioFileUrl;
     private $lrcFileUrl;
     private $navigationUrl;
+    private $coverImageUrl;
     private $lrcFileOffset;
     private $ignoreLrcMetadata;
 
@@ -38,6 +39,7 @@ class PlaylistItem
         $audioFileUrl = $entity->audioFileUrl;
         $lrcFileUrl = isset($entity->lrcFileUrl) ? $entity->lrcFileUrl : "";
         $navigationUrl = isset($entity->navigationUrl) ? $entity->navigationUrl : "";
+        $coverImageUrl = isset($entity->coverImageUrl) ? $entity->coverImageUrl : "";
         $lrcFileOffset = isset($entity->lrcFileOffset) ? $entity->lrcFileOffset : 0;
         $ignoreLrcMetadata = isset($entity->ignoreLrcMetadata) ? $entity->ignoreLrcMetadata : false;
         $title = isset($entity->title) ? $entity->title : "";
@@ -46,7 +48,7 @@ class PlaylistItem
         $isExplicit = isset($entity->isExplicit) ? $entity->isExplicit : false;
 
         return new PlaylistItem($audioFileUrl, $lrcFileUrl, $lrcFileOffset, $ignoreLrcMetadata,
-            $title, $album, $artist, $isExplicit);
+            $title, $album, $artist, $isExplicit, $navigationUrl, $coverImageUrl);
     }
 
 
@@ -61,13 +63,14 @@ class PlaylistItem
      * @param $artist string Artist name (optional)
      * @param $isExplicit boolean Whether is explicit song or not (optional)
      * @param $navigationUrl string Navigation URL (optional)
+     * @param $coverImageUrl string Cover iamge URL (optional)
      * @throws Exceptions\InvalidDataException Thrown if the given @param $audioFileUrl is null or empty.
      */
     public function __construct($audioFileUrl, $lrcFileUrl = "",
                                 $lrcFileOffset = 0, $ignoreLrcMetadata = false,
                                 $title = "", $album = "",
                                 $artist = "", $isExplicit = false,
-                                $navigationUrl = "")
+                                $navigationUrl = "", $coverImageUrl = "")
     {
         // Sanity check
         if (empty($audioFileUrl))
@@ -112,6 +115,7 @@ class PlaylistItem
         $this->lrcFileUrl = $lrcFileUrl;
         $this->ignoreLrcMetadata = $ignoreLrcMetadata;
         $this->navigationUrl = $navigationUrl;
+        $this->coverImageUrl = $coverImageUrl;
     }
 
     /**
@@ -179,11 +183,19 @@ class PlaylistItem
     }
 
     /**
-     * @return string Navigation URL (optional).
+     * @return string Navigation URL.
      */
     public function getNavigationUrl(): string
     {
         return $this->navigationUrl;
+    }
+
+    /**
+     * @return string Cover URL.
+     */
+    public function getCoverUrl() : string
+    {
+        return $this->coverImageUrl;
     }
 
 }
