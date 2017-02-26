@@ -20,6 +20,8 @@ namespace Sm2Shim.Player.Models
         isPlaylistOpen: boolean;
         playlist: Array<IModernPlaylistItem>;
         compactMode: boolean;
+        backgroundColor: string;
+        foregroundColor: string;
     }
 
     interface IModernPlaylistItem
@@ -32,5 +34,6 @@ namespace Sm2Shim.Player.Models
         isExplicit: boolean;
         navigationUrl: string;
         coverImageUrl: string;
+        lrcFileOffset: number;
     }
 }
