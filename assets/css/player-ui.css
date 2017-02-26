@@ -37,6 +37,75 @@
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+.sm2-bar-ui input[type=range]::-ms-track {
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  margin: 0px;
+  padding: 0px;
+  border: 0 none;
+  background: transparent;
+  color: transparent;
+  overflow: visible;
+}
+.sm2-bar-ui input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 100%;
+  -moz-appearance: none;
+  margin: 0px;
+  padding: 0px;
+  border: 0 none;
+  background: transparent;
+  color: transparent;
+  overflow: visible;
+}
+.sm2-bar-ui input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 0px;
+  padding: 0px;
+  border: 0 none;
+  background-color: rgba(0, 0, 0, 0.4);
+  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-33.png);
+  /* legacy */
+  background-image: none, none;
+  /* modern browsers */
+  color: transparent;
+  overflow: visible;
+}
+.sm2-bar-ui input[type=range]::-ms-tooltip {
+  display: none;
+}
+.sm2-bar-ui input[type=range]::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0 none;
+  background: #ffffff;
+  -webkit-appearance: none;
+}
+.sm2-bar-ui input[type=range]::-ms-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0 none;
+  background: #ffffff;
+}
+.sm2-bar-ui input[type=range]::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0 none;
+  background: #ffffff;
+}
+.sm2-bar-ui input[type=range]:focus::-webkit-slider-runnable-track {
+  background: transparent;
+  border: transparent;
+}
+.sm2-bar-ui input[type=range]:focus {
+  outline: none;
+}
 .sm2-full-container {
   display: table;
 }
@@ -152,6 +221,12 @@
   background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-10.png);
   /* modern browsers don't neeed the image */
   background-image: none, none;
+}
+.sm2-playlist-bd .sm2-current-item {
+  margin-top: 0.5px;
+}
+.sm2-playlist-bd .sm2-current-item:hover {
+  text-decoration: none !important;
 }
 .sm2-bar-ui .bd {
   display: table;
@@ -420,13 +495,6 @@
  background-color: #000;
 }
 */
-.sm2-progress .sm2-progress-track {
-  background-color: rgba(0, 0, 0, 0.4);
-  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-33.png);
-  /* legacy */
-  background-image: none, none;
-  /* modern browsers */
-}
 /* scrollbar rules have to be separate, browsers not supporting this syntax will skip them when combined. */
 .sm2-playlist-wrapper ul::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.4);

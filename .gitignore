@@ -14,3 +14,4 @@ Models/*.js
 *.lock.json
 MediaWiki-Sm2Shim.iml
 Library
+bin

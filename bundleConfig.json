@@ -5,5 +5,53 @@
       "assets/css/bar-ui.css",
       "assets/css/base-ui.css"
     ]
+  },
+  {
+    "outputFileName": "bin/Debug/player.js",
+    "inputFiles": [
+      "Library/knockout/dist/knockout.debug.js",
+      "CoreServices/TemplateLoader.js",
+      "Framework/HResults.js",
+      "Framework/Exception.js",
+      "Framework/ArgumentNullException.js",
+      "Library/core-promise/client/core-promise.js",
+      "Library/SoundManager2/script/soundmanager2.js",
+      "Player/Models/LrcSentence.js",
+      "Player/Models/ParsedLrc.js",
+      "Framework/TextReader.js",
+      "Player/LrcParser.js",
+      "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/PlayerViewModel.js",
+      "CoreServices/PlayerGlobal.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "bin/Release/player.js",
+    "inputFiles": [
+      "Library/knockout/dist/knockout.js",
+      "CoreServices/TemplateLoader.js",
+      "Framework/HResults.js",
+      "Framework/Exception.js",
+      "Framework/ArgumentNullException.js",
+      "Library/core-promise/client/core-promise.js",
+      "Library/SoundManager2/script/soundmanager2-nodebug.js",
+      "Player/Models/LrcSentence.js",
+      "Player/Models/ParsedLrc.js",
+      "Framework/TextReader.js",
+      "Player/LrcParser.js",
+      "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/PlayerViewModel.js",
+      "CoreServices/PlayerGlobal.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": true
   }
 ]
