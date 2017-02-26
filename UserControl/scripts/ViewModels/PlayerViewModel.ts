@@ -215,6 +215,7 @@ namespace Sm2Shim.Player.ViewModels
         private m_nextTimeMark: number;
         private m_timeMarks: number[];
         private m_pollingInterval: number;
+        private m_isFinished: boolean;
 
         constructor()
         {
@@ -223,6 +224,7 @@ namespace Sm2Shim.Player.ViewModels
             this.m_prevPivot = -1;
             this.m_nextTimeMark = -1;
             this.m_timeMarks = [];
+            this.m_isFinished = false;
 
             this.m_pollingInterval = 200;
             // Detect mobile devices (power optimization)
@@ -251,7 +253,9 @@ namespace Sm2Shim.Player.ViewModels
             if (!this.isEnabled()) return;
 
             // Determine if we have to update lyrics
-            if (position < this.m_nextTimeMark && !overridePivot) return;
+            // Determine if we reached end
+            if ((position < this.m_nextTimeMark && !overridePivot) ||
+                (this.m_isFinished && !overridePivot)) return;
 
             // Search for lyrics sentence
             const sentences = this.sentences();
@@ -263,6 +267,7 @@ namespace Sm2Shim.Player.ViewModels
                     sentences[this.m_prevPivot].toggleCurrent();
                 this.m_prevPivot = -1;
                 this.m_nextTimeMark = 0;
+                this.m_isFinished = false;
             }
 
             const searchPivot = (this.m_prevPivot >= 0) ? this.m_prevPivot : 0;
@@ -272,9 +277,18 @@ namespace Sm2Shim.Player.ViewModels
                 if (this.m_timeMarks[i] > position) break;
             }
 
+            // Reset boundary (last sentence)
+            if (i >= this.m_timeMarks.length &&
+                this.m_prevPivot != this.m_timeMarks.length - 1)
+            {
+                i = this.m_timeMarks.length - 1;
+            }
+
             // Update sentence and pivots
             if (i < this.m_timeMarks.length - 1)
                 this.m_nextTimeMark = this.m_timeMarks[i + 1] - this.m_pollingInterval;
+            else
+                this.m_isFinished = true;
 
             // Toggle prev one if set
             if (this.m_prevPivot >= 0 && sentences[this.m_prevPivot])
@@ -344,6 +358,7 @@ namespace Sm2Shim.Player.ViewModels
             this.m_prevPivot = -1;
             this.m_nextTimeMark = -1;
             this.m_timeMarks = [];
+            this.m_isFinished = false;
             this.m_current = null;
             this.m_parsedLrcResult = null;
             this.sentences.removeAll();
