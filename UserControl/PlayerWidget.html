@@ -32,9 +32,9 @@
                         </div>
                     </div>
                     <div class="sm2-progress" data-bind="with: timerViewModel">
-                        <div class="sm2-row">
-                            <div class="sm2-inline-time"><span data-bind="text: timeIndicatorText"></span></div>
-                            <div class="sm2-progress-bd">
+                        <div class="sm2-progress-container">
+                            <div class="sm2-inline-time sm2-progress-element"><span data-bind="text: timeIndicatorText"></span></div>
+                            <div class="sm2-progress-element sm2-progressbar-container">
                                 <input data-bind="
                                     attr: {
                                         max: _duration
@@ -47,11 +47,11 @@
                                     },
                                     value: _currentTime,
                                     valueUpdate: 'input'"
-                                    type="range"
-                                    min="0"
-                                    class="sm2-progress-track" />
+                                       type="range"
+                                       min="0"
+                                       class="sm2-progress-track" />
                             </div>
-                            <div class="sm2-inline-duration"><span data-bind="text: durationIndicatorText"></span></div>
+                            <div class="sm2-inline-duration sm2-progress-element"><span data-bind="text: durationIndicatorText"></span></div>
                         </div>
                     </div>
                 </div>

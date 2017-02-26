@@ -59,6 +59,11 @@
   color: transparent;
   overflow: visible;
 }
+.sm2-bar-ui input[type=range]::-webkit-slider-runnable-track {
+  background: transparent;
+  border: transparent;
+  width: 100%;
+}
 .sm2-bar-ui input[type=range] {
   width: 100%;
   -webkit-appearance: none;
@@ -73,29 +78,30 @@
   /* modern browsers */
   color: transparent;
   overflow: visible;
+  float: left;
 }
 .sm2-bar-ui input[type=range]::-ms-tooltip {
   display: none;
 }
 .sm2-bar-ui input[type=range]::-webkit-slider-thumb {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
   border: 0 none;
   background: #3D3D3D;
   -webkit-appearance: none;
 }
 .sm2-bar-ui input[type=range]::-ms-thumb {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
   border: 0 none;
   background: #3D3D3D;
 }
 .sm2-bar-ui input[type=range]::-moz-range-thumb {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
   border: 0 none;
   background: #3D3D3D;
 }
@@ -386,8 +392,6 @@
 }
 .sm2-inline-time,
 .sm2-inline-duration {
-  display: table-cell;
-  width: 1%;
   font-size: 75%;
   line-height: 0.9em;
   min-width: 2em;
@@ -437,9 +441,28 @@
   position: relative;
   display: table-row;
 }
-.sm2-progress-bd {
-  /* spacing between progress track/ball and time (position) */
-  padding: 0 0.8em;
+.sm2-progress-container {
+  height: 0.75em;
+  overflow: hidden;
+}
+.sm2-progress-container:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+.sm2-progress-element {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 2px;
+  float: left;
+}
+.sm2-progressbar-container {
+  width: 80%;
+  margin-left: 5px;
+}
+.sm2-inline-duration {
+  margin-left: 5px;
 }
 .sm2-progress .sm2-progress-track,
 .sm2-progress .sm2-progress-ball,
