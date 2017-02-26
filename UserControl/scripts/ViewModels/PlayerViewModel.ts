@@ -28,6 +28,8 @@ namespace Sm2Shim.Player.ViewModels
 
     class PlaylistItemViewModel
     {
+        private m_lrcOffset: number;
+
         audioFileSrc: KnockoutObservable<string>;
         lrcFileSrc: KnockoutObservable<string>;
         isExplicit: KnockoutObservable<boolean>;
@@ -35,24 +37,26 @@ namespace Sm2Shim.Player.ViewModels
         tooltip: KnockoutObservable<string>;
         isCurrent: KnockoutObservable<boolean>;
         coverImageUrl: KnockoutObservable<string>;
-
         lrcTitle: KnockoutObservable<string>;
         lrcAlbum: KnockoutObservable<string>;
         lrcArtist: KnockoutObservable<string>;
-
         titleMetadataOverride: KnockoutObservable<string>;
         albumMetadataOverride: KnockoutObservable<string>;
         artistMetadataOverride: KnockoutObservable<string>;
-
         title: KnockoutObservable<string>;
         album: KnockoutObservable<string>;
         artist: KnockoutObservable<string>;
+
+        get lrcOffset()
+        {
+            return this.m_lrcOffset;
+        }
 
         constructor(
             audioFileSrc: string, lrcFileSrc?: string,
             titleMetadataOverride?: string, albumMetadataOverride?: string,
             artistMetadataOverride?: string, isExplicit?: boolean,
-            navigationLink?: string, coverImageUrl?: string)
+            navigationLink?: string, coverImageUrl?: string, lrcOffset: number = 0)
         {
             this.audioFileSrc = ko.observable(audioFileSrc);
             this.lrcFileSrc = ko.observable(lrcFileSrc);
@@ -66,10 +70,7 @@ namespace Sm2Shim.Player.ViewModels
             this.lrcAlbum = ko.observable("");
             this.lrcArtist = ko.observable("");
             this.isCurrent = ko.observable(false);
-
-            this.tooltip = ko.computed(() => {
-                return this.titleMetadataOverride + " " + this.artistMetadataOverride;
-            });
+            this.m_lrcOffset = lrcOffset;
 
             this.title = ko.computed(() =>
                 PlaylistItemViewModel.overrideStringSelection([
@@ -89,6 +90,10 @@ namespace Sm2Shim.Player.ViewModels
                     this.lrcAlbum(),
                     "Unknown Album"
                 ]));
+
+            this.tooltip = ko.computed(() => {
+                return this.title() + " - " + this.album() + ", " + this.artist();
+            });
 
         }
 
@@ -353,15 +358,16 @@ namespace Sm2Shim.Player.ViewModels
             this.m_current.lrcArtist(this.m_parsedLrcResult.content.artist);
             this.m_current.lrcTitle(this.m_parsedLrcResult.content.title);
 
-            // Push lyrics to panel
+            // Push lyrics to panel (with offset)
             let i: number;
+            const offset = this.m_current.lrcOffset;
             const lrcSentences = this.m_parsedLrcResult.content.sentences;
 
             for (i = 0; i < lrcSentences.length; i++)
             {
                 const sentence = lrcSentences[i];
-                this.sentences.push(new LyricsSentenceViewModel(sentence.time, sentence.content));
-                this.m_timeMarks.push(sentence.time);
+                this.sentences.push(new LyricsSentenceViewModel(sentence.time + offset, sentence.content));
+                this.m_timeMarks.push(sentence.time + offset);
             }
         }
 
@@ -456,7 +462,7 @@ namespace Sm2Shim.Player.ViewModels
                     new PlaylistItemViewModel(playlistEntity.audioFileUrl, playlistEntity.lrcFileUrl,
                         playlistEntity.title, playlistEntity.album, playlistEntity.artist,
                         playlistEntity.isExplicit, playlistEntity.navigationUrl,
-                        playlistEntity.coverImageUrl));
+                        playlistEntity.coverImageUrl, playlistEntity.lrcFileOffset));
             }
 
             // Set current index to 0 as default

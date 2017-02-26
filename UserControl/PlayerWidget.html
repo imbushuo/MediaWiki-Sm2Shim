@@ -23,7 +23,7 @@
                         <div class="sm2-playlist-target">
                             <ul class="sm2-playlist-bd" data-bind="if: currentItem">
                                 <li data-bind="with: currentItem">
-                                    <a class="sm2-current-item" data-bind="attr: { href: navigationLink }">
+                                    <a class="sm2-current-item" data-bind="attr: { href: navigationLink, title: tooltip() }">
                                         <b><span data-bind="text: title"></span></b> - <span data-bind="text: album"></span>,
                                         <span data-bind="text: artist"></span>
                                     </a>
