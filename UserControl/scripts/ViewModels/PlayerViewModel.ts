@@ -259,7 +259,8 @@ namespace Sm2Shim.Player.ViewModels
             // Reset if required
             if (overridePivot)
             {
-                if (this.m_prevPivot >= 0) sentences[this.m_prevPivot].toggleCurrent();
+                if (this.m_prevPivot >= 0 && sentences[this.m_prevPivot])
+                    sentences[this.m_prevPivot].toggleCurrent();
                 this.m_prevPivot = -1;
                 this.m_nextTimeMark = 0;
             }
@@ -276,7 +277,8 @@ namespace Sm2Shim.Player.ViewModels
                 this.m_nextTimeMark = this.m_timeMarks[i + 1] - this.m_pollingInterval;
 
             // Toggle prev one if set
-            if (this.m_prevPivot >= 0) sentences[this.m_prevPivot].toggleCurrent();
+            if (this.m_prevPivot >= 0 && sentences[this.m_prevPivot])
+                sentences[this.m_prevPivot].toggleCurrent();
             // Toggle current
             if (sentences[i]) sentences[i].toggleCurrent();
             // Set previous pivot

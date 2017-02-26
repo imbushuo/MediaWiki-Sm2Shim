@@ -22,9 +22,17 @@
                 {
                     // Basic scroll support (pretty dirty)
                     const currLnIndex = Array.prototype.indexOf.call(lyricsContainer.children, element);
-                    if (currLnIndex >= 3 || currLnIndex + 3 < lyricsContainer.childElementCount)
+                    if (currLnIndex >= 3)
                     {
-                        lyricsContainer.children[currLnIndex + 3].scrollIntoView(false);
+                        if (lyricsContainer.children[currLnIndex + 3])
+                        {
+                            lyricsContainer.children[currLnIndex + 3].scrollIntoView(false);
+                        }
+                        else
+                        {
+                            // Approaching the end. Scroll itself.
+                            element.scrollIntoView(false);
+                        }
                     }
                 }
             }
