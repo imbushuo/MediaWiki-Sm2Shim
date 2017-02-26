@@ -16,3 +16,4 @@ MediaWiki-Sm2Shim.iml
 Library
 bin
 assets/swf
+assets/css/*.css

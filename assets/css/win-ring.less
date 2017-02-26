@@ -1,0 +1,285 @@
+@keyframes opacity-keyframe {
+  0%, 74.72706% {
+    opacity: 1;
+    animation-timing-function: step-start;
+  }
+  74.75029%, 100% {
+    opacity: 0;
+    animation-timing-function: step-start;
+  }
+}
+
+.sm2-loading-stub {
+  margin-bottom: 10px;
+}
+
+.loader {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  bottom: -40%;
+}
+
+.box {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  animation-name: opacity-keyframe;
+  animation-iteration-count: infinite;
+  animation-duration: 4.305s;
+}
+
+.circle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  transform: rotate(225deg);
+  animation-iteration-count: infinite;
+  animation-duration: 4.305s;
+
+}
+.circle:after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 100%;
+  background: #0078d7;
+  /* Pick a color */
+}
+
+@keyframes e1r {
+  0% {
+    animation-timing-function: cubic-bezier(0.02, 0.33, 0.38, 0.77);
+    transform: rotate(-110deg);
+  }
+  10.05807% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(10deg);
+  }
+  27.87456% {
+    animation-timing-function: cubic-bezier(0.57, 0.17, 0.95, 0.75);
+    transform: rotate(93deg);
+  }
+  37.56098% {
+    animation-timing-function: cubic-bezier(0, 0.19, 0.07, 0.72);
+    transform: rotate(205deg);
+  }
+  46.8525% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(357deg);
+  }
+  64.64576% {
+    animation-timing-function: cubic-bezier(0, 0, 0.95, 0.37);
+    transform: rotate(439deg);
+  }
+  74.72706%, 100% {
+    transform: rotate(585deg);
+    animation-timing-function: cubic-bezier(0.13, 0.21, 0.1, 0.7);
+  }
+}
+
+.box:nth-child(1) {
+  animation-delay: 0ms;
+}
+.box:nth-child(1) .circle {
+  animation-name: e1r;
+  animation-delay: 0ms;
+}
+
+@keyframes e2r {
+  0% {
+    animation-timing-function: cubic-bezier(0.02, 0.33, 0.38, 0.77);
+    transform: rotate(-116deg);
+  }
+  10.05807% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(4deg);
+  }
+  27.87456% {
+    animation-timing-function: cubic-bezier(0.57, 0.17, 0.95, 0.75);
+    transform: rotate(87deg);
+  }
+  37.56098% {
+    animation-timing-function: cubic-bezier(0, 0.19, 0.07, 0.72);
+    transform: rotate(199deg);
+  }
+  46.8525% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(351deg);
+  }
+  64.64576% {
+    animation-timing-function: cubic-bezier(0, 0, 0.95, 0.37);
+    transform: rotate(433deg);
+  }
+  74.72706%, 100% {
+    transform: rotate(579deg);
+    animation-timing-function: cubic-bezier(0.13, 0.21, 0.1, 0.7);
+  }
+}
+
+.box:nth-child(2) {
+  animation-delay: 167ms;
+}
+.box:nth-child(2) .circle {
+  animation-name: e2r;
+  animation-delay: 167ms;
+}
+
+@keyframes e3r {
+  0% {
+    animation-timing-function: cubic-bezier(0.02, 0.33, 0.38, 0.77);
+    transform: rotate(-122deg);
+  }
+  10.05807% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(-2deg);
+  }
+  27.87456% {
+    animation-timing-function: cubic-bezier(0.57, 0.17, 0.95, 0.75);
+    transform: rotate(81deg);
+  }
+  37.56098% {
+    animation-timing-function: cubic-bezier(0, 0.19, 0.07, 0.72);
+    transform: rotate(193deg);
+  }
+  46.8525% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(345deg);
+  }
+  64.64576% {
+    animation-timing-function: cubic-bezier(0, 0, 0.95, 0.37);
+    transform: rotate(427deg);
+  }
+  74.72706%, 100% {
+    transform: rotate(573deg);
+    animation-timing-function: cubic-bezier(0.13, 0.21, 0.1, 0.7);
+  }
+}
+
+.box:nth-child(3) {
+  animation-delay: 334ms;
+}
+
+.box:nth-child(3) .circle {
+  animation-name: e3r;
+  animation-delay: 334ms;
+}
+
+@keyframes e4r {
+  0% {
+    animation-timing-function: cubic-bezier(0.02, 0.33, 0.38, 0.77);
+    transform: rotate(-128deg);
+  }
+  10.05807% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(-8deg);
+  }
+  27.87456% {
+    animation-timing-function: cubic-bezier(0.57, 0.17, 0.95, 0.75);
+    transform: rotate(75deg);
+  }
+  37.56098% {
+    animation-timing-function: cubic-bezier(0, 0.19, 0.07, 0.72);
+    transform: rotate(187deg);
+  }
+  46.8525% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(339deg);
+  }
+  64.64576% {
+    animation-timing-function: cubic-bezier(0, 0, 0.95, 0.37);
+    transform: rotate(421deg);
+  }
+  74.72706%, 100% {
+    transform: rotate(567deg);
+    animation-timing-function: cubic-bezier(0.13, 0.21, 0.1, 0.7);
+  }
+}
+
+.box:nth-child(4) {
+  animation-delay: 501ms;
+}
+.box:nth-child(4) .circle {
+  animation-name: e4r;
+  animation-delay: 501ms;
+}
+
+@keyframes e5r {
+  0% {
+    animation-timing-function: cubic-bezier(0.02, 0.33, 0.38, 0.77);
+    transform: rotate(-134deg);
+  }
+  10.05807% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(-14deg);
+  }
+  27.87456% {
+    animation-timing-function: cubic-bezier(0.57, 0.17, 0.95, 0.75);
+    transform: rotate(69deg);
+  }
+  37.56098% {
+    animation-timing-function: cubic-bezier(0, 0.19, 0.07, 0.72);
+    transform: rotate(181deg);
+  }
+  46.8525% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(333deg);
+  }
+  64.64576% {
+    animation-timing-function: cubic-bezier(0, 0, 0.95, 0.37);
+    transform: rotate(415deg);
+  }
+  74.72706%, 100% {
+    transform: rotate(561deg);
+    animation-timing-function: cubic-bezier(0.13, 0.21, 0.1, 0.7);
+  }
+}
+
+.box:nth-child(5) {
+  animation-delay: 668ms;
+}
+.box:nth-child(5) .circle {
+  animation-name: e5r;
+  animation-delay: 668ms;
+}
+
+@keyframes e6r {
+  0% {
+    animation-timing-function: cubic-bezier(0.02, 0.33, 0.38, 0.77);
+    transform: rotate(-140deg);
+  }
+  10.05807% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(-20deg);
+  }
+  27.87456% {
+    animation-timing-function: cubic-bezier(0.57, 0.17, 0.95, 0.75);
+    transform: rotate(63deg);
+  }
+  37.56098% {
+    animation-timing-function: cubic-bezier(0, 0.19, 0.07, 0.72);
+    transform: rotate(175deg);
+  }
+  46.8525% {
+    animation-timing-function: cubic-bezier(0, 0, 1, 1);
+    transform: rotate(327deg);
+  }
+  64.64576% {
+    animation-timing-function: cubic-bezier(0, 0, 0.95, 0.37);
+    transform: rotate(409deg);
+  }
+  74.72706%, 100% {
+    transform: rotate(555deg);
+    animation-timing-function: cubic-bezier(0.13, 0.21, 0.1, 0.7);
+  }
+}
+
+.box:nth-child(6) {
+  animation-delay: 835ms;
+}
+.box:nth-child(6) .circle {
+  animation-name: e6r;
+  animation-delay: 835ms;
+}
