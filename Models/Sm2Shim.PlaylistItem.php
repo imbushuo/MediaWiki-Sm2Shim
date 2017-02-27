@@ -12,17 +12,16 @@ use TheLittleMoeNewLlc\Sm2Shim\Exceptions;
 
 class PlaylistItem
 {
-    private $title;
-    private $album;
-    private $artist;
-    private $isExplicit;
 
-    private $audioFileUrl;
-    private $lrcFileUrl;
-    private $navigationUrl;
-    private $coverImageUrl;
-    private $lrcFileOffset;
-    private $ignoreLrcMetadata;
+    public $audioFileUrl;
+    public $lrcFileUrl;
+    public $title;
+    public $album;
+    public $artist;
+    public $isExplicit;
+    public $navigationUrl;
+    public $coverImageUrl;
+    public $lrcFileOffset;
 
     /**
      * @param $entity mixed Parse a deserialized object.
@@ -41,13 +40,12 @@ class PlaylistItem
         $navigationUrl = isset($entity->navigationUrl) ? $entity->navigationUrl : "";
         $coverImageUrl = isset($entity->coverImageUrl) ? $entity->coverImageUrl : "";
         $lrcFileOffset = isset($entity->lrcFileOffset) ? $entity->lrcFileOffset : 0;
-        $ignoreLrcMetadata = isset($entity->ignoreLrcMetadata) ? $entity->ignoreLrcMetadata : false;
         $title = isset($entity->title) ? $entity->title : "";
         $album = isset($entity->album) ? $entity->album : "";
         $artist = isset($entity->artist) ? $entity->artist : "";
         $isExplicit = isset($entity->isExplicit) ? $entity->isExplicit : false;
 
-        return new PlaylistItem($audioFileUrl, $lrcFileUrl, $lrcFileOffset, $ignoreLrcMetadata,
+        return new PlaylistItem($audioFileUrl, $lrcFileUrl, $lrcFileOffset,
             $title, $album, $artist, $isExplicit, $navigationUrl, $coverImageUrl);
     }
 
@@ -57,17 +55,16 @@ class PlaylistItem
      * @param $audioFileUrl string Audio file URL (required)
      * @param $lrcFileUrl string LRC file URL (optional)
      * @param $lrcFileOffset int LRC file timing offset (optional)
-     * @param $ignoreLrcMetadata boolean Whether ignore metadata from LRC or not (optional)
      * @param $title string File title (optional)
      * @param $album string Album title (optional)
      * @param $artist string Artist name (optional)
      * @param $isExplicit boolean Whether is explicit song or not (optional)
      * @param $navigationUrl string Navigation URL (optional)
-     * @param $coverImageUrl string Cover iamge URL (optional)
+     * @param $coverImageUrl string Cover image URL (optional)
      * @throws Exceptions\InvalidDataException Thrown if the given @param $audioFileUrl is null or empty.
      */
     public function __construct($audioFileUrl, $lrcFileUrl = "",
-                                $lrcFileOffset = 0, $ignoreLrcMetadata = false,
+                                $lrcFileOffset = 0,
                                 $title = "", $album = "",
                                 $artist = "", $isExplicit = false,
                                 $navigationUrl = "", $coverImageUrl = "")
@@ -113,7 +110,6 @@ class PlaylistItem
         $this->isExplicit = $isExplicit;
         $this->lrcFileOffset = $lrcFileOffset;
         $this->lrcFileUrl = $lrcFileUrl;
-        $this->ignoreLrcMetadata = $ignoreLrcMetadata;
         $this->navigationUrl = $navigationUrl;
         $this->coverImageUrl = $coverImageUrl;
     }
@@ -175,14 +171,6 @@ class PlaylistItem
     }
 
     /**
-     * @return bool Value indicates whether ignore metadata from LRC or not.
-     */
-    public function isIgnoreLrcMetadata(): bool
-    {
-        return $this->ignoreLrcMetadata;
-    }
-
-    /**
      * @return string Navigation URL.
      */
     public function getNavigationUrl(): string
@@ -202,32 +190,40 @@ class PlaylistItem
 
 class Playlist
 {
-    private $playlist;
-    private $schemaVersion;
-    private $loop;
-    private $autoPlay;
-    private $backgroundColor;
-    private $isOpen;
+
+    public $schemaVersion;
+    public $loop;
+    public $autoPlay;
+    public $isPlaylistOpen;
+    public $playlist;
+    public $compactMode;
+    public $backgroundColor;
+    public $foregroundColor;
 
     /**
      * Playlist constructor.
      * @param $playlist array|PlaylistItem[] List of PlaylistItem.
      * @param $schemaVersion integer Schema version.
+     * @param $compactMode boolean Value indicates whether compact mode (single button) is enabled.
      * @param $loop boolean Value indicates whether loop is enabled.
      * @param $autoPlay boolean Value indicates whether auto play is enabled.
+     * @param $isPlaylistOpen boolean Value indicates whether playlist is opened (at UI side).
      * @param $backgroundColor string Background color value in hex string form.
-     * @param $isOpen boolean Value indicates whether playlist is opened (at UI side).
+     * @param $foregroundColor string Foreground color value in hex string form.
      */
     public function __construct($playlist, $schemaVersion = 1,
-                                $loop = false, $autoPlay = false,
-                                $backgroundColor = '', $isOpen = false)
+                                $compactMode = false, $loop = false,
+                                $autoPlay = false, $isPlaylistOpen = false,
+                                $backgroundColor = '', $foregroundColor = '')
     {
         $this->playlist = $playlist;
         $this->schemaVersion = $schemaVersion;
         $this->loop = $loop;
         $this->autoPlay = $autoPlay;
         $this->backgroundColor = $backgroundColor;
-        $this->isOpen = $isOpen;
+        $this->foregroundColor = $foregroundColor;
+        $this->isPlaylistOpen = $isPlaylistOpen;
+        $this->compactMode = $compactMode;
     }
 
     /**
@@ -263,6 +259,14 @@ class Playlist
     }
 
     /**
+     * @return string Foreground color value in hex string form.
+     */
+    public function getForegroundColor() : string
+    {
+        return $this->foregroundColor;
+    }
+
+    /**
      * @return string Background color value in hex string form.
      */
     public function getBackgroundColor(): string
@@ -275,6 +279,44 @@ class Playlist
      */
     public function getPlaylistOpenStatus(): bool
     {
-        return $this->isOpen;
+        return $this->isPlaylistOpen;
+    }
+
+    /**
+     * @return bool Value indicates whether compact mode has been enabled.
+     */
+    public function getCompactModeStatus() : bool
+    {
+        return $this->compactMode;
+    }
+}
+
+class WidgetOptions
+{
+    public $params;
+    public $name;
+
+    /**
+     * WidgetOptions constructor.
+     * @param $params Playlist Instance of modern playlist.
+     */
+    public function __construct($params)
+    {
+        $this->name = "sm2-player-fx";
+        $this->params = $params;
+    }
+}
+
+class BindingOptions
+{
+    public $component;
+
+    /**
+     * BindingOptions constructor.
+     * @param $component WidgetOptions Instance of WidgetOptions.
+     */
+    public function __construct($component)
+    {
+        $this->component = $component;
     }
 }

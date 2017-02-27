@@ -35,223 +35,42 @@ class ModernSoundManager2Hooks
      * Render SoundManager2 Bar Player with given Playlist.
      * @param Models\Playlist $playlist The playlist to play.
      * @param \Parser $parser MediaWiki parser.
-     * @param boolean $isLightMode Value indicates whether the player's functionality is limited.
      * @return mixed Rendered play control.
-     * @throws \InvalidArgumentException Thrown if the given parameter is null.
+     * @internal param bool $isLightMode Value indicates whether the player's functionality is limited.
      */
     private static function renderModernSoundManagerByModel(
-        Models\Playlist $playlist, \Parser &$parser, $isLightMode = null)
+        Models\Playlist $playlist, \Parser &$parser)
     {
         if ($playlist == null) throw new \InvalidArgumentException();
+        $widgetOptions = new Models\WidgetOptions($playlist);
+        $bindingOptions = new Models\BindingOptions($widgetOptions);
+        $bindingOptionsSerialized = json_encode($bindingOptions, JSON_UNESCAPED_UNICODE);
 
-        $playerClasses = array(\Sm2ShimConstants::Sm2ShimPlayerBaseClass);
-
-        if (!$isLightMode)
-        {
-            if ($playlist->getAutoPlay()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimAutoPlayClass);
-            if ($playlist->getLoop()) array_push($playerClasses, \Sm2ShimConstants::Sm2ShimLoopPlayClass);
-            if ($playlist->getPlaylistOpenStatus()) array_push($playerClasses,
-                \Sm2ShimConstants::Sm2ShimPlaylistOpenClass);
-        }
-        else
-        {
-            array_push($playerClasses, \Sm2ShimConstants::Sm2ShimPlayerLiteClass);
-        }
-
-        $baseClassName = implode(\Sm2ShimConstants::Space, $playerClasses);
-
-        $playlistElementContent = array();
-        $parserOutput = $parser->getOutput();
-
-        foreach ($playlist->getPlaylist() as &$playlistItem)
-        {
-            // Initialize
-            $entityAttributes = array();
-
-            // Metadata
-            $escapedArtist = htmlentities($playlistItem->getArtist());
-            $escapedAlbum = htmlentities($playlistItem->getAlbum());
-            $escapedTitle = htmlentities($playlistItem->getTitle());
-
-            // File address and LRC properties
-            $entityAddress = $playlistItem->getAudioFileUrl();
-            $entityNavigationAddress = $playlistItem->getNavigationUrl();
-
-            if (ModernSoundManager2Hooks::isInternalFile($entityAddress))
-            {
-                // Get address for internal files
-                $entityTitle = \Title::newFromText($entityAddress, NS_IMAGE);
-                if ($entityTitle == null) continue;
-
-                $fileLocation = wfFindFile($entityTitle);
-                if ($fileLocation)
-                {
-                    $entityAddress = $fileLocation->getUrl();
-                    $entityTitle = $fileLocation->getTitle();
-                    // Add HTML link to file page instead of raw file
-                    $entityNavigationAddress = $entityTitle->getLocalURL();
-
-                    // Add internal file dependency
-                    $parserOutput->addImage($entityTitle->getDBkey());
-                    $parserOutput->addLink($entityTitle);
-                }
-            }
-
-            $entityAttributes["data-filesrc"] = $entityAddress;
-            $entityAttributes["href"] = $entityNavigationAddress;
-            $metadata = "<b>$escapedArtist</b> $escapedTitle - $escapedAlbum";
-
-            if (!empty($playlistItem->getLrcFileUrl()))
-            {
-                $entityAttributes["data-lyricsrc"] = $playlistItem->getLrcFileUrl();
-            }
-            if ($playlistItem->isIgnoreLrcMetadata())
-            {
-                $entityAttributes["data-lyricignoremetadata"] = true;
-            }
-            if ($playlistItem->getLrcFileOffset() != 0)
-            {
-                $entityAttributes["data-lyricoffset"] = $playlistItem->getLrcFileOffset();
-            }
-
-            $entityHtmlContent = \Html::rawElement(\Sm2ShimConstants::HtmlElementLi, [],
-                \Html::rawElement(\Sm2ShimConstants::HtmlElementA, $entityAttributes, $metadata));
-            array_push($playlistElementContent, $entityHtmlContent);
-
-            // Lite mode will have only one file
-            if ($isLightMode) break;
-        }
-
-        $isListOperationAvailable = sizeof($playlistElementContent) > 1;
-
-        $playlistContent = implode(\Sm2ShimConstants::EmptyString, $playlistElementContent);
-        $inlineBackgroundStyle = \Sm2ShimConstants::EmptyString;
-
-        if (!$isLightMode)
-        {
-            // Validate and set CSS for additional settings
-            if ($playlist->getBackgroundColor() != \Sm2ShimConstants::EmptyString) {
-                // To Lowercase and trim the magic "0x"
-                $colorRaw = strtolower($playlist->getBackgroundColor());
-                // Make sure it starts with "0x"
-                // No magic header
-                // Perform sanity check for input values
-                if (ModernSoundManager2Hooks::validateHexColor($colorRaw)) {
-                    $inlineBackgroundStyle = "background-color: #$colorRaw";
-                }
-            }
-        }
+        $widgetAttributes["data-bind"] = $bindingOptionsSerialized;
+        $widgetHtmlContent = \Html::rawElement("div", $widgetAttributes);
+        $loadingStub = self::getLoadingStub();
 
         ModernSoundManager2Hooks::addClientDependency($parser);
+        return array($loadingStub . $widgetHtmlContent, "markerType" => 'nowiki');
+    }
 
-        $locResPlayback = wfMessage('sm2shim-playpause')->escaped();
-        $locResJsRequired = wfMessage('sm2shim-jsrequired')->escaped();
-        $locResPrevious = wfMessage('sm2shim-previous')->escaped();
-        $locResNext = wfMessage('sm2shim-next')->escaped();
-        $locResRepeat = wfMessage('sm2shim-repeat')->escaped();
-        $locResMenu = wfMessage('sm2shim-menu')->escaped();
+    private static function getLoadingStub()
+    {
+        $circleAttribute["class"] = "circle";
+        $boxAttribute["class"] = "box";
+        $loaderAttribute["class"] = "loader";
+        $stubAttribute["class"] = "sm2-loading-stub";
 
-        $fullFeaturedControl = \Sm2ShimConstants::EmptyString;
-
-        if (!$isLightMode)
+        $loaderRings = array();
+        for ($i = 0; $i < 6; $i++)
         {
-            $orderControlButton = "";
-            $menuButton = "";
-
-            if ($isListOperationAvailable)
-            {
-                $orderControlButton = <<<HTML
-                    <div class="sm2-button-bd">
-                            <a href="#prev" title="{$locResPrevious}" class="sm2-inline-button sm2-icon-previous"></a>
-                        </div>
-                    </div>
-                        <div class="sm2-inline-element sm2-button-element">
-                            <div class="sm2-button-bd">
-                            <a href="#next" title="{$locResNext}" class="sm2-inline-button sm2-icon-next"></a>
-                        </div>
-                    </div>
-HTML;
-                $menuButton = <<<HTML
-                    <div class="sm2-inline-element sm2-button-element sm2-menu">
-                        <div class="sm2-button-bd">
-                            <a href="#menu" title="{$locResMenu}" class="sm2-inline-button sm2-icon-menu"></a>
-                    </div>
-HTML;
-            }
-
-            $fullFeaturedControl = <<<HTML
-            <div class="sm2-inline-element sm2-button-element">
-                    {$orderControlButton}
-                    <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
-                            <a href="#repeat" title="{$locResRepeat}" class="sm2-inline-button sm2-icon-repeat"></a>
-                        </div>
-                    </div>
-                    {$menuButton}
-            </div>
-HTML;
+            $circle = \Html::rawElement("div", $circleAttribute);
+            $box = \Html::rawElement("div", $boxAttribute, [$circle]);
+            array_push($loaderRings, $box);
         }
 
-        $output = <<<HTML
-            <div class="{$baseClassName}">
-                <div class="bd sm2-main-controls" style="{$inlineBackgroundStyle}">
-                    <div class="sm2-inline-texture"></div>
-                    <div class="sm2-inline-element sm2-button-element">
-                        <div class="sm2-button-bd">
-                            <a href="#play" title="{$locResPlayback}" class="sm2-inline-button sm2-icon-play-pause"></a>
-                        </div>
-                    </div>
-                    <div class="sm2-inline-element sm2-inline-status">
-                        <div class="sm2-playlist">
-                            <div class="sm2-playlist-target">
-                                <noscript>
-                                    <p>{$locResJsRequired}</p>
-                                </noscript>
-                            </div>
-                        </div>
-
-                        <div class="sm2-progress">
-                            <div class="sm2-row">
-                                <div class="sm2-inline-time">0:00</div>
-                                <div class="sm2-progress-bd">
-                                    <div class="sm2-progress-track">
-                                        <div class="sm2-progress-bar"></div>
-                                        <div class="sm2-progress-ball">
-                                            <div class="icon-overlay"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sm2-inline-duration">0:00</div>
-                            </div>
-                        </div>
-                    </div>
-                    {$fullFeaturedControl}
-                </div>
-                <div class="bd sm2-lyric-drawer sm2-element" style="{$inlineBackgroundStyle}">
-                    <div class="sm2-inline-texture">
-                        <div class="sm2-box-shadow"></div>
-                    </div>
-                    <!-- Lyrics content goes here -->
-                    <div class="sm2-lyric-wrapper">
-                        <ul class="sm2-lyric-bd">
-                        </ul>
-                    </div>
-                </div>
-                <div class="bd sm2-playlist-drawer sm2-element" style="{$inlineBackgroundStyle}">
-                    <div class="sm2-inline-texture">
-                        <div class="sm2-box-shadow"></div>
-                    </div>
-                    <!-- BEGIN PLAYLIST CONTENT -->
-                    <div class="sm2-playlist-wrapper">
-                        <ul class="sm2-playlist-bd">
-                            {$playlistContent}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-HTML;
-
-        return array($output, "markerType" => 'nowiki');
+        $loader = \Html::rawElement("div", $loaderAttribute, $loaderRings);
+        return \Html::rawElement("div", $stubAttribute, $loader);
     }
 
     /**
@@ -285,24 +104,20 @@ HTML;
 
         // Because input validation is completed, required CSS and JS will be injected.
         // ResourceLoader is so slow - we can't wait for that.
-        global $wgSm2Shim_UseResourceManager,
-               $wgSm2Shim_ExternalCDNEndpoint,
+        global $wgSm2Shim_ExternalCDNEndpoint,
                $wgSm2Shim_ExternalCDNVersionControlId;
 
-        if ($wgSm2Shim_UseResourceManager) {
-            $parserOutput->addModules(\Sm2ShimConstants::Sm2ShimBundleId);
-            $parserOutput->addModuleStyles(\Sm2ShimConstants::Sm2ShimBundleId);
-        } else {
-            $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
-            $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
+        $preStubEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/win-ring-bundled.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
+        $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNVersionControlId.css";
+        $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player.min.$wgSm2Shim_ExternalCDNVersionControlId.js";
 
-            $sm2ModuleHeader = <<<HTML
+        $sm2ModuleHeader = <<<HTML
+<link rel="stylesheet" href="{$preStubEndpoint}">
 <link rel="stylesheet" href="{$cssEndpoint}">
-<script type="text/javascript" src="{$jsEndpoint}"></script>
+<script async type="text/javascript" src="{$jsEndpoint}"></script>
 HTML;
 
-            $parserOutput->addHeadItem($sm2ModuleHeader, $sm2ModuleHeader);
-        }
+        $parserOutput->addHeadItem($sm2ModuleHeader, $sm2ModuleHeader);
     }
 
     /**
@@ -349,7 +164,7 @@ HTML;
 
             if (isset($rawDeserialized->backgroundColor)
                 && is_string($rawDeserialized->backgroundColor)
-                && !empty($rawDeserialized->backgroundColor))
+                && self::validateHexColor($rawDeserialized->backgroundColor))
                 $bgColor = (string) $rawDeserialized->backgroundColor;
 
             if (isset($rawDeserialized->isPlaylistOpen) && is_bool($rawDeserialized->isPlaylistOpen))
@@ -362,8 +177,15 @@ HTML;
             }
 
             // Get playlist entity.
-            $playlist = new Models\Playlist($parsedPlaylist, $schemaVersion,
-                $loop, $autoPlay, $bgColor, $playlistOpen);
+            $playlist = new Models\Playlist(
+                $parsedPlaylist,
+                $schemaVersion,
+                false, /* No compact version for modern syntax */
+                $loop,
+                $autoPlay,
+                $playlistOpen,
+                $bgColor,
+                '');
 
             // Render playback control
             return ModernSoundManager2Hooks::renderModernSoundManagerByModel($playlist, $parser);
@@ -467,15 +289,19 @@ HTML;
             unset($params[0]);
 
             $paramsParsed[\Sm2ShimConstants::Sm2ShimParamTypeFiles] = $files;
-            $filesParsed = explode(\Sm2ShimConstants::FilesQualifier, $files);
+            $filesParsed = preg_split("/,(?=([^\"]*\"[^\"]*\")*[^\"]*$)/", $files);
+
             if (empty($filesParsed)) return \Sm2ShimConstants::EmptyString;
 
             // Sanity check: Did we retrieved more than one parameter?
             // Rest parameters will be parsed again in order to obtain key-value structure
-            if (!empty($params)) {
-                foreach ($params as $param) {
+            if (!empty($params))
+            {
+                foreach ($params as $param)
+                {
                     $keyValue = explode(\Sm2ShimConstants::ParamValueQualifier, $param);
-                    if (count($keyValue) == 2) {
+                    if (count($keyValue) == 2)
+                    {
                         $paramsParsed[$keyValue[0]] = $keyValue[1];
                     }
                 }
@@ -486,7 +312,8 @@ HTML;
             // ID support is deprecated, attempts to set ID for <flashmp3> tags will be ignored.
             if (isset($args[\Sm2ShimConstants::FlashMp3ParamTypeId]) &&
                 $args[\Sm2ShimConstants::FlashMp3ParamTypeId] == \Sm2ShimConstants::FlashMp3ParamValueTypeLastFm
-            ) {
+            )
+            {
                 return \Sm2ShimConstants::EmptyString;
             }
 
@@ -531,14 +358,15 @@ HTML;
             {
                 // To Lowercase and trim the magic "0x"
                 $colorRaw = strtolower($paramsParsed[\Sm2ShimConstants::FlashMp3ParamBackgroundId]);
-                // Make sure it starts with "0x"
+                // If starts "0x", trim it
                 if (strpos($colorRaw, \Sm2ShimConstants::FlashMp3ParamValueBackgroundMagicHeader) === 0) {
                     // So trim the magic header
                     $colorRaw = substr($colorRaw, 2);
-                    // Perform sanity check for input values
-                    if (self::validateHexColor($colorRaw)) {
-                        $backgroundColor = $colorRaw;
-                    }
+                }
+
+                // Perform sanity check for input values
+                if (self::validateHexColor($colorRaw)) {
+                    $backgroundColor = $colorRaw;
                 }
             }
 
@@ -560,8 +388,11 @@ HTML;
                     if ($fileLocation)
                     {
                         $entityAddress = $fileLocation->getUrl();
-                        $entityTitle = $fileLocation->getTitle();
-                        $entityNavigationAddress = $entityTitle->getLocalURL();
+                        if ($entityAddress  != "")
+                        {
+                            $entityTitle = $fileLocation->getTitle();
+                            $entityNavigationAddress = $entityTitle->getLocalURL();
+                        }
                     }
                 }
                 else
@@ -571,14 +402,30 @@ HTML;
                     $entityNavigationAddress = $entityAddress;
                 }
 
-                $playlistItem = new Models\PlaylistItem($entityAddress, "",
-                    0, false, $entityTitle, "", "", false, $entityNavigationAddress);
+                $playlistItem = new Models\PlaylistItem(
+                    $entityAddress,
+                    "", /* No LRC file for legacy syntax */
+                    0,  /* No LRC file for legacy syntax */
+                    $entityTitle, /* Title */
+                    "", /* No manual metadata override for legacy syntax */
+                    "", /* No manual metadata override for legacy syntax */
+                    false,
+                    $entityNavigationAddress, /* Link src */
+                    "");
+
                 array_push($playlistItems, $playlistItem);
             }
 
-            $playlist = new Models\Playlist($playlistItems, 1, $loop, $autoPlay, $backgroundColor, $openPlaylist);
+            $playlist = new Models\Playlist(
+                $playlistItems,
+                1,
+                $liteMode,
+                $loop,
+                $autoPlay,
+                $openPlaylist,
+                $backgroundColor);
 
-            return self::renderModernSoundManagerByModel($playlist, $parser, $liteMode);
+            return self::renderModernSoundManagerByModel($playlist, $parser);
         }
 
         return \Sm2ShimConstants::EmptyString;

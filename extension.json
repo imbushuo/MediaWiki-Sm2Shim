@@ -1,7 +1,7 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "1800.201.531.5017",
+    "version": "3100.227.626.10017",
     "author": [
         "[https://imbushuo.net Bingxing Wang(The Little Moe New LLC)]",
         "[https://lmn.cat The Little Moe New LLC]",
@@ -23,25 +23,14 @@
             "TheLittleMoeNewLlc\\Sm2Shim\\Hooks\\ModernSoundManager2Hooks::onParserSetup"
         ]
     },
-    "ResourceModules": {
-        "ext.sm2Shim": {
-            "scripts": [
-                "extensions/Sm2Shim/assets/js/Production/player-bundled.min.js"
-            ],
-            "styles": [
-                "extensions/Sm2Shim/assets/css/player-ui.min.css"
-            ]
-        }
-    },
     "MessagesDirs": {
         "Sm2Shim": [
             "i18n"
         ]
     },
     "config": {
-        "Sm2Shim_UseResourceManager": false,
         "Sm2Shim_ExternalCDNEndpoint": "//mmixstaticassets.azureedge.net/Sm2Shim",
-        "Sm2Shim_ExternalCDNVersionControlId": "170201-0957"
+        "Sm2Shim_ExternalCDNVersionControlId": "170227-0658"
     },
     "manifest_version": 1
 }
