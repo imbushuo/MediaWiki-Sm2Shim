@@ -390,8 +390,8 @@ HTML;
                         $entityAddress = $fileLocation->getUrl();
                         if ($entityAddress != "")
                         {
-                            $entityTitle = $fileLocation->getTitle();
-                            $entityNavigationAddress = $entityTitle->getLocalURL();
+                            $entityTitle = $fileLocation->getTitle()->getText();
+                            $entityNavigationAddress = $fileLocation->getTitle()->getLocalURL();
                         }
                     }
                 }
@@ -406,7 +406,7 @@ HTML;
                     $entityAddress,
                     "", /* No LRC file for legacy syntax */
                     0,  /* No LRC file for legacy syntax */
-                    $entityTitle->getText(), /* Title */
+                    $entityTitle, /* Title */
                     "", /* No manual metadata override for legacy syntax */
                     "", /* No manual metadata override for legacy syntax */
                     false,
