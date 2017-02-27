@@ -49,7 +49,6 @@ class PlaylistItem
             $title, $album, $artist, $isExplicit, $navigationUrl, $coverImageUrl);
     }
 
-
     /**
      * PlaylistItem constructor.
      * @param $audioFileUrl string Audio file URL (required)

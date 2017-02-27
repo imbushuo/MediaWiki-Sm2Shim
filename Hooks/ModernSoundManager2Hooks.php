@@ -170,9 +170,35 @@ HTML;
             if (isset($rawDeserialized->isPlaylistOpen) && is_bool($rawDeserialized->isPlaylistOpen))
                 $playlistOpen = (boolean) $rawDeserialized->isPlaylistOpen;
 
+            $parserOutput = $parser->getOutput();
+
             // Parse playlist items
             foreach ($rawDeserialized->playlist as &$playlistEntity)
             {
+                if ($playlistEntity == null || $playlistEntity->audioFileUrl == null) continue;
+                // Validate file location
+                if (self::isInternalFile($playlistEntity->audioFileUrl))
+                {
+                    // Get address for internal files
+                    $mwEntityTitle = \Title::newFromText($playlistEntity->audioFileUrl, NS_IMAGE);
+                    if ($mwEntityTitle == null) continue;
+
+                    $fileLocation = wfFindFile($mwEntityTitle);
+                    if ($fileLocation)
+                    {
+                        $entityAddress = $fileLocation->getUrl();
+                        if ($entityAddress != "")
+                        {
+                            $mwInternalTitle = $fileLocation->getTitle();
+                            $playlistEntity->audioFileUrl = $mwInternalTitle->getLocalURL();
+
+                            // Add file usage reference
+                            $parserOutput->addImage($mwInternalTitle->getDBkey());
+                            $parserOutput->addLink($mwInternalTitle);
+                        }
+                    }
+                }
+
                 array_push($parsedPlaylist, Models\PlaylistItem::parse($playlistEntity));
             }
 
@@ -372,6 +398,8 @@ HTML;
 
             $playlistItems = array();
 
+            $parserOutput = $parser->getOutput();
+
             // Iterate all files to retrieve link
             foreach ($filesParsed as $fileLocation)
             {
@@ -390,8 +418,13 @@ HTML;
                         $entityAddress = $fileLocation->getUrl();
                         if ($entityAddress != "")
                         {
-                            $entityTitle = $fileLocation->getTitle()->getText();
-                            $entityNavigationAddress = $fileLocation->getTitle()->getLocalURL();
+                            $mwInternalTitle = $fileLocation->getTitle();
+                            $entityTitle = $mwInternalTitle->getText();
+                            $entityNavigationAddress = $mwInternalTitle->getLocalURL();
+
+                            // Add file usage reference
+                            $parserOutput->addImage($mwInternalTitle->getDBkey());
+                            $parserOutput->addLink($mwInternalTitle);
                         }
                     }
                 }
