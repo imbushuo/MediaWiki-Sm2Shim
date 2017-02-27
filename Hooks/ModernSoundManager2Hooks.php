@@ -65,11 +65,11 @@ class ModernSoundManager2Hooks
         for ($i = 0; $i < 6; $i++)
         {
             $circle = \Html::rawElement("div", $circleAttribute);
-            $box = \Html::rawElement("div", $boxAttribute, [$circle]);
+            $box = \Html::rawElement("div", $boxAttribute, $circle);
             array_push($loaderRings, $box);
         }
 
-        $loader = \Html::rawElement("div", $loaderAttribute, $loaderRings);
+        $loader = \Html::rawElement("div", $loaderAttribute, implode("", $loaderRings));
         return \Html::rawElement("div", $stubAttribute, $loader);
     }
 
