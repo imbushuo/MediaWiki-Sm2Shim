@@ -46,7 +46,9 @@ import load = soundManager.load;
 
     soundManager.onready(() => {
         ko.components.register("sm2-player-fx", {
-            template: { fromUrl: 'UserControl/PlayerWidget.html' },
+            template: {
+                fromUrl: 'https://mmixstaticassets.azureedge.net/Sm2Shim/UserControl/PlayerWidget.170227-0710.html'
+            },
             viewModel: (param) => {
                 return new PlayerViewModel(<IModernPlaylist> param);
             }
