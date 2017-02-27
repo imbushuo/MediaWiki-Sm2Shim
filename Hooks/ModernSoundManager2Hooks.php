@@ -190,7 +190,8 @@ HTML;
                         if ($entityAddress != "")
                         {
                             $mwInternalTitle = $fileLocation->getTitle();
-                            $playlistEntity->audioFileUrl = $mwInternalTitle->getLocalURL();
+                            $playlistEntity->audioFileUrl = $fileLocation->getUrl();
+                            $playlistEntity->navigationUrl = $mwInternalTitle->getLocalURL();
 
                             // Add file usage reference
                             $parserOutput->addImage($mwInternalTitle->getDBkey());
