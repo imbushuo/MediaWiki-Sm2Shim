@@ -80,33 +80,9 @@ class PlaylistItem
             $this->audioFileUrl = $audioFileUrl;
         }
 
-        if (empty($title))
-        {
-            $this->title = wfMessage('sm2shim-defaultTitle')->plain();
-        }
-        else
-        {
-            $this->title = $title;
-        }
-
-        if (empty($album))
-        {
-            $this->album = wfMessage('sm2shim-defaultAlbum')->plain();
-        }
-        else
-        {
-            $this->album = $album;
-        }
-
-        if (empty($artist))
-        {
-            $this->artist = wfMessage('sm2shim-defaultArtist')->plain();
-        }
-        else
-        {
-            $this->artist = $artist;
-        }
-
+        $this->title = $title;
+        $this->album = $album;
+        $this->artist = $artist;
         $this->isExplicit = $isExplicit;
         $this->lrcFileOffset = $lrcFileOffset;
         $this->lrcFileUrl = $lrcFileUrl;
