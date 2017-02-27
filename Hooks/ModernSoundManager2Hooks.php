@@ -388,9 +388,9 @@ HTML;
                     if ($fileLocation)
                     {
                         $entityAddress = $fileLocation->getUrl();
-                        if ($entityAddress  != "")
+                        if ($entityAddress != "")
                         {
-                            $entityTitle = $fileLocation->getTitle();
+                            $entityTitle = $fileLocation->getTitle()->getText();
                             $entityNavigationAddress = $entityTitle->getLocalURL();
                         }
                     }
