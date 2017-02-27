@@ -36,4 +36,15 @@ namespace Sm2Shim.Player.Models
         coverImageUrl: string;
         lrcFileOffset: number;
     }
+
+    export interface OnlineMetadata
+    {
+        title: string;
+        album: string;
+        artists: string;
+        albumArtists: string;
+        year: number;
+        copyright: string;
+        coverId: string
+    }
 }

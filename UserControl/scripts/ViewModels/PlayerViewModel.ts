@@ -24,7 +24,31 @@ namespace Sm2Shim.Player.ViewModels
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
     import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
-    import reject = Promise.reject;
+    import OnlineMetadata = Sm2Shim.Player.Models.OnlineMetadata;
+
+    class WebClient
+    {
+        static downloadStringAsync(url: string) : Promise<string>
+        {
+            return new Promise<string>((resolve, reject) =>
+            {
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", url, true);
+
+                xhr.onload = () =>
+                {
+                    resolve(xhr.responseText);
+                };
+
+                xhr.onerror = () =>
+                {
+                    reject();
+                };
+
+                xhr.send(null);
+            });
+        }
+    }
 
     class PlaylistItemViewModel
     {
@@ -371,28 +395,18 @@ namespace Sm2Shim.Player.ViewModels
             }
         }
 
-        private static downloadLrcAsync(lrcPath: string, requestId: string) : Promise<Lyrics.LrcResult>
+        private static async downloadLrcAsync(lrcPath: string, requestId: string)
         {
-            return new Promise<Lyrics.LrcResult>((resolve, reject) =>
+            try
             {
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", lrcPath, true);
-
-                xhr.onload = () =>
-                {
-                    // Get content anyway. Will validate result later.
-                    let content = xhr.responseText;
-                    const parsedLrc = Light.Lyrics.LrcParser.parse(content);
-                    resolve(new Lyrics.LrcResult(parsedLrc != null, requestId, content, parsedLrc));
-                };
-
-                xhr.onerror = () =>
-                {
-                    reject(new Lyrics.LrcResult(false, requestId, null));
-                };
-
-                xhr.send(null);
-            });
+                const content = await WebClient.downloadStringAsync(lrcPath);
+                const parsedLrc = Light.Lyrics.LrcParser.parse(content);
+                return new Lyrics.LrcResult(parsedLrc != null, requestId, content, parsedLrc);
+            }
+            catch (exception)
+            {
+                return null;
+            }
         }
 
         reset() : void
@@ -483,6 +497,8 @@ namespace Sm2Shim.Player.ViewModels
             // Start playback if set
             if (this.isAutoPlayEnabled()) this.play();
 
+            // Begin metadata retrieval
+            this.getMetadataForAllItemsAsync().then(() => {});
         }
 
         resetTimer() : void
@@ -676,5 +692,61 @@ namespace Sm2Shim.Player.ViewModels
             if (index >= 0) this.setIndex(index, true);
         }
 
+        private async getOnlineMetadataAsync(item?: PlaylistItemViewModel)
+        {
+            if (!item) item = this.currentItem();
+            const urlEncoded = encodeURIComponent(item.audioFileSrc());
+            const reqUrl = "https://audiometadata-origin.moegirlpedia.moetransit.com/id3tag?path=" + urlEncoded;
+            const coverPrefix = "https://audiometadata-origin.moegirlpedia.moetransit.com/cover/index/";
+
+            try
+            {
+                const metadata = await WebClient.downloadStringAsync(reqUrl);
+                const metadataParsed = <OnlineMetadata> JSON.parse(metadata);
+
+                if (!metadataParsed) return;
+
+                // Update metadata
+                if (metadataParsed.coverId)
+                {
+                    const cover = coverPrefix + encodeURIComponent(metadataParsed.coverId);
+                    item.coverImageUrl(cover);
+                }
+
+                if (metadataParsed.title && !item.titleMetadataOverride())
+                    item.titleMetadataOverride(metadataParsed.title);
+
+                if (metadataParsed.album && !item.albumMetadataOverride())
+                    item.albumMetadataOverride(metadataParsed.album);
+
+                if (!item.artistMetadataOverride())
+                {
+                    if (metadataParsed.albumArtists) item.artistMetadataOverride(metadataParsed.albumArtists);
+                    else if (metadataParsed.artists) item.artistMetadataOverride(metadataParsed.artists);
+                }
+
+            }
+            catch (exception)
+            {
+                // Ignore
+            }
+        }
+
+        private async getMetadataForAllItemsAsync()
+        {
+            const items = this.playlistItems();
+            for (let i = 0; i < items.length; i++)
+            {
+                const itemToQuery = items[i];
+                try
+                {
+                    await this.getOnlineMetadataAsync(itemToQuery);
+                }
+                catch (exception)
+                {
+                    // Ignore, assume as failed
+                }
+            }
+        }
     }
 }

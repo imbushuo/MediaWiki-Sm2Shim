@@ -23,8 +23,6 @@ import load = soundManager.load;
     // Prevent multiple initialization
     if((<any>window).WidgetInitializer) return;
 
-    // Import module
-
     // Initialize SoundManager2
     let pollingInterval = 200;
     let players = [];
