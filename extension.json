@@ -1,7 +1,7 @@
 {
     "@doc": "Please refer to README.md for configuration and usage",
     "name": "Sm2Shim",
-    "version": "3100.227.626.10017",
+    "version": "3100.227.1906.10050",
     "author": [
         "[https://imbushuo.net Bingxing Wang(The Little Moe New LLC)]",
         "[https://lmn.cat The Little Moe New LLC]",
@@ -30,7 +30,7 @@
     },
     "config": {
         "Sm2Shim_ExternalCDNEndpoint": "//mmixstaticassets.azureedge.net/Sm2Shim",
-        "Sm2Shim_ExternalCDNVersionControlId": "170227-0710"
+        "Sm2Shim_ExternalCDNVersionControlId": "170027-1906"
     },
     "manifest_version": 1
 }
