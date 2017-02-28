@@ -452,6 +452,12 @@ namespace Sm2Shim.Player.ViewModels
         {
             if (!playlist) throw new ArgumentNullException("playlist");
 
+            // Overwrite auto play if mobile device was detected
+            if (navigator.userAgent.match(/mobile/i))
+            {
+                playlist.autoPlay = false;
+            }
+
             // Initialize collections
             this.playlistItems = ko.observableArray<PlaylistItemViewModel>();
             this.isPlaylistExpanded = ko.observable(playlist.isPlaylistOpen);
