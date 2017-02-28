@@ -643,6 +643,8 @@ namespace Sm2Shim.Player.ViewModels
 
         playPauseHandler() : void
         {
+            this.m_stopped = false;
+
             if (this.currentSound)
             {
                 const isTransitionToPlay = this.isPaused();
@@ -650,7 +652,6 @@ namespace Sm2Shim.Player.ViewModels
                 if (isTransitionToPlay)
                 {
                     soundManager.pauseAll();
-                    this.m_stopped = false;
                 }
                 this.currentSound.togglePause();
                 // Synchronize status
