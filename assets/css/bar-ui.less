@@ -46,36 +46,6 @@
   -webkit-user-select: none;
   -ms-user-select: none;
 
-  input[type=range]::-ms-track {
-    width: 100%;
-    height: 100%;
-    -webkit-appearance: none;
-    margin: 0px;
-    padding: 0px;
-    border: 0 none;
-    background: transparent;
-    color: transparent;
-    overflow: visible;
-  }
-
-  input[type=range]::-moz-range-track {
-    width: 100%;
-    height: 100%;
-    -moz-appearance: none;
-    margin: 0px;
-    padding: 0px;
-    border: 0 none;
-    background: transparent;
-    color: transparent;
-    overflow: visible;
-  }
-
-  input[type=range]::-webkit-slider-runnable-track {
-    background: transparent;
-    border: transparent;
-    width: 100%;
-  }
-
   input[type=range] {
     width: 100%;
     -webkit-appearance: none;
@@ -84,49 +54,77 @@
     padding: 0px;
     border: 0 none;
     background-color: rgba(0,0,0,0.4);
-    background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-33.png); /* legacy */
-    background-image: none, none; /* modern browsers */
     color: transparent;
     overflow: visible;
     float: left;
-  }
 
-  input[type=range]::-ms-tooltip {
-    display: none;
-  }
+    &::-webkit-slider-runnable-track {
+      background: transparent;
+      border: transparent;
+      width: 100%;
+    }
 
-  input[type=range]::-webkit-slider-thumb {
-    width: 8px;
-    height: 8px;
-    border-radius: 100%;
-    border: 0 none;
-    background: #3D3D3D;
-    -webkit-appearance: none;
-  }
+    &::-moz-range-track {
+      width: 100%;
+      height: 100%;
+      -moz-appearance: none;
+      margin: 0px;
+      padding: 0px;
+      border: 0 none;
+      background: transparent;
+      color: transparent;
+      overflow: visible;
+    }
 
-  input[type=range]::-ms-thumb {
-    width: 8px;
-    height: 8px;
-    border-radius: 100%;
-    border: 0 none;
-    background: #3D3D3D;
-  }
+    &::-ms-track {
+      width: 100%;
+      height: 100%;
+      -webkit-appearance: none;
+      margin: 0px;
+      padding: 0px;
+      border: 0 none;
+      background: transparent;
+      color: transparent;
+      overflow: visible;
+    }
 
-  input[type=range]::-moz-range-thumb {
-    width: 8px;
-    height: 8px;
-    border-radius: 100%;
-    border: 0 none;
-    background: #3D3D3D;
-  }
+    &::-ms-tooltip {
+      display: none;
+    }
 
-  input[type=range]:focus::-webkit-slider-runnable-track {
-    background: transparent;
-    border: transparent;
-  }
+    &::-webkit-slider-thumb {
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
+      border: 0 none;
+      background: #3D3D3D;
+      -webkit-appearance: none;
+    }
 
-  input[type=range]:focus {
-    outline: none;
+    &::-ms-thumb {
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
+      border: 0 none;
+      background: #3D3D3D;
+    }
+
+    &::-moz-range-thumb {
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
+      border: 0 none;
+      background: #3D3D3D;
+    }
+
+    &:focus::-webkit-slider-runnable-track {
+      background: transparent;
+      border: transparent;
+    }
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 
@@ -215,8 +213,12 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-image: -moz-linear-gradient(to bottom, rgba(255,255,255,0.125) 5%, rgba(255,255,255,0.125) 45%, rgba(255,255,255,0.15) 52%, rgba(0,0,0,0.01) 51%, rgba(0,0,0,0.1) 95%); /* W3C */
-  background-image: linear-gradient(to bottom, rgba(255,255,255,0.125) 5%, rgba(255,255,255,0.125) 45%, rgba(255,255,255,0.15) 50%, rgba(0,0,0,0.1) 51%, rgba(0,0,0,0.1) 95%); /* W3C */
+  background-image: -moz-linear-gradient(to bottom, rgba(255,255,255,0.125) 5%,
+    rgba(255,255,255,0.125) 45%, rgba(255,255,255,0.15) 52%,
+    rgba(0,0,0,0.01) 51%, rgba(0,0,0,0.1) 95%); /* W3C */
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.125) 5%,
+    rgba(255,255,255,0.125) 45%, rgba(255,255,255,0.15)
+    50%, rgba(0,0,0,0.1) 51%, rgba(0,0,0,0.1) 95%); /* W3C */
 }
 
 .sm2-bar-ui.flat .sm2-inline-gradient {
@@ -260,9 +262,6 @@
 .sm2-bar-ui.textured.dark-text .sm2-playlist-wrapper ul li.selected a {
   /* dark + textured case: dark highlights */
   background-color: rgba(0,0,0,0.1);
-  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-10.png);
-  /* modern browsers don't neeed the image */
-  background-image: none, none;
 }
 
 .sm2-playlist-bd .sm2-current-item {
@@ -336,14 +335,10 @@
 
 .sm2-bar-ui .bd .sm2-button-element:hover {
   background-color: rgba(0,0,0,0.1);
-  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-10.png);
-  background-image: none, none;
 }
 
 .sm2-bar-ui .bd .sm2-button-element:active {
   background-color: rgba(0,0,0,0.25);
-  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-25.png);
-  background-image: none, none;
 }
 
 .sm2-bar-ui .bd .sm2-extra-controls .sm2-button-element:active .sm2-inline-button,
@@ -363,8 +358,6 @@
 .sm2-bar-ui .bd .sm2-extra-controls .sm2-button-element:active,
 .sm2-bar-ui .bd .active {
   background-color: rgba(0,0,0,0.1);
-  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-10.png);
-  background-image: none, none;
 }
 
 .sm2-bar-ui .bd .sm2-extra-controls .sm2-button-element:active {
@@ -416,7 +409,6 @@
 
 .sm2-bar-ui .sm2-extra-controls .bd {
   /* don't double-layer. */
-  background-image: none;
   background-color: rgba(0,0,0,0.15);
 }
 
@@ -555,14 +547,12 @@
 }
 
 .sm2-progress .sm2-progress-bar {
-  /* element which follows the progres "ball" as it moves */
+  /* element which follows the progress "ball" as it moves */
   position: absolute;
   left: 0;
   top: 0;
   width: 0;
   background-color: rgba(0,0,0,0.33);
-  background-image: url(//mmixstaticassets.azureedge.net/Sm2Shim//black-33.png);
-  background-image: none, none;
 }
 
 .volume-shade,
