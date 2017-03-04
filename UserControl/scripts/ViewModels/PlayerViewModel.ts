@@ -412,12 +412,9 @@ namespace Sm2Shim.Player.ViewModels
         isPaused: KnockoutObservable<boolean>;
         isGrabbing: KnockoutObservable<boolean>;
 
-        background: KnockoutObservable<string>;
-        foreground: KnockoutObservable<string>;
         m_runtimeThemeViewModel: RuntimeThemeViewModel;
-
-        timerViewModel: KnockoutObservable<TimeControlViewModel>;
-        lyricsViewModel: KnockoutObservable<LyricsViewModel>;
+        m_timerViewModel: TimeControlViewModel;
+        m_lyricsViewModel: LyricsViewModel;
 
         currentSound: ISmSound;
 
@@ -460,8 +457,8 @@ namespace Sm2Shim.Player.ViewModels
             this.isPlaying = ko.computed(() => !this.isPaused());
             this.isCompactMode = ko.observable(playlist.compactMode);
             this.isGrabbing = ko.observable(false);
-            this.timerViewModel = ko.observable(new TimeControlViewModel(this));
-            this.lyricsViewModel = ko.observable(new LyricsViewModel());
+            this.m_timerViewModel = new TimeControlViewModel(this);
+            this.m_lyricsViewModel = new LyricsViewModel();
             this.m_stopped = false;
             this.m_runtimeThemeViewModel = new RuntimeThemeViewModel(this.controlIdClass());
 
@@ -509,7 +506,7 @@ namespace Sm2Shim.Player.ViewModels
 
         resetTimer() : void
         {
-            this.timerViewModel().resetTimer();
+            this.m_timerViewModel.resetTimer();
         }
 
         loopButtonHandler() : void
@@ -574,13 +571,13 @@ namespace Sm2Shim.Player.ViewModels
             // Clean up
             this.resetTimer();
             this.isPaused(true);
-            this.lyricsViewModel().reset();
+            this.m_lyricsViewModel.reset();
             if (!silentSwitch) soundManager.pauseAll();
             this.m_stopped = false;
 
             // Request LRC to load.
             // LRC ViewModel will check entity anyway
-            this.lyricsViewModel().initializeLyrics(entity);
+            this.m_lyricsViewModel.initializeLyrics(entity);
 
             // Create sound object
             this.currentSound = soundManager.createSound(<ISmSoundOptions>
@@ -605,14 +602,14 @@ namespace Sm2Shim.Player.ViewModels
                 whileplaying: () => {
                     // Update time
                     if (this.currentSound.duration)
-                        this.timerViewModel().currentTime = this.currentSound.position;
+                        this.m_timerViewModel.currentTime = this.currentSound.position;
                     // Synchronize lyrics
-                    this.lyricsViewModel().synchronizeLyrics(this.currentSound.position);
+                    this.m_lyricsViewModel.synchronizeLyrics(this.currentSound.position);
                 },
                 onload: (success: boolean) => {
                     if (success)
                     {
-                        this.timerViewModel().duration = this.currentSound.duration;
+                        this.m_timerViewModel.duration = this.currentSound.duration;
                     }
                 },
                 onfinish: () => {
@@ -676,7 +673,7 @@ namespace Sm2Shim.Player.ViewModels
                     }
                     else
                     {
-                        this.timerViewModel().currentTime = position;
+                        this.m_timerViewModel.currentTime = position;
                         this.currentSound.setPosition(position);
                         // A little hackish: ensure UI updates immediately with current position,
                         // even if audio is buffering and hasn't moved there yet.
@@ -685,7 +682,7 @@ namespace Sm2Shim.Player.ViewModels
                             this.currentSound._iO.whileplaying.apply(this.currentSound);
                         }
                         // Reset lyrics
-                        this.lyricsViewModel().synchronizeLyrics(position, true);
+                        this.m_lyricsViewModel.synchronizeLyrics(position, true);
                         // Accept request
                         resolve(true);
                     }

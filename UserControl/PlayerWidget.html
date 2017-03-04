@@ -40,7 +40,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="sm2-progress" data-bind="with: timerViewModel">
+                        <div class="sm2-progress" data-bind="with: m_timerViewModel">
                             <div class="sm2-progress-container">
                                 <div class="sm2-inline-time sm2-progress-element"><span data-bind="text: timeIndicatorText"></span></div>
                                 <div class="sm2-progress-element sm2-progressbar-container">
@@ -118,13 +118,13 @@
                     </ul>
                 </div>
             </div>
-            <div data-bind="if: !isCompactMode() && lyricsViewModel().isEnabled()"
+            <div data-bind="if: !isCompactMode() && m_lyricsViewModel.isEnabled()"
                  class="bd sm2-lyric-drawer sm2-element">
                 <div class="sm2-inline-texture">
                     <div class="sm2-box-shadow"></div>
                 </div>
                 <!-- Lyrics content goes here -->
-                <div class="sm2-lyric-wrapper" data-bind="with: lyricsViewModel">
+                <div class="sm2-lyric-wrapper" data-bind="with: m_lyricsViewModel">
                     <ul class="sm2-lyric-bd" data-bind="foreach: sentences">
                         <li class="lyric-content" data-bind='
                         text: content,
