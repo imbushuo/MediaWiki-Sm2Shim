@@ -108,7 +108,7 @@ class ModernSoundManager2Hooks
                $wgSm2Shim_ExternalCDNJsVersionControlId;
 
         $preStubEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/assets/win-ring-bundled.min.css";
-        $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/bin/ProdLoader.min.$wgSm2Shim_ExternalCDNJsVersionControlId.js";
+        $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/bin/ProdLoader.$wgSm2Shim_ExternalCDNJsVersionControlId.min.js";
 
         $sm2ModuleHeader = <<<HTML
 <link rel="stylesheet" href="{$preStubEndpoint}">
