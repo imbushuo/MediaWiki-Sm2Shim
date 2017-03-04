@@ -39,21 +39,21 @@
                 description: "Sm2Shim Player Widget",
                 name: "PlayerWidget",
                 release: false,
-                releaseId: "170303-1920"
+                releaseId: "170304-0304"
             },
             scripts: [
                 {
                     name: "CoreSupport",
                     type: "script",
                     description: "Core support library (SoundManager2, KnockoutJS, CorePromise)",
-                    releaseId: "170303-1920",
+                    releaseId: "170304-0304",
                     release: true
                 },
                 {
                     name: "PlayerCore",
                     type: "script",
                     description: "Player Core",
-                    releaseId: "170303-2054",
+                    releaseId: "170304-0304",
                     release: true
                 }
             ],
@@ -62,11 +62,11 @@
                     name: "BarUI",
                     type: "stylesheet",
                     description: "Player styles",
-                    releaseId: "170303-1920",
+                    releaseId: "170304-0304",
                     release: true
                 }
             ],
-            id: "1703.303.0800.0000"
+            id: "1703.304.0323.0000"
         };
     }
 

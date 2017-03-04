@@ -13,9 +13,6 @@
  */
 
 /// <reference path="../Framework/TextReader.ts" />
-/// <reference path="../Utilities/Utils.ts" />
-/// <reference path="../Utilities/ParamUtils.ts" />
-/// <reference path="Models/LrcSentence.ts" />
 /// <reference path="Models/ParsedLrc.ts" />
 
 namespace Light.Lyrics
