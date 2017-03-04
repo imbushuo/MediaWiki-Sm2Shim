@@ -105,16 +105,13 @@ class ModernSoundManager2Hooks
         // Because input validation is completed, required CSS and JS will be injected.
         // ResourceLoader is so slow - we can't wait for that.
         global $wgSm2Shim_ExternalCDNEndpoint,
-               $wgSm2Shim_ExternalCDNCssVersionControlId,
                $wgSm2Shim_ExternalCDNJsVersionControlId;
 
-        $preStubEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/win-ring-bundled.min.$wgSm2Shim_ExternalCDNCssVersionControlId.css";
-        $cssEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/css/player-ui.min.$wgSm2Shim_ExternalCDNCssVersionControlId.css";
-        $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/js/player.min.$wgSm2Shim_ExternalCDNJsVersionControlId.js";
+        $preStubEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/assets/win-ring-bundled.min.css";
+        $jsEndpoint = "$wgSm2Shim_ExternalCDNEndpoint/bin/ProdLoader.min.$wgSm2Shim_ExternalCDNJsVersionControlId.js";
 
         $sm2ModuleHeader = <<<HTML
 <link rel="stylesheet" href="{$preStubEndpoint}">
-<link rel="stylesheet" href="{$cssEndpoint}">
 <script async type="text/javascript" src="{$jsEndpoint}"></script>
 HTML;
 

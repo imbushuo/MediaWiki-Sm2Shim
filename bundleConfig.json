@@ -40,7 +40,6 @@
   {
     "outputFileName": "bin/Release/player.js",
     "inputFiles": [
-
       "Library/knockout/dist/knockout.js",
       "CoreServices/TemplateLoader.js",
       "Library/core-promise/client/core-promise.js",
@@ -114,6 +113,77 @@
   },
   {
     "outputFileName": "bin/Debug/assets/BarUI.css",
+    "inputFiles": [
+      "assets/css/bar-ui.css",
+      "assets/css/base-ui.css"
+    ]
+  },
+  {
+    "outputFileName": "bin/Release/CoreSupport.js",
+    "inputFiles": [
+      "Library/knockout/dist/knockout.debug.js",
+      "Library/core-promise/client/core-promise.js",
+      "Library/SoundManager2/script/soundmanager2.js",
+      "CoreServices/TemplateLoader.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "bin/Release/PlayerCore.js",
+    "inputFiles": [
+      "Framework/WebClient.js",
+      "Framework/HResults.js",
+      "Framework/Exception.js",
+      "Framework/ArgumentNullException.js",
+      "Player/Models/LrcSentence.js",
+      "Player/Models/ParsedLrc.js",
+      "Framework/TextReader.js",
+      "Player/LrcParser.js",
+      "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/PlayerViewModel.js",
+      "CoreServices/PlayerGlobal.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "bin/Release/StubLoader.js",
+    "inputFiles": [
+      "Library/core-promise/client/core-promise.js",
+      "Framework/WebClient.js",
+      "CoreServices/PlayerLoader.js",
+      "CoreServices/PlayerStub.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "bin/Release/ProdLoader.js",
+    "inputFiles": [
+      "CoreServices/ReleaseConfig.js",
+      "Library/core-promise/client/core-promise.js",
+      "Framework/WebClient.js",
+      "CoreServices/PlayerLoader.js",
+      "CoreServices/PlayerStub.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "bin/Release/assets/BarUI.css",
     "inputFiles": [
       "assets/css/bar-ui.css",
       "assets/css/base-ui.css"

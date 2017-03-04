@@ -1,7 +1,7 @@
 /**
  * @license
  *
- * DebugConfig.ts: Debug configuration for Sm2Shim
+ * ReleaseConfig.ts: Release configuration for Sm2Shim
  * -----------------------------------------------
  * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
  *
@@ -9,10 +9,6 @@
  * Code released under BSD-2-Clause license.
  *
  */
-
-import IEnvironmentDefinition = Sm2Shim.Models.IEnvironmentDefinition;
-import IBundle = Sm2Shim.Models.IBundle;
-
 
 (function(){
 
@@ -25,12 +21,12 @@ import IBundle = Sm2Shim.Models.IBundle;
             environment: "debug",
             localizationEndpoint: "",
             localizationReleaseId: "",
-            scriptEndpoint: "localhost:63342/MediaWiki-Sm2Shim/bin/Debug/",
+            scriptEndpoint: "mmixstaticassets.azureedge.net/Sm2ShimRM/bin/",
             scriptReleaseId: "",
             stylesheetReleaseId: "",
-            widgetEndpoint: "localhost:63342/MediaWiki-Sm2Shim/UserControl/",
+            widgetEndpoint: "mmixstaticassets.azureedge.net/Sm2ShimRM/UserControl/",
             widgetReleaseId: "",
-            stylesheetEndpoint: "localhost:63342/MediaWiki-Sm2Shim/bin/Debug/assets/"
+            stylesheetEndpoint: "mmixstaticassets.azureedge.net/Sm2ShimRM/assets/"
         };
     }
 
@@ -43,21 +39,21 @@ import IBundle = Sm2Shim.Models.IBundle;
                 description: "Sm2Shim Player Widget",
                 name: "PlayerWidget",
                 release: false,
-                releaseId: ""
+                releaseId: "170303-1920"
             },
             scripts: [
                 {
                     name: "CoreSupport",
                     type: "script",
                     description: "Core support library (KnockoutJS, CorePromise)",
-                    releaseId: "",
+                    releaseId: "170303-1920",
                     release: true
                 },
                 {
                     name: "PlayerCore",
                     type: "script",
                     description: "Player Core",
-                    releaseId: "",
+                    releaseId: "170303-1920",
                     release: true
                 }
             ],
@@ -66,7 +62,7 @@ import IBundle = Sm2Shim.Models.IBundle;
                     name: "BarUI",
                     type: "stylesheet",
                     description: "Player styles",
-                    releaseId: "",
+                    releaseId: "170303-1920",
                     release: true
                 }
             ]
