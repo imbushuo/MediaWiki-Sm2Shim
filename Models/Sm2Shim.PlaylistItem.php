@@ -174,6 +174,8 @@ class Playlist
     public $compactMode;
     public $backgroundColor;
     public $foregroundColor;
+    public $trackColor;
+    public $thumbColor;
 
     /**
      * Playlist constructor.
@@ -185,11 +187,14 @@ class Playlist
      * @param $isPlaylistOpen boolean Value indicates whether playlist is opened (at UI side).
      * @param $backgroundColor string Background color value in hex string form.
      * @param $foregroundColor string Foreground color value in hex string form.
+     * @param $trackColor string TrackBar color value in hex string form.
+     * @param $thumbColor string Thumb color value in hex string form.
      */
     public function __construct($playlist, $schemaVersion = 1,
                                 $compactMode = false, $loop = false,
                                 $autoPlay = false, $isPlaylistOpen = false,
-                                $backgroundColor = '', $foregroundColor = '')
+                                $backgroundColor = '', $foregroundColor = '',
+                                $trackColor = '', $thumbColor = '')
     {
         $this->playlist = $playlist;
         $this->schemaVersion = $schemaVersion;
@@ -199,6 +204,8 @@ class Playlist
         $this->foregroundColor = $foregroundColor;
         $this->isPlaylistOpen = $isPlaylistOpen;
         $this->compactMode = $compactMode;
+        $this->trackColor = $trackColor;
+        $this->thumbColor = $thumbColor;
     }
 
     /**

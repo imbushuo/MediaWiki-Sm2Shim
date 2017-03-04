@@ -722,8 +722,9 @@ namespace Sm2Shim.Player.ViewModels
             try
             {
                 const metadata = await WebClient.downloadStringAsync(reqUrl);
-                const metadataParsed = <OnlineMetadata> JSON.parse(metadata);
+                if (!metadata) return;
 
+                const metadataParsed = <OnlineMetadata> JSON.parse(metadata);
                 if (!metadataParsed) return;
 
                 // Update metadata
