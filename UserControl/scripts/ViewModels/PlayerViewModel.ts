@@ -25,30 +25,7 @@ namespace Sm2Shim.Player.ViewModels
     import ISmSoundOptions = soundManager.ISmSoundOptions;
     import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
     import OnlineMetadata = Sm2Shim.Player.Models.OnlineMetadata;
-
-    class WebClient
-    {
-        static downloadStringAsync(url: string) : Promise<string>
-        {
-            return new Promise<string>((resolve, reject) =>
-            {
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", url, true);
-
-                xhr.onload = () =>
-                {
-                    resolve(xhr.responseText);
-                };
-
-                xhr.onerror = () =>
-                {
-                    reject();
-                };
-
-                xhr.send(null);
-            });
-        }
-    }
+    import WebClient = System.Net.WebClient;
 
     class PlaylistItemViewModel
     {
@@ -249,18 +226,13 @@ namespace Sm2Shim.Player.ViewModels
     {
         time: number;
         content: KnockoutObservable<string>;
-        isCurrent: KnockoutObservable<boolean>;
+        line: number;
 
-        constructor(time: number, content: string)
+        constructor(time: number, content: string, line: number)
         {
             this.time = time;
             this.content = ko.observable(content);
-            this.isCurrent = ko.observable(false);
-        }
-
-        toggleCurrent() : void
-        {
-            this.isCurrent(!this.isCurrent());
+            this.line = line;
         }
     }
 
@@ -268,6 +240,7 @@ namespace Sm2Shim.Player.ViewModels
     {
         isEnabled: KnockoutObservable<boolean>;
         sentences: KnockoutObservableArray<LyricsSentenceViewModel>;
+        currentPivot: KnockoutObservable<number>;
 
         private m_current: PlaylistItemViewModel;
         private m_parsedLrcResult: Lyrics.LrcResult;
@@ -280,6 +253,7 @@ namespace Sm2Shim.Player.ViewModels
         constructor()
         {
             this.isEnabled = ko.observable(false);
+            this.currentPivot = ko.observable(0);
             this.sentences = ko.observableArray<LyricsSentenceViewModel>();
             this.m_prevPivot = -1;
             this.m_nextTimeMark = -1;
@@ -317,14 +291,9 @@ namespace Sm2Shim.Player.ViewModels
             if ((position < this.m_nextTimeMark && !overridePivot) ||
                 (this.m_isFinished && !overridePivot)) return;
 
-            // Search for lyrics sentence
-            const sentences = this.sentences();
-
             // Reset if required
             if (overridePivot)
             {
-                if (this.m_prevPivot >= 0 && sentences[this.m_prevPivot])
-                    sentences[this.m_prevPivot].toggleCurrent();
                 this.m_prevPivot = -1;
                 this.m_nextTimeMark = 0;
                 this.m_isFinished = false;
@@ -350,11 +319,8 @@ namespace Sm2Shim.Player.ViewModels
             else
                 this.m_isFinished = true;
 
-            // Toggle prev one if set
-            if (this.m_prevPivot >= 0 && sentences[this.m_prevPivot])
-                sentences[this.m_prevPivot].toggleCurrent();
             // Toggle current
-            if (sentences[i]) sentences[i].toggleCurrent();
+            this.currentPivot(i);
             // Set previous pivot
             this.m_prevPivot = i;
         }
@@ -390,7 +356,7 @@ namespace Sm2Shim.Player.ViewModels
             for (i = 0; i < lrcSentences.length; i++)
             {
                 const sentence = lrcSentences[i];
-                this.sentences.push(new LyricsSentenceViewModel(sentence.time + offset, sentence.content));
+                this.sentences.push(new LyricsSentenceViewModel(sentence.time + offset, sentence.content, i));
                 this.m_timeMarks.push(sentence.time + offset);
             }
         }
@@ -419,6 +385,7 @@ namespace Sm2Shim.Player.ViewModels
             this.m_parsedLrcResult = null;
             this.sentences.removeAll();
             this.isEnabled(false);
+            this.currentPivot(0);
         }
     }
 
@@ -447,6 +414,7 @@ namespace Sm2Shim.Player.ViewModels
         currentSound: ISmSound;
 
         private m_stopped: boolean;
+        private m_debug: boolean = true;
 
         constructor(playlist: IModernPlaylist)
         {
@@ -707,8 +675,15 @@ namespace Sm2Shim.Player.ViewModels
         {
             if (!item) item = this.currentItem();
             const urlEncoded = encodeURIComponent(item.audioFileSrc());
-            const reqUrl = "https://audiometadata-origin.moegirlpedia.moetransit.com/id3tag?path=" + urlEncoded;
-            const coverPrefix = "https://audiometadata-origin.moegirlpedia.moetransit.com/cover/index/";
+
+            let reqUrl = "https://audiometadata-origin.moegirlpedia.moetransit.com/id3tag?path=" + urlEncoded;
+            let coverPrefix = "https://audiometadata-origin.moegirlpedia.moetransit.com/cover/index/";
+
+            if (this.m_debug)
+            {
+                reqUrl = "http://localhost:5000/id3tag?path=" + urlEncoded;
+                coverPrefix = "http://localhost:5000/cover/index/";
+            }
 
             try
             {

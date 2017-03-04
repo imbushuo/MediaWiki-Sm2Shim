@@ -3,6 +3,7 @@
  *
  * SynchronizedLyricsHandler.ts: Knockout binding handler that implements auto scroll for lyrics panel
  * -----------------------------------------------
+ * Copyright (c) 2015 - 2017, Light Studio, David Huang, Bingxing Wang. All rights reserved.
  * Copyright (c) 2017, The Little Moe New LLC, Bingxing Wang. All rights reserved.
  *
  */
@@ -20,29 +21,28 @@
                 const lyricsContainer = element.parentElement;
                 if (lyricsContainer)
                 {
-                    // Basic scroll support (pretty dirty) if jQuery is not present
                     const currLnIndex = Array.prototype.indexOf.call(lyricsContainer.children, element);
-                    if (currLnIndex >= 3)
+                    let containerVerticalCenterOffset = lyricsContainer.clientHeight / 2;
+                    let height = -containerVerticalCenterOffset;
+
+                    for (let i = 0; i < currLnIndex; i++)
                     {
-                        if (lyricsContainer.children[currLnIndex + 3])
-                        {
-                            lyricsContainer.children[currLnIndex + 3].scrollIntoView(false);
-                        }
-                        else
-                        {
-                            // Approaching the end. Scroll itself.
-                            element.scrollIntoView(false);
-                        }
+                        height += lyricsContainer.children[i].scrollHeight;
                     }
-                    else if (currLnIndex < 1)
-                    {
-                        // Make sure it is on the top
-                        element.scrollIntoView();
-                    }
+
+                    let lastPos = lyricsContainer.scrollTop;
+                    if (Math.abs(lastPos - height) < 10) return;
+                    height = height + 20;
 
                     if ((<any>window).jQuery != undefined)
                     {
-
+                        $(lyricsContainer).clearQueue().animate({
+                            scrollTop: height
+                        }, 370);
+                    }
+                    else
+                    {
+                        lyricsContainer.scrollTop = height;
                     }
                 }
             }

@@ -1,6 +1,3 @@
-import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
-import PlayerViewModel = Sm2Shim.Player.ViewModels.PlayerViewModel;
-import load = soundManager.load;
 /**
  * @license
  *
@@ -15,6 +12,11 @@ import load = soundManager.load;
  *
  */
 
+import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
+import PlayerViewModel = Sm2Shim.Player.ViewModels.PlayerViewModel;
+import load = soundManager.load;
+import IModule = Sm2Shim.Models.IModule;
+
 /// <reference path="../Framework/SoundManager2.d.ts" />
 /// <reference path="../UserControl/scripts/ViewModels/PlayerViewModel.ts" />
 
@@ -25,7 +27,6 @@ import load = soundManager.load;
 
     // Initialize SoundManager2
     let pollingInterval = 200;
-    let players = [];
 
     // Detect mobile devices (power optimization)
     if (window.navigator.userAgent.match(/mobile/i))
@@ -44,12 +45,29 @@ import load = soundManager.load;
         url: 'https://mmixstaticassets.azureedge.net/Sm2Shim/'
     });
 
-    soundManager.onready(() => {
-        ko.components.register("sm2-player-fx", {
-            template: {
-                fromUrl: 'https://mmixstaticassets.azureedge.net/Sm2Shim/UserControl/PlayerWidget.170227-0710.html'
+    soundManager.onready(() =>
+    {
+        let loader = <PlayerLoader> (<any> window).sm2ShimLoader;
+        let bundle = <IBundle> (<any> window).sm2ShimModules;
+        let widgetSrc = "UserControl/PlayerWidget.html";
+
+        if (loader && bundle)
+        {
+            if (bundle.widget)
+            {
+                widgetSrc = loader.buildResourceURI(bundle.widget);
+            }
+        }
+
+        // Register widgets
+        ko.components.register("sm2-player-fx",
+        {
+            template:
+            {
+                fromUrl: widgetSrc
             },
-            viewModel: (param) => {
+            viewModel: (param) =>
+            {
                 return new PlayerViewModel(<IModernPlaylist> param);
             }
         });
