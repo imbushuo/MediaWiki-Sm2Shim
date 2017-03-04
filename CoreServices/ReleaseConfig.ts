@@ -18,9 +18,9 @@
         {
             debug: false,
             definitionReleaseId: "",
-            environment: "debug",
+            environment: "release",
             localizationEndpoint: "mmixstaticassets.azureedge.net/Sm2ShimRM/strings/",
-            localizationReleaseId: "170304-0304",
+            localizationReleaseId: "170304-0456",
             scriptEndpoint: "mmixstaticassets.azureedge.net/Sm2ShimRM/bin/",
             scriptReleaseId: "",
             stylesheetReleaseId: "",
@@ -39,7 +39,7 @@
                 description: "Sm2Shim Player Widget",
                 name: "PlayerWidget",
                 release: false,
-                releaseId: "170304-0304"
+                releaseId: "170304-0456"
             },
             scripts: [
                 {
@@ -53,7 +53,7 @@
                     name: "PlayerCore",
                     type: "script",
                     description: "Player Core",
-                    releaseId: "170304-0304",
+                    releaseId: "170304-0456",
                     release: true
                 }
             ],
@@ -66,7 +66,7 @@
                     release: true
                 }
             ],
-            id: "1703.304.0323.0000"
+            id: "1703.304.0456.0000"
         };
     }
 
