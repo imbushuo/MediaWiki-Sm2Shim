@@ -14,13 +14,14 @@
 
 namespace Sm2Shim.Player.ViewModels
 {
-    import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
     import ArgumentNullException = System.ArgumentNullException;
+    import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
-    import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
     import OnlineMetadata = Sm2Shim.Player.Models.OnlineMetadata;
+    import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
     import WebClient = System.Net.WebClient;
+
     import play = soundManager.play;
 
     class PlaylistItemViewModel

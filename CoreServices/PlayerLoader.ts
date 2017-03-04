@@ -105,8 +105,7 @@ namespace Sm2Shim.CoreServices
                         if(!this.m_emitOnly)
                         {
                             htmlHead.appendChild(resLink);
-                            console.log(`PlayerLoader::loadDependencies(): Start loading ${module.name}` +
-                                + `(${module.description})`);
+                            console.log(`PlayerLoader::loadDependencies(): Start loading ${module.name} (${module.description})`);
                         }
                         else
                         {
@@ -129,8 +128,7 @@ namespace Sm2Shim.CoreServices
                             {
                                 let scriptContent = await WebClient.downloadStringAsync(resUri);
                                 if (scriptContent) eval(scriptContent);
-                                console.log(`PlayerLoader::loadDependencies(): Loaded ${module.name}` +
-                                    + `(${module.description})`);
+                                console.log(`PlayerLoader::loadDependencies(): Loaded ${module.name} (${module.description})`);
                             }
                             else
                             {
@@ -140,7 +138,7 @@ namespace Sm2Shim.CoreServices
                         catch (exception)
                         {
                             // Ignore and stop loading.
-                            console.error(`PlayerLoader::loadDependencies(): Failed to load module ${module.name}`);
+                            console.error(`PlayerLoader::loadDependencies(): Failed to load module ${module.name}: ${exception}`);
                             break;
                         }
                     }

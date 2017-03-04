@@ -72,7 +72,7 @@ namespace Sm2Shim.Player.ViewModels
 
         set foreground(value: string)
         {
-            if (value) this.m_foreground(value);
+            if (RuntimeThemeViewModel.validate(value)) this.m_foreground(value);
         }
 
         get background()
@@ -82,7 +82,7 @@ namespace Sm2Shim.Player.ViewModels
 
         set background(value: string)
         {
-            if (value) this.m_background(value);
+            if (RuntimeThemeViewModel.validate(value)) this.m_background(value);
         }
 
         get thumbColor()
@@ -92,7 +92,7 @@ namespace Sm2Shim.Player.ViewModels
 
         set thumbColor(value: string)
         {
-            if (value) this.m_thumbColor(value);
+            if (RuntimeThemeViewModel.validate(value)) this.m_thumbColor(value);
         }
 
         get trackColor()
@@ -102,7 +102,28 @@ namespace Sm2Shim.Player.ViewModels
 
         set trackColor(value: string)
         {
-            if (value) this.m_trackColor(value);
+            if (RuntimeThemeViewModel.validate(value)) this.m_trackColor(value);
+        }
+
+        private static validate(expression: string) : boolean
+        {
+            // Non-qualified expressions (e.g. null string) get rejection
+            if (!expression) return false;
+
+            let ret:boolean;
+
+            // Create element to validate
+            let validationElement = <HTMLDivElement> document.createElement("div");
+            // Set to a specific expression
+            validationElement.style.backgroundColor = DefaultBackground;
+            validationElement.style.backgroundColor = expression;
+
+            if (validationElement.style.background != DefaultBackground) ret = true;
+            // Other situations
+            else ret = expression === DefaultBackground;
+
+            validationElement = null;
+            return ret;
         }
     }
 }
