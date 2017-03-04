@@ -26,6 +26,7 @@ namespace Sm2Shim.Player.ViewModels
     import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
     import OnlineMetadata = Sm2Shim.Player.Models.OnlineMetadata;
     import WebClient = System.Net.WebClient;
+    import play = soundManager.play;
 
     class PlaylistItemViewModel
     {
@@ -391,6 +392,8 @@ namespace Sm2Shim.Player.ViewModels
 
     export class PlayerViewModel
     {
+        controlIdClass: KnockoutObservable<string>;
+
         playlistItems: KnockoutObservableArray<PlaylistItemViewModel>;
         currentItem: KnockoutObservable<PlaylistItemViewModel>;
         currentIndex: KnockoutObservable<number>;
@@ -409,6 +412,10 @@ namespace Sm2Shim.Player.ViewModels
         isPaused: KnockoutObservable<boolean>;
         isGrabbing: KnockoutObservable<boolean>;
 
+        background: KnockoutObservable<string>;
+        foreground: KnockoutObservable<string>;
+        m_runtimeThemeViewModel: RuntimeThemeViewModel;
+
         timerViewModel: KnockoutObservable<TimeControlViewModel>;
         lyricsViewModel: KnockoutObservable<LyricsViewModel>;
 
@@ -416,6 +423,7 @@ namespace Sm2Shim.Player.ViewModels
 
         private m_stopped: boolean;
         private m_debug: boolean = false;
+        private m_instanceId: string;
 
         constructor(playlist: IModernPlaylist)
         {
@@ -431,6 +439,10 @@ namespace Sm2Shim.Player.ViewModels
             // Invoke stub removal if deferral loader is present
             let loader = <PlayerLoader> (<any> window).sm2ShimLoader;
             if (loader) loader.removeStubs();
+
+            // Initialize instance ID
+            this.m_instanceId = PlayerViewModel.newGuid();
+            this.controlIdClass = ko.computed(() => "sm2-widget-" + this.m_instanceId);
 
             // Overwrite auto play if mobile device was detected
             if (navigator.userAgent.match(/mobile/i))
@@ -451,6 +463,13 @@ namespace Sm2Shim.Player.ViewModels
             this.timerViewModel = ko.observable(new TimeControlViewModel(this));
             this.lyricsViewModel = ko.observable(new LyricsViewModel());
             this.m_stopped = false;
+            this.m_runtimeThemeViewModel = new RuntimeThemeViewModel(this.controlIdClass());
+
+            // Set background and foreground if available
+            if (playlist.backgroundColor) this.m_runtimeThemeViewModel.background = playlist.backgroundColor;
+            if (playlist.foregroundColor) this.m_runtimeThemeViewModel.foreground = playlist.foregroundColor;
+            if (playlist.trackColor) this.m_runtimeThemeViewModel.trackColor = playlist.trackColor;
+            if (playlist.thumbColor) this.m_runtimeThemeViewModel.thumbColor = playlist.thumbColor;
 
             // Load playlist
             let i: number;
@@ -758,6 +777,14 @@ namespace Sm2Shim.Player.ViewModels
                     // Ignore, assume as failed
                 }
             }
+        }
+
+        private static newGuid(): string
+        {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
         }
     }
 }

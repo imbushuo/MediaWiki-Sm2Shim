@@ -5,37 +5,46 @@
     <title>Sm2Shim Player Widget (170304-0040)</title>
 </head>
 <body>
-    <div class="sm2-bar-ui" data-bind='css: { "playlist-open": isPlaylistExpanded(), "sm2-bar-ui-lite": isCompactMode()}'>
-        <div class="bd sm2-main-controls" data-bind='css: { "paused": isPaused, "playing": isPlaying }'>
-            <div class="sm2-inline-texture"></div>
-            <div class="sm2-inline-element sm2-button-element" data-bind="click: playPauseHandler">
-                <div class="sm2-button-bd">
-                    <a href="#" class="sm2-inline-button sm2-icon-play-pause"></a>
-                </div>
-            </div>
-            <div class="sm2-full-container" data-bind="ifnot: isCompactMode">
-                <div class="sm2-inline-element sm2-inline-cover" data-bind="if: currentItem().coverImageUrl()">
-                    <img data-bind='attr: { src: currentItem().coverImageUrl() }'
-                         class="sm2-inline-cover-img" />
-                </div>
-                <div class="sm2-inline-element sm2-inline-status">
-                    <div class="sm2-playlist">
-                        <div class="sm2-playlist-target">
-                            <ul class="sm2-playlist-bd" data-bind="if: currentItem">
-                                <li data-bind="with: currentItem">
-                                    <a class="sm2-current-item" data-bind="attr: { href: navigationLink, title: tooltip() }">
-                                        <b><span data-bind="text: title"></span></b> - <span data-bind="text: album"></span>,
-                                        <span data-bind="text: artist"></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+    <div data-bind='css: controlIdClass'>
+        <style data-bind="html: m_runtimeThemeViewModel.m_computedCss()"></style>
+        <div class="sm2-bar-ui" data-bind='css: {
+                    "playlist-open": isPlaylistExpanded(),
+                    "sm2-bar-ui-lite": isCompactMode(),
+                }'>
+
+            <div class="bd sm2-main-controls" data-bind='css: {
+                "paused": isPaused,
+                "playing": isPlaying
+            }'>
+                <div class="sm2-inline-texture"></div>
+                <div class="sm2-inline-element sm2-button-element" data-bind="click: playPauseHandler">
+                    <div class="sm2-button-bd">
+                        <a href="#" class="sm2-inline-button sm2-icon-play-pause"></a>
                     </div>
-                    <div class="sm2-progress" data-bind="with: timerViewModel">
-                        <div class="sm2-progress-container">
-                            <div class="sm2-inline-time sm2-progress-element"><span data-bind="text: timeIndicatorText"></span></div>
-                            <div class="sm2-progress-element sm2-progressbar-container">
-                                <input data-bind="
+                </div>
+                <div class="sm2-full-container" data-bind="ifnot: isCompactMode">
+                    <div class="sm2-inline-element sm2-inline-cover" data-bind="if: currentItem().coverImageUrl()">
+                        <img data-bind='attr: { src: currentItem().coverImageUrl() }'
+                             class="sm2-inline-cover-img" />
+                    </div>
+                    <div class="sm2-inline-element sm2-inline-status">
+                        <div class="sm2-playlist">
+                            <div class="sm2-playlist-target">
+                                <ul class="sm2-playlist-bd" data-bind="if: currentItem">
+                                    <li data-bind="with: currentItem">
+                                        <a class="sm2-current-item" data-bind="attr: { href: navigationLink, title: tooltip() }">
+                                            <b><span data-bind="text: title"></span></b> - <span data-bind="text: album"></span>,
+                                            <span data-bind="text: artist"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sm2-progress" data-bind="with: timerViewModel">
+                            <div class="sm2-progress-container">
+                                <div class="sm2-inline-time sm2-progress-element"><span data-bind="text: timeIndicatorText"></span></div>
+                                <div class="sm2-progress-element sm2-progressbar-container">
+                                    <input data-bind="
                                     attr: {
                                         max: _duration
                                     },
@@ -47,49 +56,50 @@
                                     },
                                     value: _currentTime,
                                     valueUpdate: 'input'"
-                                       type="range"
-                                       min="0"
-                                       class="sm2-progress-track" />
+                                           type="range"
+                                           min="0"
+                                           class="sm2-progress-track" />
+                                </div>
+                                <div class="sm2-inline-duration sm2-progress-element"><span data-bind="text: durationIndicatorText"></span></div>
                             </div>
-                            <div class="sm2-inline-duration sm2-progress-element"><span data-bind="text: durationIndicatorText"></span></div>
                         </div>
                     </div>
-                </div>
-                <div data-bind="ifnot: isSingleEntityPlayback">
-                    <div class="sm2-inline-element sm2-button-element"
-                         data-bind='click: prevHandler, css: {"sm2-button-disabled": isPrevButtonDisabled }'>
-                        <div class="sm2-button-bd" data-bind='css: {"sm2-button-disabled": isPrevButtonDisabled }'>
-                            <a href="#" title="Previous" data-bind='css: {"sm2-button-content-disabled": isPrevButtonDisabled }'
-                               class="sm2-inline-button sm2-icon-previous"></a>
+                    <div data-bind="ifnot: isSingleEntityPlayback">
+                        <div class="sm2-inline-element sm2-button-element"
+                             data-bind='click: prevHandler, css: {"sm2-button-disabled": isPrevButtonDisabled }'>
+                            <div class="sm2-button-bd" data-bind='css: {"sm2-button-disabled": isPrevButtonDisabled }'>
+                                <a href="#" title="Previous" data-bind='css: {"sm2-button-content-disabled": isPrevButtonDisabled }'
+                                   class="sm2-inline-button sm2-icon-previous"></a>
+                            </div>
+                        </div>
+                        <div class="sm2-inline-element sm2-button-element"
+                             data-bind='click: nextHandler, css: {"sm2-button-disabled": isNextButtonDisabled }'>
+                            <div class="sm2-button-bd" data-bind='css: {"sm2-button-disabled": isNextButtonDisabled }'>
+                                <a href="#" title="Next" data-bind='css: {"sm2-button-content-disabled": isNextButtonDisabled}'
+                                   class="sm2-inline-button sm2-icon-next"></a>
+                            </div>
                         </div>
                     </div>
-                    <div class="sm2-inline-element sm2-button-element"
-                         data-bind='click: nextHandler, css: {"sm2-button-disabled": isNextButtonDisabled }'>
-                        <div class="sm2-button-bd" data-bind='css: {"sm2-button-disabled": isNextButtonDisabled }'>
-                            <a href="#" title="Next" data-bind='css: {"sm2-button-content-disabled": isNextButtonDisabled}'
-                               class="sm2-inline-button sm2-icon-next"></a>
+                    <div data-bind="click: loopButtonHandler" class="sm2-inline-element sm2-button-element">
+                        <div class="sm2-button-bd" data-bind="css: { active: isLoopEnabled }">
+                            <a href="#" title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat"></a>
                         </div>
                     </div>
-                </div>
-                <div data-bind="click: loopButtonHandler" class="sm2-inline-element sm2-button-element">
-                    <div class="sm2-button-bd" data-bind="css: { active: isLoopEnabled }">
-                        <a href="#" title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat"></a>
-                    </div>
-                </div>
-                <div data-bind="ifnot: isSingleEntityPlayback">
-                    <div class="sm2-inline-element sm2-button-element sm2-menu" data-bind="click: menuHandler">
-                        <div class="sm2-button-bd">
-                            <a href="#" class="sm2-inline-button sm2-icon-menu"></a>
+                    <div data-bind="ifnot: isSingleEntityPlayback">
+                        <div class="sm2-inline-element sm2-button-element sm2-menu" data-bind="click: menuHandler">
+                            <div class="sm2-button-bd">
+                                <a href="#" class="sm2-inline-button sm2-icon-menu"></a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div data-bind="if: !isCompactMode() && isPlaylistExpanded()" class="bd sm2-playlist-drawer sm2-element">
-            <div class="sm2-inline-texture">
-                <div class="sm2-box-shadow"></div>
-            </div>
-            <div class="sm2-playlist-wrapper" data-bind='
+            <div data-bind="if: !isCompactMode() && isPlaylistExpanded()"
+                 class="bd sm2-playlist-drawer sm2-element">
+                <div class="sm2-inline-texture">
+                    <div class="sm2-box-shadow"></div>
+                </div>
+                <div class="sm2-playlist-wrapper" data-bind='
                  foreach: playlistItems,
                  css: {
                     "show-scrollbar": isMouseOnPlaylist
@@ -98,24 +108,25 @@
                     mouseover: onPlaylistHover,
                     mouseout: onPlaylistHoverLost
                  }'>
-                <ul class="sm2-playlist-bd">
-                    <li data-bind='event: { click: $parent.onPlaylistItemClick }, css: { selected: isCurrent } '>
-                        <a data-bind="attr: { href: navigationLink }">
-                        <b><span data-bind="text: title"></span></b> - <span data-bind="text: album"></span>,
-                            <span data-bind="text: artist"></span>
-                        </a>
-                    </li>
-                </ul>
+                    <ul class="sm2-playlist-bd">
+                        <li data-bind='event: { click: $parent.onPlaylistItemClick }, css: { selected: isCurrent } '>
+                            <a data-bind="attr: { href: navigationLink }">
+                                <b><span data-bind="text: title"></span></b> - <span data-bind="text: album"></span>,
+                                <span data-bind="text: artist"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div data-bind="if: !isCompactMode() && lyricsViewModel().isEnabled()" class="bd sm2-lyric-drawer sm2-element">
-            <div class="sm2-inline-texture">
-                <div class="sm2-box-shadow"></div>
-            </div>
-            <!-- Lyrics content goes here -->
-            <div class="sm2-lyric-wrapper" data-bind="with: lyricsViewModel">
-                <ul class="sm2-lyric-bd" data-bind="foreach: sentences">
-                    <li class="lyric-content" data-bind='
+            <div data-bind="if: !isCompactMode() && lyricsViewModel().isEnabled()"
+                 class="bd sm2-lyric-drawer sm2-element">
+                <div class="sm2-inline-texture">
+                    <div class="sm2-box-shadow"></div>
+                </div>
+                <!-- Lyrics content goes here -->
+                <div class="sm2-lyric-wrapper" data-bind="with: lyricsViewModel">
+                    <ul class="sm2-lyric-bd" data-bind="foreach: sentences">
+                        <li class="lyric-content" data-bind='
                         text: content,
                         attr: {
                             "data-time": time
@@ -124,7 +135,8 @@
                             "lyric-content-current": $parent.currentPivot() == line
                         },
                         scrollTo: $parent.currentPivot() == line'></li>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

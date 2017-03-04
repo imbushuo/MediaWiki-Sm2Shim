@@ -88,6 +88,7 @@
       "Framework/TextReader.js",
       "Player/LrcParser.js",
       "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/RuntimeThemeViewModel.js",
       "UserControl/scripts/ViewModels/PlayerViewModel.js",
       "CoreServices/PlayerGlobal.js"
     ],
@@ -144,6 +145,7 @@
       "Framework/TextReader.js",
       "Player/LrcParser.js",
       "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/RuntimeThemeViewModel.js",
       "UserControl/scripts/ViewModels/PlayerViewModel.js",
       "CoreServices/PlayerGlobal.js"
     ],
