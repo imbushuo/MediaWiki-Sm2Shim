@@ -49,7 +49,7 @@ import IBundle = Sm2Shim.Models.IBundle;
                 {
                     name: "CoreSupport",
                     type: "script",
-                    description: "Core support library (KnockoutJS, CorePromise)",
+                    description: "Core support library (SoundManager2, KnockoutJS, CorePromise)",
                     releaseId: "",
                     release: true
                 },
@@ -69,7 +69,8 @@ import IBundle = Sm2Shim.Models.IBundle;
                     releaseId: "",
                     release: true
                 }
-            ]
+            ],
+            id: "1703.303.0800.0000"
         };
     }
 

@@ -24,7 +24,7 @@ namespace Sm2Shim.CoreServices
         constructor()
         {
             console.log("This is Sm2Shim Deferred Loader " + this.m_loaderVersion + " " +
-                (this.m_emitOnly ? "DEBUG" : "PROD") + ".");
+                (this.m_emitOnly ? "DEBUG" : "PROD") + ", greetings from San Francisco.");
             console.log("Copyright (c) The Regents of the University of California. All rights reserved.");
             console.log("Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.");
 
@@ -59,11 +59,18 @@ namespace Sm2Shim.CoreServices
             // Check module definition
             if ((<any> window).sm2ShimModules)
             {
-                // Chain-load all dependencies
-                this.loadDependencies().then(() =>
+                const bundle = <IBundle> (<any> window).sm2ShimModules;
+
+                if (bundle)
                 {
-                    console.log("PlayerLoader::constructor(): All dependencies have been loaded.");
-                });
+                    console.log("Hello San Francisco, this is Seattle. We are loading bundle " +
+                        bundle.id + ".");
+                    // Chain-load all dependencies
+                    this.loadDependencies(bundle).then(() =>
+                    {
+                        console.log("PlayerLoader::constructor(): All dependencies have been loaded.");
+                    });
+                }
             }
             else
             {
@@ -72,9 +79,8 @@ namespace Sm2Shim.CoreServices
             }
         }
 
-        private async loadDependencies()
+        private async loadDependencies(bundle: IBundle)
         {
-            const bundle = <IBundle> (<any> window).sm2ShimModules;
             console.log("PlayerLoader::loadDependencies(): Begin loading dependencies.");
 
             const htmlHeadCollection = document.getElementsByTagName("head");

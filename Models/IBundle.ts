@@ -17,5 +17,6 @@ namespace Sm2Shim.Models
         stylesheets: Array<IModule>;
         scripts: Array<IModule>;
         widget: IModule;
+        id: string;
     }
 }

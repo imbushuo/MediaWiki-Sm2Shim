@@ -45,7 +45,7 @@
                 {
                     name: "CoreSupport",
                     type: "script",
-                    description: "Core support library (KnockoutJS, CorePromise)",
+                    description: "Core support library (SoundManager2, KnockoutJS, CorePromise)",
                     releaseId: "170303-1920",
                     release: true
                 },
@@ -65,7 +65,8 @@
                     releaseId: "170303-1920",
                     release: true
                 }
-            ]
+            ],
+            id: "1703.303.0800.0000"
         };
     }
 
