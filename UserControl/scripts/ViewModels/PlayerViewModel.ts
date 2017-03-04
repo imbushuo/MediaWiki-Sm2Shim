@@ -427,6 +427,10 @@ namespace Sm2Shim.Player.ViewModels
                 this.m_debug = config.debug;
             }
 
+            // Invoke stub removal if deferral loader is present
+            let loader = <PlayerLoader> (<any> window).sm2ShimLoader;
+            if (loader) loader.removeStubs();
+
             // Overwrite auto play if mobile device was detected
             if (navigator.userAgent.match(/mobile/i))
             {
