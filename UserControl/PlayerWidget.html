@@ -19,7 +19,9 @@
                 <div class="sm2-inline-texture"></div>
                 <div class="sm2-inline-element sm2-button-element" data-bind="click: playPauseHandler">
                     <div class="sm2-button-bd">
-                        <a href="#" class="sm2-inline-button sm2-icon-play-pause"></a>
+                        <a href="#" class="sm2-inline-button sm2-icon-play-pause", data-bind="attr: {
+                            title: m_localizationViewModel.playPauseLabel()
+                        }"></a>
                     </div>
                 </div>
                 <div class="sm2-full-container" data-bind="ifnot: isCompactMode">
@@ -32,10 +34,10 @@
                             <div class="sm2-playlist-target">
                                 <ul class="sm2-playlist-bd" data-bind="if: currentItem">
                                     <li data-bind="with: currentItem">
-                                        <a class="sm2-current-item" data-bind="attr: { href: navigationLink, title: tooltip() }">
+                                        <p class="sm2-current-item" data-bind="attr: { href: navigationLink, title: tooltip() }">
                                             <b><span data-bind="text: title"></span></b> - <span data-bind="text: album"></span>,
                                             <span data-bind="text: artist"></span>
-                                        </a>
+                                        </p>
                                     </li>
                                 </ul>
                             </div>
@@ -68,27 +70,37 @@
                         <div class="sm2-inline-element sm2-button-element"
                              data-bind='click: prevHandler, css: {"sm2-button-disabled": isPrevButtonDisabled }'>
                             <div class="sm2-button-bd" data-bind='css: {"sm2-button-disabled": isPrevButtonDisabled }'>
-                                <a href="#" title="Previous" data-bind='css: {"sm2-button-content-disabled": isPrevButtonDisabled }'
-                                   class="sm2-inline-button sm2-icon-previous"></a>
+                                <a href="#" title="Previous" data-bind='css: {
+                                    "sm2-button-content-disabled": isPrevButtonDisabled
+                                }, attr: {
+                                    title: m_localizationViewModel.prevLabel()
+                                }' class="sm2-inline-button sm2-icon-previous"></a>
                             </div>
                         </div>
                         <div class="sm2-inline-element sm2-button-element"
                              data-bind='click: nextHandler, css: {"sm2-button-disabled": isNextButtonDisabled }'>
                             <div class="sm2-button-bd" data-bind='css: {"sm2-button-disabled": isNextButtonDisabled }'>
-                                <a href="#" title="Next" data-bind='css: {"sm2-button-content-disabled": isNextButtonDisabled}'
-                                   class="sm2-inline-button sm2-icon-next"></a>
+                                <a href="#" title="Next" data-bind='css: {
+                                    "sm2-button-content-disabled": isNextButtonDisabled
+                                }, attr: {
+                                    title: m_localizationViewModel.nextLabel()
+                                }' class="sm2-inline-button sm2-icon-next"></a>
                             </div>
                         </div>
                     </div>
                     <div data-bind="click: loopButtonHandler" class="sm2-inline-element sm2-button-element">
                         <div class="sm2-button-bd" data-bind="css: { active: isLoopEnabled }">
-                            <a href="#" title="Repeat playlist" class="sm2-inline-button sm2-icon-repeat"></a>
+                            <a href="#" class="sm2-inline-button sm2-icon-repeat" data-bind='attr: {
+                                    title: m_localizationViewModel.loopLabel()
+                                }'></a>
                         </div>
                     </div>
                     <div data-bind="ifnot: isSingleEntityPlayback">
-                        <div class="sm2-inline-element sm2-button-element sm2-menu" data-bind="click: menuHandler">
+                        <div class="sm2-inline-element sm2-button-element sm2-menu" data-bind='click: menuHandler'>
                             <div class="sm2-button-bd">
-                                <a href="#" class="sm2-inline-button sm2-icon-menu"></a>
+                                <a href="#" class="sm2-inline-button sm2-icon-menu" data-bind='attr: {
+                                    title: m_localizationViewModel.playlistLabel()
+                                }'></a>
                             </div>
                         </div>
                     </div>

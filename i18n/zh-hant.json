@@ -20,5 +20,10 @@
   "sm2shim-playlistRequired": "沒有指定播放列表。",
   "sm2shim-error": "發生了一些問題： ",
   "sm2shim-unknown": "發生了一個未知錯誤。",
-  "sm2shim-invalidJson": "給定的播放列表不是有效的 JSON 字符串。"
+  "sm2shim-invalidJson": "給定的播放列表不是有效的 JSON 字符串。",
+  "clientPlayPause": "播放/暫停",
+  "clientPrev": "< 上一曲",
+  "clientNext": "下一曲 >",
+  "clientRepeat": "循環播放",
+  "clientMenu": "播放列表"
 }

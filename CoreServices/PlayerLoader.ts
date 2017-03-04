@@ -171,6 +171,10 @@ namespace Sm2Shim.CoreServices
                     resEndpoint = this.m_config.widgetEndpoint;
                     resExtension = ".html";
                     break;
+                case "localization":
+                    resEndpoint = this.m_config.localizationEndpoint;
+                    resExtension = ".json";
+                    break;
             }
 
             // Build URI

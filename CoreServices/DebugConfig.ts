@@ -23,7 +23,7 @@ import IBundle = Sm2Shim.Models.IBundle;
             debug: true,
             definitionReleaseId: "",
             environment: "debug",
-            localizationEndpoint: "",
+            localizationEndpoint: "localhost:63342/MediaWiki-Sm2Shim/i18n/",
             localizationReleaseId: "",
             scriptEndpoint: "localhost:63342/MediaWiki-Sm2Shim/bin/Debug/",
             scriptReleaseId: "",
