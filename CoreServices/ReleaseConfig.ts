@@ -45,7 +45,7 @@
                 {
                     name: "CoreSupport",
                     type: "script",
-                    description: "Core support library (KnockoutJS, CorePromise)",
+                    description: "Core support library (SoundManager2, KnockoutJS, CorePromise)",
                     releaseId: "170303-1920",
                     release: true
                 },
@@ -53,7 +53,7 @@
                     name: "PlayerCore",
                     type: "script",
                     description: "Player Core",
-                    releaseId: "170303-1937",
+                    releaseId: "170303-2047",
                     release: true
                 }
             ],
