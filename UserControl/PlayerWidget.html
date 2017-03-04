@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sm2Shim Player Widget (170303-1920)</title>
+    <title>Sm2Shim Player Widget (170304-0040)</title>
 </head>
 <body>
     <div class="sm2-bar-ui" data-bind='css: { "playlist-open": isPlaylistExpanded(), "sm2-bar-ui-lite": isCompactMode()}'>
@@ -85,11 +85,19 @@
                 </div>
             </div>
         </div>
-        <div data-bind="ifnot: isCompactMode" class="bd sm2-playlist-drawer sm2-element">
+        <div data-bind="if: !isCompactMode() && isPlaylistExpanded()" class="bd sm2-playlist-drawer sm2-element">
             <div class="sm2-inline-texture">
                 <div class="sm2-box-shadow"></div>
             </div>
-            <div class="sm2-playlist-wrapper" data-bind="foreach: playlistItems">
+            <div class="sm2-playlist-wrapper" data-bind='
+                 foreach: playlistItems,
+                 css: {
+                    "show-scrollbar": isMouseOnPlaylist
+                 },
+                 event: {
+                    mouseover: onPlaylistHover,
+                    mouseout: onPlaylistHoverLost
+                 }'>
                 <ul class="sm2-playlist-bd">
                     <li data-bind='event: { click: $parent.onPlaylistItemClick }, css: { selected: isCurrent } '>
                         <a data-bind="attr: { href: navigationLink }">

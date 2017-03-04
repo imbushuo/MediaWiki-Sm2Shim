@@ -396,6 +396,7 @@ namespace Sm2Shim.Player.ViewModels
         currentIndex: KnockoutObservable<number>;
         isCompactMode: KnockoutObservable<boolean>;
 
+        isMouseOnPlaylist: KnockoutObservable<boolean>;
         isPlaylistExpanded: KnockoutObservable<boolean>;
         isLoopEnabled: KnockoutObservable<boolean>;
         isAutoPlayEnabled: KnockoutObservable<boolean>;
@@ -440,6 +441,7 @@ namespace Sm2Shim.Player.ViewModels
             // Initialize collections
             this.playlistItems = ko.observableArray<PlaylistItemViewModel>();
             this.isPlaylistExpanded = ko.observable(playlist.isPlaylistOpen);
+            this.isMouseOnPlaylist = ko.observable(false);
             this.isLoopEnabled = ko.observable(playlist.loop);
             this.isAutoPlayEnabled = ko.observable(playlist.autoPlay);
             this.isPaused = ko.observable(true);
@@ -680,6 +682,18 @@ namespace Sm2Shim.Player.ViewModels
         {
             const index = this.playlistItems.indexOf(item);
             if (index >= 0) this.setIndex(index, true);
+        }
+
+        onPlaylistHover() : void
+        {
+            if (this.isMouseOnPlaylist()) return;
+            this.isMouseOnPlaylist(true);
+        }
+
+        onPlaylistHoverLost() : void
+        {
+            if (!this.isMouseOnPlaylist()) return;
+            this.isMouseOnPlaylist(false);
         }
 
         private async getOnlineMetadataAsync(item?: PlaylistItemViewModel)
