@@ -16,7 +16,7 @@
     {
         (<any> window).sm2ShimLoaderConfig = <Sm2Shim.Models.IEnvironmentDefinition>
         {
-            debug: true,
+            debug: false,
             definitionReleaseId: "",
             environment: "debug",
             localizationEndpoint: "",
@@ -53,7 +53,7 @@
                     name: "PlayerCore",
                     type: "script",
                     description: "Player Core",
-                    releaseId: "170303-1920",
+                    releaseId: "170303-1937",
                     release: true
                 }
             ],

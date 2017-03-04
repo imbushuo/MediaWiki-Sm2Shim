@@ -414,11 +414,18 @@ namespace Sm2Shim.Player.ViewModels
         currentSound: ISmSound;
 
         private m_stopped: boolean;
-        private m_debug: boolean = true;
+        private m_debug: boolean = false;
 
         constructor(playlist: IModernPlaylist)
         {
             if (!playlist) throw new ArgumentNullException("playlist");
+
+            // Determine if we are debugging
+            if ((<any> window).sm2ShimLoaderConfig)
+            {
+                const config = <Sm2Shim.Models.IEnvironmentDefinition> ((<any> window).sm2ShimLoaderConfig);
+                this.m_debug = config.debug;
+            }
 
             // Overwrite auto play if mobile device was detected
             if (navigator.userAgent.match(/mobile/i))
