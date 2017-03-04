@@ -20,5 +20,10 @@
   "sm2shim-playlistRequired": "No playlist is specified.",
   "sm2shim-error": "Something happened: ",
   "sm2shim-unknown": "Unknown error has occurred.",
-  "sm2shim-invalidJson": "The playlist specified is not a valid JSON string."
+  "sm2shim-invalidJson": "The playlist specified is not a valid JSON string.",
+  "clientPlayPause": "Play / Pause",
+  "clientPrev": "< Previous",
+  "clientNext": "Next >",
+  "clientRepeat": "Loop",
+  "clientMenu": "Playlist"
 }

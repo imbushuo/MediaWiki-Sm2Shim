@@ -250,7 +250,7 @@ namespace Sm2Shim.Player.ViewModels
         constructor()
         {
             this.isEnabled = ko.observable(false);
-            this.currentPivot = ko.observable(0);
+            this.currentPivot = ko.observable(0).extend({notify: 'always'});
             this.sentences = ko.observableArray<LyricsSentenceViewModel>();
             this.m_prevPivot = -1;
             this.m_nextTimeMark = -1;
@@ -318,6 +318,7 @@ namespace Sm2Shim.Player.ViewModels
 
             // Toggle current
             this.currentPivot(i);
+
             // Set previous pivot
             this.m_prevPivot = i;
         }
@@ -409,6 +410,7 @@ namespace Sm2Shim.Player.ViewModels
         m_runtimeThemeViewModel: RuntimeThemeViewModel;
         m_timerViewModel: TimeControlViewModel;
         m_lyricsViewModel: LyricsViewModel;
+        m_localizationViewModel: LocalizationViewModel;
 
         private m_currentSound: ISmSound;
         private m_stopped: boolean;
@@ -454,6 +456,7 @@ namespace Sm2Shim.Player.ViewModels
             this.m_lyricsViewModel = new LyricsViewModel();
             this.m_stopped = false;
             this.m_runtimeThemeViewModel = new RuntimeThemeViewModel(this.controlIdClass());
+            this.m_localizationViewModel = new LocalizationViewModel();
 
             // Set background and foreground if available
             if (playlist.backgroundColor) this.m_runtimeThemeViewModel.background = playlist.backgroundColor;
