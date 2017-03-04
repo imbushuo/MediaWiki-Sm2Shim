@@ -34,6 +34,9 @@ import IModule = Sm2Shim.Models.IModule;
         pollingInterval = 500;
     }
 
+    // Expose utility for stub removal
+
+
     soundManager.setup(<soundManager.ISm2SetupOption>
     {
         html5PollingInterval: pollingInterval,
@@ -74,13 +77,16 @@ import IModule = Sm2Shim.Models.IModule;
 
         ko.applyBindings();
 
-        // Remove any loading stubs
-        const loadingStubs = document.getElementsByClassName("sm2-loading-stub");
-        if (loadingStubs)
+        if (!loader)
         {
-            while (loadingStubs.length > 0)
+            // Remove any loading stubs
+            const loadingStubs = document.getElementsByClassName("sm2-loading-stub");
+            if (loadingStubs)
             {
-                loadingStubs[0].parentNode.removeChild(loadingStubs[0]);
+                while (loadingStubs.length > 0)
+                {
+                    loadingStubs[0].parentNode.removeChild(loadingStubs[0]);
+                }
             }
         }
     });

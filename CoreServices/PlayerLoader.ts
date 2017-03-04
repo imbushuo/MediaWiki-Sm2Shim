@@ -3,6 +3,7 @@
  *
  * PlayerLoader.ts: Implementation of class PlayerLoader
  * -----------------------------------------------
+ * Copyright (c) The Regents of the University of California. All rights reserved.
  * Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.
  *
  * This file is part of the project 'Sm2Shim'.
@@ -19,7 +20,8 @@ namespace Sm2Shim.CoreServices
     {
         private m_emitOnly: boolean = false;
         private m_config: IEnvironmentDefinition;
-        private m_loaderVersion: string = "1703.303.1737.0";
+        private m_loaderVersion: string = "1703.303.2027.0";
+        private m_stubRemoved: boolean = false;
 
         constructor()
         {
@@ -180,6 +182,24 @@ namespace Sm2Shim.CoreServices
             ret += resExtension;
 
             return ret;
+        }
+
+        removeStubs() : void
+        {
+            if (this.m_stubRemoved) return;
+
+            // Remove any loading stubs
+            const loadingStubs = document.getElementsByClassName("sm2-loading-stub");
+            if (loadingStubs)
+            {
+                while (loadingStubs.length > 0)
+                {
+                    loadingStubs[0].parentNode.removeChild(loadingStubs[0]);
+                }
+            }
+
+            // Set flag
+            this.m_stubRemoved = true;
         }
     }
 }
