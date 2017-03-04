@@ -138,6 +138,7 @@ HTML;
             $loop = false;
             $autoPlay = false;
             $bgColor = '';
+            $fgColor = '';
             $playlistOpen = false;
 
             $parsedPlaylist = array();
@@ -161,9 +162,12 @@ HTML;
                 $autoPlay = (boolean) $rawDeserialized->autoPlay;
 
             if (isset($rawDeserialized->backgroundColor)
-                && is_string($rawDeserialized->backgroundColor)
-                && self::validateHexColor($rawDeserialized->backgroundColor))
+                && is_string($rawDeserialized->backgroundColor))
                 $bgColor = (string) $rawDeserialized->backgroundColor;
+
+            if (isset($rawDeserialized->foregroundColor)
+                && is_string($rawDeserialized->foregroundColor))
+                $fgColor = (string) $rawDeserialized->foregroundColor;
 
             if (isset($rawDeserialized->isPlaylistOpen) && is_bool($rawDeserialized->isPlaylistOpen))
                 $playlistOpen = (boolean) $rawDeserialized->isPlaylistOpen;
@@ -210,7 +214,7 @@ HTML;
                 $autoPlay,
                 $playlistOpen,
                 $bgColor,
-                '');
+                $fgColor);
 
             // Render playback control
             return ModernSoundManager2Hooks::renderModernSoundManagerByModel($playlist, $parser);
@@ -351,6 +355,7 @@ HTML;
             $openPlaylist = false;
             $liteMode = false;
             $backgroundColor = "";
+            $foregroundColor = "";
 
             if (!$isLiteMode)
             {
@@ -389,11 +394,23 @@ HTML;
                     $colorRaw = substr($colorRaw, 2);
                 }
 
-                // Perform sanity check for input values
-                if (self::validateHexColor($colorRaw)) {
-                    $backgroundColor = $colorRaw;
-                }
+                if (self::validateHexColor($colorRaw)) $backgroundColor = "#{$colorRaw}";
             }
+
+            if (isset($paramsParsed[\Sm2ShimConstants::FlashMp3ParamForegroundId]) &&
+                $paramsParsed[\Sm2ShimConstants::FlashMp3ParamForegroundId] != \Sm2ShimConstants::EmptyString)
+            {
+                // To Lowercase and trim the magic "0x"
+                $colorRaw = strtolower($paramsParsed[\Sm2ShimConstants::FlashMp3ParamForegroundId]);
+                // If starts "0x", trim it
+                if (strpos($colorRaw, \Sm2ShimConstants::FlashMp3ParamValueBackgroundMagicHeader) === 0) {
+                    // So trim the magic header
+                    $colorRaw = substr($colorRaw, 2);
+                }
+
+                if (self::validateHexColor($colorRaw)) $foregroundColor = "#{$colorRaw}";
+            }
+
 
             $playlistItems = array();
 
@@ -455,7 +472,8 @@ HTML;
                 $loop,
                 $autoPlay,
                 $openPlaylist,
-                $backgroundColor);
+                $backgroundColor,
+                $foregroundColor);
 
             return self::renderModernSoundManagerByModel($playlist, $parser);
         }
