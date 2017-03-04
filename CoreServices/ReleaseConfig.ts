@@ -53,7 +53,7 @@
                     name: "PlayerCore",
                     type: "script",
                     description: "Player Core",
-                    releaseId: "170303-2047",
+                    releaseId: "170303-2054",
                     release: true
                 }
             ],

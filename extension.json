@@ -30,7 +30,7 @@
     },
     "config": {
         "Sm2Shim_ExternalCDNEndpoint": "//mmixstaticassets.azureedge.net/Sm2ShimRM",
-        "Sm2Shim_ExternalCDNJsVersionControlId": "170303-2047"
+        "Sm2Shim_ExternalCDNJsVersionControlId": "170303-2057"
     },
     "manifest_version": 1
 }
