@@ -12,20 +12,17 @@
  *
  */
 
-/// <reference path="../../../Models/ModernPlaylist.ts" />
-/// <reference path="../../../Player/Models/LrcSentence.ts" />
-/// <reference path="../../../Player/Models/ParsedLrc.ts" />
-/// <reference path="../../../Player/LrcParser.ts" />
-
 namespace Sm2Shim.Player.ViewModels
 {
-    import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
     import ArgumentNullException = System.ArgumentNullException;
+    import IModernPlaylist = Sm2Shim.Player.Models.IModernPlaylist;
     import ISmSound = soundManager.ISmSound;
     import ISmSoundOptions = soundManager.ISmSoundOptions;
-    import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
     import OnlineMetadata = Sm2Shim.Player.Models.OnlineMetadata;
+    import ParsedLrc = Light.Lyrics.Model.ParsedLrc;
     import WebClient = System.Net.WebClient;
+
+    import play = soundManager.play;
 
     class PlaylistItemViewModel
     {
@@ -391,30 +388,33 @@ namespace Sm2Shim.Player.ViewModels
 
     export class PlayerViewModel
     {
+        controlIdClass: KnockoutObservable<string>;
+
         playlistItems: KnockoutObservableArray<PlaylistItemViewModel>;
         currentItem: KnockoutObservable<PlaylistItemViewModel>;
         currentIndex: KnockoutObservable<number>;
         isCompactMode: KnockoutObservable<boolean>;
 
+        isMouseOnPlaylist: KnockoutObservable<boolean>;
         isPlaylistExpanded: KnockoutObservable<boolean>;
         isLoopEnabled: KnockoutObservable<boolean>;
         isAutoPlayEnabled: KnockoutObservable<boolean>;
-        initialSanityCheckVerified: boolean;
 
         isPrevButtonDisabled: KnockoutObservable<boolean>;
         isNextButtonDisabled: KnockoutObservable<boolean>;
         isSingleEntityPlayback: KnockoutObservable<boolean>;
         isPlaying: KnockoutObservable<boolean>;
         isPaused: KnockoutObservable<boolean>;
-        isGrabbing: KnockoutObservable<boolean>;
 
-        timerViewModel: KnockoutObservable<TimeControlViewModel>;
-        lyricsViewModel: KnockoutObservable<LyricsViewModel>;
+        m_runtimeThemeViewModel: RuntimeThemeViewModel;
+        m_timerViewModel: TimeControlViewModel;
+        m_lyricsViewModel: LyricsViewModel;
 
-        currentSound: ISmSound;
-
+        private m_currentSound: ISmSound;
         private m_stopped: boolean;
         private m_debug: boolean = false;
+        private m_instanceId: string;
+        private m_initialSanityCheckVerified: boolean;
 
         constructor(playlist: IModernPlaylist)
         {
@@ -431,6 +431,10 @@ namespace Sm2Shim.Player.ViewModels
             let loader = <PlayerLoader> (<any> window).sm2ShimLoader;
             if (loader) loader.removeStubs();
 
+            // Initialize instance ID
+            this.m_instanceId = PlayerViewModel.newGuid();
+            this.controlIdClass = ko.computed(() => "sm2-widget-" + this.m_instanceId);
+
             // Overwrite auto play if mobile device was detected
             if (navigator.userAgent.match(/mobile/i))
             {
@@ -440,15 +444,22 @@ namespace Sm2Shim.Player.ViewModels
             // Initialize collections
             this.playlistItems = ko.observableArray<PlaylistItemViewModel>();
             this.isPlaylistExpanded = ko.observable(playlist.isPlaylistOpen);
+            this.isMouseOnPlaylist = ko.observable(false);
             this.isLoopEnabled = ko.observable(playlist.loop);
             this.isAutoPlayEnabled = ko.observable(playlist.autoPlay);
             this.isPaused = ko.observable(true);
             this.isPlaying = ko.computed(() => !this.isPaused());
             this.isCompactMode = ko.observable(playlist.compactMode);
-            this.isGrabbing = ko.observable(false);
-            this.timerViewModel = ko.observable(new TimeControlViewModel(this));
-            this.lyricsViewModel = ko.observable(new LyricsViewModel());
+            this.m_timerViewModel = new TimeControlViewModel(this);
+            this.m_lyricsViewModel = new LyricsViewModel();
             this.m_stopped = false;
+            this.m_runtimeThemeViewModel = new RuntimeThemeViewModel(this.controlIdClass());
+
+            // Set background and foreground if available
+            if (playlist.backgroundColor) this.m_runtimeThemeViewModel.background = playlist.backgroundColor;
+            if (playlist.foregroundColor) this.m_runtimeThemeViewModel.foreground = playlist.foregroundColor;
+            if (playlist.trackColor) this.m_runtimeThemeViewModel.trackColor = playlist.trackColor;
+            if (playlist.thumbColor) this.m_runtimeThemeViewModel.thumbColor = playlist.thumbColor;
 
             // Load playlist
             let i: number;
@@ -475,7 +486,7 @@ namespace Sm2Shim.Player.ViewModels
             this.isSingleEntityPlayback = ko.observable(this.playlistItems().length <= 1);
 
             // If items are loaded, take the first one to stage
-            this.initialSanityCheckVerified = this.playlistItems().length > 0;
+            this.m_initialSanityCheckVerified = this.playlistItems().length > 0;
             this.currentItem = ko.computed(() => this.playlistItems()[this.currentIndex()]);
             this.currentItem().isCurrent(true);
 
@@ -488,7 +499,7 @@ namespace Sm2Shim.Player.ViewModels
 
         resetTimer() : void
         {
-            this.timerViewModel().resetTimer();
+            this.m_timerViewModel.resetTimer();
         }
 
         loopButtonHandler() : void
@@ -503,13 +514,13 @@ namespace Sm2Shim.Player.ViewModels
 
         prevHandler() : void
         {
-            if (!this.initialSanityCheckVerified) return;
+            if (!this.m_initialSanityCheckVerified) return;
             this.setIndex(this.currentIndex() - 1);
         }
 
         nextHandler() : void
         {
-            if (!this.initialSanityCheckVerified) return;
+            if (!this.m_initialSanityCheckVerified) return;
             this.setIndex(this.currentIndex() + 1);
         }
 
@@ -547,22 +558,22 @@ namespace Sm2Shim.Player.ViewModels
         play(silentSwitch: boolean) : void;
         play(silentSwitch?: boolean) : void
         {
-            if (!this.initialSanityCheckVerified) return;
+            if (!this.m_initialSanityCheckVerified) return;
             // Assume as checked
             const entity = this.currentItem();
             // Clean up
             this.resetTimer();
             this.isPaused(true);
-            this.lyricsViewModel().reset();
+            this.m_lyricsViewModel.reset();
             if (!silentSwitch) soundManager.pauseAll();
             this.m_stopped = false;
 
             // Request LRC to load.
             // LRC ViewModel will check entity anyway
-            this.lyricsViewModel().initializeLyrics(entity);
+            this.m_lyricsViewModel.initializeLyrics(entity);
 
             // Create sound object
-            this.currentSound = soundManager.createSound(<ISmSoundOptions>
+            this.m_currentSound = soundManager.createSound(<ISmSoundOptions>
             {
                 url: entity.audioFileSrc(),
                 onpause: () => {
@@ -583,15 +594,15 @@ namespace Sm2Shim.Player.ViewModels
                 },
                 whileplaying: () => {
                     // Update time
-                    if (this.currentSound.duration)
-                        this.timerViewModel().currentTime = this.currentSound.position;
+                    if (this.m_currentSound.duration)
+                        this.m_timerViewModel.currentTime = this.m_currentSound.position;
                     // Synchronize lyrics
-                    this.lyricsViewModel().synchronizeLyrics(this.currentSound.position);
+                    this.m_lyricsViewModel.synchronizeLyrics(this.m_currentSound.position);
                 },
                 onload: (success: boolean) => {
                     if (success)
                     {
-                        this.timerViewModel().duration = this.currentSound.duration;
+                        this.m_timerViewModel.duration = this.m_currentSound.duration;
                     }
                 },
                 onfinish: () => {
@@ -610,8 +621,8 @@ namespace Sm2Shim.Player.ViewModels
 
             if (!silentSwitch)
             {
-                this.currentSound.stop();
-                this.currentSound.play(<ISmSoundOptions>
+                this.m_currentSound.stop();
+                this.m_currentSound.play(<ISmSoundOptions>
                     {
                         url: entity.audioFileSrc(),
                         position: 0
@@ -624,7 +635,7 @@ namespace Sm2Shim.Player.ViewModels
         {
             this.m_stopped = false;
 
-            if (this.currentSound)
+            if (this.m_currentSound)
             {
                 const isTransitionToPlay = this.isPaused();
                 // Transition to play status
@@ -632,7 +643,7 @@ namespace Sm2Shim.Player.ViewModels
                 {
                     soundManager.pauseAll();
                 }
-                this.currentSound.togglePause();
+                this.m_currentSound.togglePause();
                 // Synchronize status
                 this.isPaused(!isTransitionToPlay);
             }
@@ -646,7 +657,7 @@ namespace Sm2Shim.Player.ViewModels
         {
             return new Promise<boolean>((resolve, reject) =>
             {
-                if (this.currentSound && this.currentSound.duration)
+                if (this.m_currentSound && this.m_currentSound.duration)
                 {
                     // If the sound has stopped, reject the request.
                     if (this.m_stopped)
@@ -655,16 +666,16 @@ namespace Sm2Shim.Player.ViewModels
                     }
                     else
                     {
-                        this.timerViewModel().currentTime = position;
-                        this.currentSound.setPosition(position);
+                        this.m_timerViewModel.currentTime = position;
+                        this.m_currentSound.setPosition(position);
                         // A little hackish: ensure UI updates immediately with current position,
                         // even if audio is buffering and hasn't moved there yet.
-                        if (this.currentSound._iO && this.currentSound._iO.whileplaying)
+                        if (this.m_currentSound._iO && this.m_currentSound._iO.whileplaying)
                         {
-                            this.currentSound._iO.whileplaying.apply(this.currentSound);
+                            this.m_currentSound._iO.whileplaying.apply(this.m_currentSound);
                         }
                         // Reset lyrics
-                        this.lyricsViewModel().synchronizeLyrics(position, true);
+                        this.m_lyricsViewModel.synchronizeLyrics(position, true);
                         // Accept request
                         resolve(true);
                     }
@@ -680,6 +691,18 @@ namespace Sm2Shim.Player.ViewModels
         {
             const index = this.playlistItems.indexOf(item);
             if (index >= 0) this.setIndex(index, true);
+        };
+
+        onPlaylistHover() : void
+        {
+            if (this.isMouseOnPlaylist()) return;
+            this.isMouseOnPlaylist(true);
+        }
+
+        onPlaylistHoverLost() : void
+        {
+            if (!this.isMouseOnPlaylist()) return;
+            this.isMouseOnPlaylist(false);
         }
 
         private async getOnlineMetadataAsync(item?: PlaylistItemViewModel)
@@ -744,6 +767,14 @@ namespace Sm2Shim.Player.ViewModels
                     // Ignore, assume as failed
                 }
             }
+        }
+
+        private static newGuid(): string
+        {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                let r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
         }
     }
 }

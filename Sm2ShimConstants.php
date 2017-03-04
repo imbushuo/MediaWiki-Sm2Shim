@@ -28,6 +28,7 @@ class Sm2ShimConstants {
 
     const FlashMp3ParamTypeId = 'type';
     const FlashMp3ParamBackgroundId = 'bg';
+    const FlashMp3ParamForegroundId = 'text';
     const FlashMp3ParamValueTypeLastFm = 'lastfm';
     const FlashMp3ParamValueBackgroundMagicHeader = '0x';
     const FlashMp3ParamAutoPlayId = 'autostart';

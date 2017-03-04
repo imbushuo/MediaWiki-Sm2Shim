@@ -22,6 +22,8 @@ namespace Sm2Shim.Player.Models
         compactMode: boolean;
         backgroundColor: string;
         foregroundColor: string;
+        trackColor: string;
+        thumbColor: string;
     }
 
     interface IModernPlaylistItem

@@ -88,6 +88,7 @@
       "Framework/TextReader.js",
       "Player/LrcParser.js",
       "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/RuntimeThemeViewModel.js",
       "UserControl/scripts/ViewModels/PlayerViewModel.js",
       "CoreServices/PlayerGlobal.js"
     ],
@@ -121,7 +122,7 @@
   {
     "outputFileName": "bin/Release/CoreSupport.js",
     "inputFiles": [
-      "Library/knockout/dist/knockout.debug.js",
+      "Library/knockout/dist/knockout.js",
       "Library/core-promise/client/core-promise.js",
       "Library/SoundManager2/script/soundmanager2.js",
       "CoreServices/TemplateLoader.js"
@@ -144,6 +145,7 @@
       "Framework/TextReader.js",
       "Player/LrcParser.js",
       "UserControl/scripts/ViewModels/SynchronizedLyricsHandler.js",
+      "UserControl/scripts/ViewModels/RuntimeThemeViewModel.js",
       "UserControl/scripts/ViewModels/PlayerViewModel.js",
       "CoreServices/PlayerGlobal.js"
     ],

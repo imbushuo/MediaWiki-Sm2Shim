@@ -20,13 +20,14 @@ namespace Sm2Shim.CoreServices
     {
         private m_emitOnly: boolean = false;
         private m_config: IEnvironmentDefinition;
-        private m_loaderVersion: string = "1703.303.2027.0";
+        private m_loaderVersion: string = "1703.304.241.0";
         private m_stubRemoved: boolean = false;
 
         constructor()
         {
-            console.log("This is Sm2Shim Deferred Loader " + this.m_loaderVersion + " " +
-                (this.m_emitOnly ? "DEBUG" : "PROD") + ", greetings from San Francisco.");
+            console.log(
+                `This is Sm2Shim Deferred Loader ${this.m_loaderVersion} ${(this.m_emitOnly ? "DEBUG" : "PROD")}`
+                 + ", greetings from San Francisco.");
             console.log("Copyright (c) The Regents of the University of California. All rights reserved.");
             console.log("Copyright (c) 2016 - 2017, The Little Moe New LLC. All rights reserved.");
 
@@ -104,12 +105,11 @@ namespace Sm2Shim.CoreServices
                         if(!this.m_emitOnly)
                         {
                             htmlHead.appendChild(resLink);
-                            console.log("PlayerLoader::loadDependencies(): Start loading " + module.name
-                                + "(" + module.description + ")");
+                            console.log(`PlayerLoader::loadDependencies(): Start loading ${module.name} (${module.description})`);
                         }
                         else
                         {
-                            console.log("PlayerLoader::loadDependencies(): Will load " + resLink.outerHTML);
+                            console.log(`PlayerLoader::loadDependencies(): Will load ${resLink.outerHTML}`);
                         }
                     }
                 }
@@ -128,18 +128,17 @@ namespace Sm2Shim.CoreServices
                             {
                                 let scriptContent = await WebClient.downloadStringAsync(resUri);
                                 if (scriptContent) eval(scriptContent);
-                                console.log("PlayerLoader::loadDependencies(): Loaded " + module.name
-                                    + "(" + module.description + ")");
+                                console.log(`PlayerLoader::loadDependencies(): Loaded ${module.name} (${module.description})`);
                             }
                             else
                             {
-                                console.log("PlayerLoader::loadDependencies(): Will load " + resUri);
+                                console.log(`PlayerLoader::loadDependencies(): Will load ${resUri}`);
                             }
                         }
                         catch (exception)
                         {
                             // Ignore and stop loading.
-                            console.error("PlayerLoader::loadDependencies(): Failed to load module " + module.name);
+                            console.error(`PlayerLoader::loadDependencies(): Failed to load module ${module.name}: ${exception}`);
                             break;
                         }
                     }
