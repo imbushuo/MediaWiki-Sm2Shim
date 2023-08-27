@@ -9,6 +9,7 @@
 
 namespace TheLittleMoeNewLlc\Sm2Shim\Hooks;
 
+use MediaWiki\MediaWikiServices;
 use TheLittleMoeNewLlc\Sm2Shim\Exceptions;
 use TheLittleMoeNewLlc\Sm2Shim\Models;
 
@@ -185,6 +186,7 @@ HTML;
             $parserOutput = $parser->getOutput();
 
             // Parse playlist items
+            $repoGroup = MediaWikiServices::getInstance()->getRepoGroup();
             foreach ($rawDeserialized->playlist as &$playlistEntity)
             {
                 if ($playlistEntity == null || $playlistEntity->audioFileUrl == null) continue;
@@ -192,10 +194,10 @@ HTML;
                 if (self::isInternalFile($playlistEntity->audioFileUrl))
                 {
                     // Get address for internal files
-                    $mwEntityTitle = \Title::newFromText($playlistEntity->audioFileUrl, NS_IMAGE);
+                    $mwEntityTitle = \Title::newFromText($playlistEntity->audioFileUrl, NS_FILE);
                     if ($mwEntityTitle == null) continue;
 
-                    $fileLocation = wfFindFile($mwEntityTitle);
+                    $fileLocation = $repoGroup->findFile($mwEntityTitle);
                     if ($fileLocation)
                     {
                         $entityAddress = $fileLocation->getUrl();
@@ -459,6 +461,7 @@ HTML;
             $parserOutput = $parser->getOutput();
 
             // Iterate all files to retrieve link
+            $repoGroup = MediaWikiServices::getInstance()->getRepoGroup();
             foreach ($filesParsed as $fileLocation)
             {
                 $entityAddress = $fileLocation;
@@ -467,10 +470,10 @@ HTML;
                 if (self::isInternalFile($fileLocation))
                 {
                     // Get address for internal files
-                    $mwEntityTitle = \Title::newFromText($fileLocation, NS_IMAGE);
+                    $mwEntityTitle = \Title::newFromText($fileLocation, NS_FILE);
                     if ($mwEntityTitle == null) continue;
 
-                    $fileLocation = wfFindFile($mwEntityTitle);
+                    $fileLocation = $repoGroup->findFile($mwEntityTitle);
                     if ($fileLocation)
                     {
                         $entityAddress = $fileLocation->getUrl();
